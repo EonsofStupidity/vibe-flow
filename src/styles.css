@@ -37,6 +37,27 @@
   --font-display: var(--font-display);
   --font-sans: var(--font-body);
   --font-mono: var(--font-mono);
+
+  /* Fluid tokens exposed as Tailwind utilities (text-*, p-*, gap-*, rounded-*). */
+  --text-eyebrow: var(--fs-eyebrow);
+  --text-body: var(--fs-body);
+  --text-h3: var(--fs-h3);
+  --text-h2: var(--fs-h2);
+  --text-h1: var(--fs-h1);
+  --text-display: var(--fs-display);
+
+  --spacing-f1: var(--sp-1);
+  --spacing-f2: var(--sp-2);
+  --spacing-f3: var(--sp-3);
+  --spacing-f4: var(--sp-4);
+  --spacing-f5: var(--sp-5);
+  --spacing-f6: var(--sp-6);
+  --spacing-f7: var(--sp-7);
+  --spacing-f8: var(--sp-8);
+
+  --radius-f-sm: var(--r-sm);
+  --radius-f-md: var(--r-md);
+  --radius-f-lg: var(--r-lg);
 }
 
 @layer base {
