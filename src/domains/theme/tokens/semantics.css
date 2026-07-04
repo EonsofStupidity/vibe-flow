@@ -1,0 +1,54 @@
+/**
+ * Layer 2 — semantic tokens.
+ *
+ * Role-based. Every component reads from here — never from primitives.css.
+ * `--brand-*` values are placeholders that brands.css overrides per property.
+ */
+
+:root {
+  /* -------------------------------- Surfaces -------------------------------- */
+  --surface-base:    var(--neutral-900);
+  --surface-raised:  var(--neutral-800);
+  --surface-overlay: var(--neutral-850);
+  --surface-input:   var(--neutral-700);
+  --hairline:        var(--neutral-600);
+
+  /* ---------------------------------- Ink ---------------------------------- */
+  --ink-strong:   var(--neutral-50);
+  --ink-default:  oklch(0.960 0.010 90);
+  --ink-muted:    oklch(0.680 0.020 250);
+  --ink-inverse:  var(--neutral-900);
+
+  /* Annotation stroke — reads as ink over any surface. */
+  --ink-annotate: oklch(0.960 0.020 80);
+
+  /* --------------------------- Brand (default: EoS) ------------------------- */
+  --brand:        var(--amber-500);
+  --brand-strong: var(--amber-400);
+  --brand-soft:   var(--amber-200);
+  --brand-ink:    var(--neutral-900);
+
+  /* --------------------------- Focus + status ------------------------------- */
+  --focus-ring: var(--brand);
+  --danger:     oklch(0.620 0.220 25);
+  --danger-ink: oklch(0.980 0.010 90);
+
+  /* --------------------------- Motion (raw tokens) -------------------------- */
+  --motion-duration-fast:   120ms;
+  --motion-duration-base:   200ms;
+  --motion-duration-slow:   320ms;
+  --motion-ease-standard:   cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+  --motion-ease-decelerate: cubic-bezier(0, 0, 0, 1);
+
+  /* -------------------------------- Font stacks ----------------------------- */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body:    "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  /* ----------------------------- Radii (rem) -------------------------------- */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+}

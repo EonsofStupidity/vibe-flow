@@ -4,46 +4,52 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/**
+ * Tailwind v4 theme surface — semantic tokens only.
+ *
+ * Every utility exposed here reads from a semantic variable in
+ * `domains/theme/tokens/semantics.css` (or the property-scoped
+ * override in `brands.css`). Components never touch the primitive layer.
+ */
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-surface:         var(--surface-base);
+  --color-surface-raised:  var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-input:   var(--surface-input);
+  --color-hairline:        var(--hairline);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-panel: var(--panel);
-  --color-panel-foreground: var(--panel-foreground);
-  --color-hairline: var(--hairline);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-ink: var(--ink);
+  --color-ink:         var(--ink-default);
+  --color-ink-strong:  var(--ink-strong);
+  --color-ink-muted:   var(--ink-muted);
+  --color-ink-inverse: var(--ink-inverse);
+  --color-ink-annotate: var(--ink-annotate);
+
+  --color-brand:        var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft:   var(--brand-soft);
+  --color-brand-ink:    var(--brand-ink);
+
+  --color-focus-ring: var(--focus-ring);
+  --color-danger:     var(--danger);
+  --color-danger-ink: var(--danger-ink);
+
+  --color-accent-amber:   var(--accent-amber);
+  --color-accent-cyan:    var(--accent-cyan);
+  --color-accent-magenta: var(--accent-magenta);
+  --color-accent-lime:    var(--accent-lime);
+  --color-accent-coral:   var(--accent-coral);
+  --color-accent-violet:  var(--accent-violet);
+  --color-accent-teal:    var(--accent-teal);
 
   --font-display: var(--font-display);
-  --font-sans: var(--font-body);
-  --font-mono: var(--font-mono);
+  --font-sans:    var(--font-body);
+  --font-mono:    var(--font-mono);
 
-  /* Fluid tokens exposed as Tailwind utilities (text-*, p-*, gap-*, rounded-*). */
   --text-eyebrow: var(--fs-eyebrow);
-  --text-body: var(--fs-body);
-  --text-h3: var(--fs-h3);
-  --text-h2: var(--fs-h2);
-  --text-h1: var(--fs-h1);
+  --text-body:    var(--fs-body);
+  --text-h3:      var(--fs-h3);
+  --text-h2:      var(--fs-h2);
+  --text-h1:      var(--fs-h1);
   --text-display: var(--fs-display);
 
   --spacing-f1: var(--sp-1);
@@ -62,7 +68,7 @@
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--color-hairline);
   }
   html,
   body,
@@ -70,8 +76,8 @@
     height: 100%;
   }
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -94,6 +100,7 @@
 @utility hairline-t {
   border-top: 1px solid var(--color-hairline);
 }
+
 @utility hairline-b {
   border-bottom: 1px solid var(--color-hairline);
 }
