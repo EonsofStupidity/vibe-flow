@@ -1,200 +1,132 @@
-# Eons of Stupidity — Touchscreen Show Runtime
 
-A local-only web app that runs on your large touchscreen as an on-camera prop. Each episode is a code-defined slide deck. Slides mix stills, title cards, and live interactive components. The runtime provides the boring, predictable chrome (nav, zoom, annotate, navigator) so each slide only implements what makes *it* unique.
+# Plan: Rip shadcn, own RAC primitives, land fluid clamp
 
-Security is intentionally out of scope. No auth, no backend, no Lovable Cloud.
+Foundation-only pass. No shell chrome, no workspace routes, no episode content. Those come next. This pass makes the codebase RAC-native and gives the shell a real fluid-sizing contract to build on.
 
----
+## Confirmed context (from exploration)
 
-## Guiding principles (locked in, memory-worthy)
+- `src/components/ui/*` is completely orphaned — nothing in the active runtime (`src/domains/*`, `src/routes/*`, `src/episodes/*`) imports it. Removal has zero call-site cost.
+- Only surviving shadcn-adjacent surfaces: `tw-animate-css` import in `src/styles.css` and `src/hooks/use-mobile.tsx` (currently unused).
+- Existing runtime already fits the target model (domains under `src/domains/`, named imports, tokens in `src/domains/theme/tokens.css`, WAI-ARIA intent). Broadcast Console theme stays.
 
-- **Hypermodular, domain-driven, colocated.** No `core/`, no re-exports, no shims, no backwards-compat. Self-describing folders only.
-- **Slide API catalog is the contract.** A small, boring, versioned set of primitives every slide composes from. New slide? You reach into the catalog first; you only invent when the catalog doesn't cover it, and then the invention gets promoted into the catalog.
-- **Code-defined slides.** Each slide is a TSX module colocated with its assets and its metadata. No JSON manifest, no runtime editor.
-- **Touch-first, one-handed.** Controls anchor to edges. Min 64px hit targets. Nothing critical in screen center where a hand would occlude on camera.
-- **Named imports everywhere.** The existing named→default import util is honored; nothing bypasses it.
-- **WAI-ARIA APG compliant** for every interactive primitive (toolbar, dialog, tabs, slider).
-- **Design tokens only.** All color/spacing/type via `src/styles.css` semantic tokens. No hardcoded color utilities in components.
+## 1. Dependency surgery (single `bun` call)
 
----
+**Remove (33 packages):** every `@radix-ui/*`, plus shadcn-companion deps that only existed for `components/ui/*` — `cmdk`, `vaul`, `embla-carousel-react`, `input-otp`, `react-day-picker`, `react-resizable-panels`, `recharts`, `sonner`, `@hookform/resolvers`, `react-hook-form`, `tw-animate-css`.
 
-## Scope of this first pass
+**Add:** `react-aria-components`, `@react-aria/utils`, `tailwind-variants`. Keep `class-variance-authority` + `tailwind-merge` + `clsx` (still useful; `tailwind-variants` complements, doesn't replace `cn`).
 
-Build the **runtime shell + slide API catalog + one sample episode** with three canonical slide types so the pattern is proven end-to-end. No real Eons content yet — the sample episode is the reference implementation you'll copy from.
+**Keep untouched:** TanStack (router/start/query), zustand, jotai, `@fontsource/*`, `lucide-react`, `zod`, tailwind, `date-fns`.
 
-**In scope**
-1. Runtime shell: deck host, slide viewport, edge nav, progress, navigator overlay, annotate layer, keyboard + touch input.
-2. Slide API catalog v1 (primitives listed below).
-3. Sample episode `ep-000-template` with three slides:
-   - Title card
-   - Still with pinch/zoom + pan
-   - Comparator widget (Lovable vs local LLM shell — inert placeholder content)
-4. Design system tokens + dark editorial theme baseline.
-5. Route `/` = deck selector, `/deck/$deckId/$slideIndex` = runtime.
+## 2. Delete
 
-**Out of scope (future turns)**
-- Real episode content.
-- Recording/OBS integration.
-- Persisted annotations.
-- Cloud sync.
+- `src/components/ui/` (entire directory)
+- `src/hooks/use-mobile.tsx` (unused; anti-breakpoint per the fluid direction)
+- `components.json` (shadcn CLI config; irrelevant post-rip)
+- `tw-animate-css` line in `src/styles.css`
 
----
+Directory `src/components/` will be empty and will also be deleted; component-adjacent code lives under `src/domains/*`.
 
-## Folder structure (hypermodular, domain-driven)
+## 3. Fluid XY clamp utility
 
-```text
-src/
-  routes/
-    __root.tsx
-    index.tsx                          # deck picker
-    deck.$deckId.$slideIndex.tsx       # runtime host
-  domains/
-    deck/                              # domain: a deck = ordered slides
-      services/
-        deck-registry.service.ts       # register/list decks
-        deck-navigation.service.ts     # next/prev/jump, guards
-      utils/
-        slide-index.util.ts
-      types/
-        deck.types.ts
-        slide.types.ts
-      components/
-        DeckHost/
-          DeckHost.tsx
-          DeckHost.types.ts
-        EdgeNav/
-          EdgeNav.tsx                  # left/right tap zones + prev/next
-        ProgressRail/
-        SlideNavigator/                # thumbnail overlay
-    slide-catalog/                     # THE API CATALOG
-      primitives/
-        SlideFrame/                    # standard chrome wrapper
-        TitleCard/
-        StillZoomable/                 # pinch/zoom/pan on a still
-        ComparatorPanel/               # side-by-side widget frame
-        CalloutBadge/
-        BigNumber/
-        CodeBlockStill/
-      services/
-        slide-primitive-registry.service.ts
-      types/
-        primitive.types.ts
-      README.md                        # the catalog docs
-    annotation/
-      components/
-        AnnotationLayer/               # canvas overlay
-        AnnotationToolbar/
-      services/
-        ink-stroke.service.ts
-      utils/
-      types/
-    input/                             # touch + keyboard input domain
-      services/
-        gesture.service.ts             # swipe, pinch, edge-swipe
-        keyboard.service.ts
-      hooks/
-        useSwipeNav.hook.ts
-        usePinchZoom.hook.ts
-    theme/
-      tokens.css                       # imported by src/styles.css
-  episodes/
-    ep-000-template/
-      episode.ts                       # registers deck
-      slides/
-        01-title.slide.tsx
-        02-still.slide.tsx
-        03-comparator.slide.tsx
-      assets/
-        cover.png
-  lib/
-    named-import.util.ts               # existing helper honored
+New domain `src/domains/fluid/`:
+
+```
+src/domains/fluid/
+  utils/
+    fluid.util.ts           # fluid(minPx, maxPx, minVw, maxVw) -> "clamp(...)" string
+    fluid-y.util.ts         # fluidY(minPx, maxPx, minSvh, maxSvh) using svh (safe viewport)
+  types/
+    fluid.types.ts
+  README.md                 # contract + when to use X vs Y vs container
 ```
 
-No `core/`. Each domain owns its own `services/`, `utils/`, `types/`, `components/`, `hooks/`. Microservices/utilities colocate under the component or slide that uses them.
-
----
-
-## Slide API catalog v1 (the boring, predictable part)
-
-Every slide is a TSX module exporting a `SlideDefinition`:
+Contract (pure functions, no JS at runtime — they emit CSS strings for use inside `style={{}}`, `@theme`, or `--var:` declarations):
 
 ```ts
-type SlideDefinition = {
-  id: string;                    // stable within deck
-  kind: 'title' | 'still' | 'comparator' | 'custom';
-  title: string;                 // shown in navigator
-  render: (ctx: SlideRenderContext) => ReactNode;
-  chrome?: 'default' | 'dim' | 'hidden';
-  allowAnnotate?: boolean;       // default true
-};
+fluid(minPx: number, maxPx: number, minVw?: number, maxVw?: number): string
+// -> "clamp(<minPx>px, calc(<a>px + <b>vw), <maxPx>px)"
 ```
 
-Primitives shipped in v1:
+Applied at token level in `src/domains/theme/tokens.css` for:
+- Type scale: `--fs-eyebrow`, `--fs-body`, `--fs-h3`, `--fs-h2`, `--fs-h1`, `--fs-display`
+- Spacing scale: `--sp-1` … `--sp-8`
+- Radii: `--r-sm`, `--r-md`, `--r-lg`
+- Slide viewport margins (Y-axis): `--slide-pad-y`
 
-| Primitive         | Purpose                                                 |
-| ----------------- | ------------------------------------------------------- |
-| `SlideFrame`      | Standard padding, safe area, chrome slot                |
-| `TitleCard`       | Episode/segment title with eyebrow + subtitle           |
-| `StillZoomable`   | Image with pinch/zoom/pan + reset                       |
-| `ComparatorPanel` | Two-column labeled panel for A/B demos                  |
-| `CalloutBadge`    | Inline emphasis chip                                    |
-| `BigNumber`       | Oversized stat with caption                             |
-| `CodeBlockStill`  | Static code screenshot with zoom                        |
+Registered in Tailwind v4 `@theme` so utilities like `text-display`, `p-4-fluid`, `gap-fluid` work. No breakpoint variants used anywhere. No `useMobile`, no `sm:` / `md:` in components going forward — layout responds via clamp + intrinsic sizing.
 
-Each primitive: colocated `.tsx` + `.types.ts` + brief README describing when to reach for it. That README is the API catalog surface.
+## 4. Owned RAC primitives
 
----
+New `src/domains/ui/`, one folder per primitive, each self-contained:
 
-## Runtime behavior
+```
+src/domains/ui/
+  Button/                  { Button.tsx, Button.types.ts, Button.variants.ts, README.md }
+  Dialog/                  (+ Modal, DialogTrigger)
+  Menu/                    (MenuTrigger, Menu, MenuItem, Section, Separator)
+  Toolbar/                 (Toolbar, ToggleButton, Group)
+  Tabs/                    (Tabs, TabList, Tab, TabPanel)
+  Popover/
+  Tooltip/
+  ListBox/                 (ListBox, ListBoxItem)
+  Select/                  (Select, SelectValue, SelectPopover, SelectListBox)
+  ComboBox/
+  Slider/
+  Switch/
+  Checkbox/
+  RadioGroup/              (RadioGroup, Radio)
+  TextField/               (TextField, Label, Input, Description, FieldError)
+  NumberField/
+  ProgressBar/
+  Separator/
+  index.md                 # catalog: primitive -> RAC component -> status
+```
 
-- **Nav:** swipe left/right anywhere non-interactive; tap left/right 15% edge zones; keyboard `←/→`, `Home`, `End`, `G` = navigator.
-- **Navigator overlay:** edge-swipe up from bottom OR bottom-corner tap; grid of slide thumbnails; tap to jump.
-- **Annotate:** toolbar toggle on right edge; canvas overlay above slide, below chrome; clear-per-slide; not persisted in v1.
-- **Zoom stills:** pinch on `StillZoomable`; double-tap resets.
-- **Progress rail:** thin bar top edge, non-interactive.
-- **Full-bleed mode:** `chrome: 'hidden'` on a slide hides everything; single tap in top-right corner brings chrome back.
+Each primitive is a thin `react-aria-components` wrapper: apply our tokens via `tailwind-variants`, force `.tap-target` min-height (64px) on interactive primitives, expose `data-*` state selectors already emitted by RAC for styling. No default exports. No re-exports (each consumer imports from the primitive folder directly). WAI-ARIA compliance comes free from RAC.
 
----
+**Not built this pass (deferred until needed):** Table, Tree, GridList, DatePicker, Calendar, DateField, TimeField, FileTrigger, DropZone, ColorPicker. Added on demand.
 
-## Design direction (proposed, one commit)
+## 5. Runtime rewire
 
-Because the design-directions tool requires an existing UI screenshot and this is a blank template, I'm proposing a single opinionated direction rather than deferring. If you want three rendered variants, say so and I'll build a placeholder screen first, then re-run directions against it.
+Two existing files touch shadcn-orbit deps; audit and adjust:
+- `src/styles.css` — drop `@import "tw-animate-css"` and any `@layer utilities` remnants. Keep the Tailwind v4 `@import "tailwindcss"` + `@theme inline` block. Add `@theme` mappings for new fluid tokens.
+- `src/domains/deck/components/RuntimeToolbar/RuntimeToolbar.tsx` — currently uses plain buttons; migrate its toggle buttons to `Toolbar` + `ToggleButton` from the new `src/domains/ui/Toolbar/`. Only file in the runtime that changes.
 
-**Direction: "Broadcast Console"**
-- Deep near-black background `oklch(0.16 0.01 250)`, panels in slightly lifted charcoal, single hot accent in signal amber `oklch(0.78 0.17 75)` reserved for live/active state.
-- Display: `Space Grotesk` for titles and eyebrows; body/UI: `Inter Tight`; mono: `JetBrains Mono` for code stills. Loaded via `@fontsource` packages, not CDN.
-- Chrome feels like broadcast equipment: thin hairline dividers, subtle beveled panels, tactile buttons with pressed-in states.
-- Slide transitions: horizontal panel slide (200ms, custom cubic), not fade.
-- Annotate ink: warm off-white with slight weight variance.
-- Tokens live in `domains/theme/tokens.css`, imported at top of `src/styles.css`.
+Nothing else in the runtime touches shadcn, so `DeckHost`, `EdgeNav`, `ProgressRail`, `SlideNavigator`, `AnnotationLayer`, hooks, services, and the sample episode compile unchanged.
 
----
+## 6. Managed knowledge (memories)
 
-## Technical notes (for the technical reader)
+Add:
+- `mem://preferences/ui-primitives.md` — Own RAC wrappers under `src/domains/ui/`. No shadcn, no Radix, no re-exports. Consumers import from the primitive folder directly. Each primitive folder = `.tsx` + `.types.ts` + `.variants.ts` + README.
+- `mem://preferences/no-breakpoints.md` — No responsive breakpoint variants (`sm:`, `md:`, `lg:`) in application code. Sizing responds via `fluid()` / `fluidY()` clamp tokens and intrinsic layout only. No `useMobile`-style hooks.
+- `mem://features/devpulse-labs.md` — Product framing: DevPULSE Labs is the local-only shell that hosts three properties — DevPULSE News (live show with Clyffy on a GB10 cluster), AngryVibes (episodic), Eons of Stupidity (touchscreen lessons). No auth, no cloud, no backend. Ever.
 
-- TanStack Start file-based routing; runtime route is `/deck/$deckId/$slideIndex`, both are path params (deep-linkable to a slide mid-stream).
-- Deck registry is a plain module map (`episodes/*/episode.ts` self-registers via imported side effect from a single `src/episodes/index.ts` barrel — the *only* barrel in the app, and it exists to enumerate decks, not to re-export symbols).
-- Gestures via a small custom hook layer over Pointer Events; no heavy gesture dep unless it becomes necessary — decision documented when it happens.
-- Annotation uses a plain `<canvas>` sized to the slide viewport; ResizeObserver keeps it in sync.
-- Zustand for shell state (current deck, chrome visibility, annotate on/off). Jotai for per-slide widget UI state. TanStack Query not needed yet (no remote data).
-- All new imports named. `bun add` is used for any package before its first import.
-- Strict TS, no `any`, no re-exports, no shims.
+Update `mem://index.md` Core:
+- "React Aria Components only under `src/domains/ui/`. No shadcn, no Radix, no re-exports."
+- "No responsive breakpoints. Use `fluid()` / `fluidY()` clamp tokens for all sizing."
+- "DevPULSE Labs shell hosts three properties: News, AngryVibes, EoS. Local-only, no auth."
 
----
+## Explicitly out of scope this pass
 
-## Memories I will save on approval
+- DevPULSE Labs shell (TopBar / LeftSidebar / RightSidebar / BottomBar)
+- Workspace routes `/news/*`, `/angryvibes/*`, `/eos/*`
+- Moving the existing deck runtime under `/eos/*`
+- Registry / lesson-schema scaffolding (previous plan; will re-land after shell)
+- Any News- or AngryVibes-specific features (GB10 cluster wiring, episode manager)
+- Recharts replacement, form-lib replacement, toast system, calendar/date picker (add when a feature needs one)
 
-- **preference:** Hypermodular domain-driven structure; no `core/`, no re-exports, no shims, no backwards-compat. Named imports only.
-- **preference:** Boring, predictable slide API catalog is the source of truth; new patterns get promoted into it before reuse.
-- **feature:** Runtime is local-only, no auth, no Cloud, touchscreen-first with min 64px hit targets, edge-anchored controls.
-- **design:** Broadcast Console direction — near-black bg, signal-amber accent, Space Grotesk / Inter Tight / JetBrains Mono.
+## Follow-up plan queue (in order)
 
----
+1. **Shell** — DevPULSE Labs `AppLayout` with TopBar/LeftSidebar/RightSidebar/BottomBar wired to fluid tokens; workspace switcher routes to `/news`, `/angryvibes`, `/eos`.
+2. **Migrate EoS** — move deck runtime to `/eos/deck/$deckId/$slideIndex`, keep `ep-000-template` working.
+3. **Registry + schema scaffolding** (the previously-approved plan, re-issued against the new shell).
+4. **News + AngryVibes** stubs with their own sub-nav shape.
 
-## What I'd like to confirm before building
+## Technical notes
 
-1. OK to commit to the "Broadcast Console" direction, or do you want me to stub a screen first and then generate 3 rendered directions against it?
-2. Confirm `ep-000-template` as the sample episode name (or pick a different id).
-3. Zustand + Jotai split as described, or prefer one of them only for v1?
-
-If you approve as-is, I'll take the three answers as: (1) Broadcast Console, (2) `ep-000-template`, (3) both.
+- `react-aria-components` supports React 19 and SSR; TanStack Start SSR is compatible.
+- `tailwind-variants` is chosen over CVA for RAC because it composes slot recipes cleanly with `data-*` selectors (`Menu` has `MenuTrigger`, `Popover`, `ListBox`, `Item` slots).
+- `.tap-target` min-height of 64px is enforced at the primitive level via `tailwind-variants` base class, not left to each caller.
+- No barrels. Consumers import `import { Button } from "@/domains/ui/Button/Button"`. The sole exception `src/episodes/index.ts` remains as an enumeration barrel per existing memory.
+- No `postcss.config.js`. Tailwind v4 tokens for the new fluid scale go into `@theme` in `src/styles.css`.
+- After removal, `bun install` runs once; TanStack dev server auto-restarts.
