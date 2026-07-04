@@ -4,8 +4,8 @@
 import { useAtom } from "jotai";
 import { atom } from "jotai";
 import type { SlideDefinition } from "@/domains/deck/types/slide.types";
-import { SlideFrame } from "@/domains/slide-catalog/primitives/SlideFrame/SlideFrame";
-import { ComparatorPanel } from "@/domains/slide-catalog/primitives/ComparatorPanel/ComparatorPanel";
+import { SlideFrame } from "@/domains/slide-catalog/primitives/slide-frame/slide-frame";
+import { ComparatorPanel } from "@/domains/slide-catalog/primitives/comparator-panel/comparator-panel";
 
 /** Slide-local Jotai atom per workspace guidance: feature-workflow UI state. */
 const latencyAtom = atom(60);
@@ -13,12 +13,12 @@ const latencyAtom = atom(60);
 function LatencySlider() {
   const [ms, setMs] = useAtom(latencyAtom);
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-f5">
       <div className="flex items-baseline justify-between">
-        <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+        <span className="font-mono text-eyebrow uppercase tracking-[0.2em] text-ink-muted">
           Simulated first-token latency
         </span>
-        <span className="font-display text-4xl tabular-nums text-primary">{ms}ms</span>
+        <span className="font-display text-h1 tabular-nums text-brand">{ms}ms</span>
       </div>
       <input
         type="range"
@@ -28,12 +28,12 @@ function LatencySlider() {
         value={ms}
         onChange={(e) => setMs(Number(e.target.value))}
         aria-label="Latency simulator"
-        className="h-3 w-full appearance-none rounded-full bg-secondary accent-[color:var(--primary)]"
+        className="h-3 w-full appearance-none rounded-full bg-surface-raised accent-[color:var(--brand)]"
       />
-      <ul className="grid grid-cols-3 gap-3 text-center font-mono text-xs uppercase tracking-widest text-muted-foreground">
-        <li className="rounded-md bg-secondary/60 py-2">Snappy</li>
-        <li className="rounded-md bg-secondary/60 py-2">Human</li>
-        <li className="rounded-md bg-secondary/60 py-2">Painful</li>
+      <ul className="grid grid-cols-3 gap-f2 text-center font-mono text-eyebrow uppercase tracking-widest text-ink-muted">
+        <li className="rounded-f-md bg-surface-raised/60 py-f2">Snappy</li>
+        <li className="rounded-f-md bg-surface-raised/60 py-f2">Human</li>
+        <li className="rounded-f-md bg-surface-raised/60 py-f2">Painful</li>
       </ul>
     </div>
   );
@@ -41,12 +41,12 @@ function LatencySlider() {
 
 function CostReadout() {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="font-display text-6xl leading-none text-foreground">$0.00</div>
-      <div className="text-lg text-muted-foreground">
+    <div className="flex flex-col gap-f4">
+      <div className="font-display text-display leading-none text-ink-strong">$0.00</div>
+      <div className="text-h3 text-ink-muted">
         Marginal cost per token. Your electric bill is a separate conversation.
       </div>
-      <ul className="mt-2 space-y-2 font-mono text-sm text-muted-foreground">
+      <ul className="mt-f2 space-y-f2 font-mono text-body text-ink-muted">
         <li>· No provider account</li>
         <li>· No rate limit</li>
         <li>· Bring your own VRAM</li>
