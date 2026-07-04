@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DeckDeckIdSlideIndexRouteImport } from './routes/deck.$deckId.$slideIndex'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeckDeckIdSlideIndexRoute = DeckDeckIdSlideIndexRouteImport.update({
+  id: '/deck/$deckId/$slideIndex',
+  path: '/deck/$deckId/$slideIndex',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/deck/$deckId/$slideIndex'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/deck/$deckId/$slideIndex'
+  id: '__root__' | '/' | '/deck/$deckId/$slideIndex'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DeckDeckIdSlideIndexRoute: typeof DeckDeckIdSlideIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/deck/$deckId/$slideIndex': {
+      id: '/deck/$deckId/$slideIndex'
+      path: '/deck/$deckId/$slideIndex'
+      fullPath: '/deck/$deckId/$slideIndex'
+      preLoaderRoute: typeof DeckDeckIdSlideIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DeckDeckIdSlideIndexRoute: DeckDeckIdSlideIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
