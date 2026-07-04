@@ -1,24 +1,59 @@
-import { createFileRoute } from "@tanstack/react-router";
+/**
+ * Deck picker — landing screen listing every registered deck.
+ */
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { listDecks } from "@/domains/deck/services/deck-registry.service";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: DeckPicker,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function DeckPicker() {
+  const decks = listDecks();
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="min-h-dvh bg-background px-8 py-16 text-foreground">
+      <header className="mx-auto mb-16 max-w-6xl">
+        <div className="font-mono text-xs uppercase tracking-[0.3em] text-primary">
+          Show runtime · local only
+        </div>
+        <h1 className="mt-4 font-display text-6xl font-semibold leading-tight md:text-7xl">
+          Eons of Stupidity
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          Pick a deck. Then use your fingers. Prev/next lives on the edges. Pinch
+          to zoom stills. Tap the pen to draw. Tap the grid to jump.
+        </p>
+      </header>
+
+      <ul className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {decks.map((deck) => (
+          <li key={deck.id}>
+            <Link
+              to="/deck/$deckId/$slideIndex"
+              params={{ deckId: deck.id, slideIndex: "0" }}
+              className="group flex h-full flex-col justify-between rounded-2xl bg-panel p-8 transition hairline-b hover:bg-secondary"
+            >
+              <div>
+                {deck.eyebrow ? (
+                  <div className="mb-4 font-mono text-xs uppercase tracking-[0.25em] text-primary">
+                    {deck.eyebrow}
+                  </div>
+                ) : null}
+                <h2 className="font-display text-3xl font-semibold text-foreground">
+                  {deck.title}
+                </h2>
+                {deck.summary ? (
+                  <p className="mt-3 text-base text-muted-foreground">{deck.summary}</p>
+                ) : null}
+              </div>
+              <div className="mt-10 flex items-center justify-between font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
+                <span>{deck.slides.length} slides</span>
+                <span className="text-primary group-hover:translate-x-1 transition">→ open</span>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </main>
   );
 }

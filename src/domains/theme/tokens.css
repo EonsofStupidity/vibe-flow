@@ -1,0 +1,54 @@
+/**
+ * Broadcast Console — design tokens for Eons of Stupidity runtime.
+ *
+ * @remarks
+ * All slide/runtime UI colors, radii, and motion pulls from these tokens.
+ * Components must never hardcode colors; use semantic Tailwind utilities
+ * (bg-background, text-foreground, etc.) which map to these tokens via
+ * @theme inline in src/styles.css.
+ */
+
+:root {
+  /* Broadcast Console palette (dark by default — this app runs dark). */
+  --background: oklch(0.16 0.01 250);
+  --foreground: oklch(0.96 0.01 90);
+
+  --panel: oklch(0.21 0.012 250);
+  --panel-foreground: oklch(0.96 0.01 90);
+
+  --hairline: oklch(0.32 0.015 250);
+
+  --muted: oklch(0.24 0.012 250);
+  --muted-foreground: oklch(0.68 0.02 250);
+
+  --card: oklch(0.20 0.012 250);
+  --card-foreground: oklch(0.96 0.01 90);
+
+  --popover: oklch(0.22 0.012 250);
+  --popover-foreground: oklch(0.96 0.01 90);
+
+  --primary: oklch(0.78 0.17 75);           /* signal amber — live/active */
+  --primary-foreground: oklch(0.16 0.01 250);
+
+  --secondary: oklch(0.28 0.014 250);
+  --secondary-foreground: oklch(0.96 0.01 90);
+
+  --accent: oklch(0.78 0.17 75);
+  --accent-foreground: oklch(0.16 0.01 250);
+
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.98 0.01 90);
+
+  --border: oklch(0.32 0.015 250);
+  --input: oklch(0.28 0.014 250);
+  --ring: oklch(0.78 0.17 75);
+
+  --ink: oklch(0.96 0.02 80);               /* annotation ink */
+  --tap-min: 64px;                          /* min touch target */
+
+  --radius: 0.75rem;
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
