@@ -1,0 +1,35 @@
+/**
+ * Layer 3b — fluid clamp scale (REM based).
+ *
+ * One continuous curve from 24rem (~384px) to 120rem (~1920px). No breakpoints.
+ * All scale values in rem so they respect user font-size preferences.
+ */
+
+:root {
+  /* ------------------------------ Type scale ------------------------------- */
+  --fs-eyebrow: clamp(0.6875rem, calc(0.5938rem + 0.4167vw), 0.9375rem);   /* 11 → 15px */
+  --fs-body:    clamp(0.8750rem, calc(0.7813rem + 0.4167vw), 1.1250rem);   /* 14 → 18 */
+  --fs-h3:      clamp(1.1250rem, calc(0.9375rem + 0.8333vw), 1.6250rem);   /* 18 → 26 */
+  --fs-h2:      clamp(1.5000rem, calc(1.1875rem + 1.3889vw), 2.3125rem);   /* 24 → 37 */
+  --fs-h1:      clamp(2.0000rem, calc(1.5000rem + 2.2222vw), 3.3125rem);   /* 32 → 53 */
+  --fs-display: clamp(2.7500rem, calc(1.9375rem + 3.6111vw), 4.9375rem);   /* 44 → 79 */
+
+  /* ------------------------------ Spacing ---------------------------------- */
+  --sp-1: clamp(0.2500rem, calc(0.2031rem + 0.2083vw), 0.3750rem);   /*  4 →  6 */
+  --sp-2: clamp(0.5000rem, calc(0.4063rem + 0.4167vw), 0.7500rem);   /*  8 → 12 */
+  --sp-3: clamp(0.7500rem, calc(0.6094rem + 0.6250vw), 1.1250rem);   /* 12 → 18 */
+  --sp-4: clamp(1.0000rem, calc(0.8125rem + 0.8333vw), 1.5000rem);   /* 16 → 24 */
+  --sp-5: clamp(1.2500rem, calc(1.0156rem + 1.0417vw), 1.8750rem);   /* 20 → 30 */
+  --sp-6: clamp(1.5000rem, calc(1.2188rem + 1.2500vw), 2.2500rem);   /* 24 → 36 */
+  --sp-7: clamp(2.0000rem, calc(1.6250rem + 1.6667vw), 3.0000rem);   /* 32 → 48 */
+  --sp-8: clamp(3.0000rem, calc(2.4375rem + 2.5000vw), 4.5000rem);   /* 48 → 72 */
+
+  /* ------------------------------ Radii ------------------------------------ */
+  --r-sm: clamp(0.2500rem, calc(0.2031rem + 0.2083vw), 0.3750rem);
+  --r-md: clamp(0.5000rem, calc(0.4063rem + 0.4167vw), 0.7500rem);
+  --r-lg: clamp(0.7500rem, calc(0.6094rem + 0.6250vw), 1.1250rem);
+
+  /* -------------------------- Y-axis (svh) --------------------------------- */
+  /* Slide viewport vertical padding — svh so mobile chrome swap doesn't jump. */
+  --slide-pad-y: clamp(1.0000rem, calc(-1.0000rem + 5.3333svh), 3.0000rem);
+}

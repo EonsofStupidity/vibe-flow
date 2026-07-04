@@ -2,26 +2,24 @@
  * fluidY — emit a CSS `clamp()` string for viewport-fluid Y-axis sizing.
  *
  * @remarks
- * Uses `svh` (small viewport height) rather than `vh` so mobile browser
- * chrome shrinking does not cause the value to jump. Same shape as
- * {@link fluid} but scoped to vertical interpolation.
+ * Uses `svh` (small viewport height) so mobile browser chrome shrinking
+ * does not cause the value to jump. Same shape as {@link fluid}.
  *
- * @param minPx - Size at (or below) `minSvh`.
- * @param maxPx - Size at (or above) `maxSvh`.
- * @param minSvh - Lower bound of the interpolation range, in svh. Default 40.
- * @param maxSvh - Upper bound of the interpolation range, in svh. Default 100.
+ * @param min - Size at (or below) `minSvh`.
+ * @param max - Size at (or above) `maxSvh`.
+ * @param opts - `minSvh` / `maxSvh` interpolation bounds and `unit`.
  *
  * @public
  */
 export function fluidY(
-  minPx: number,
-  maxPx: number,
-  minSvh: number = 40,
-  maxSvh: number = 100,
+  min: number,
+  max: number,
+  opts: { minSvh?: number; maxSvh?: number; unit?: "rem" | "px" } = {},
 ): string {
-  const slope = (maxPx - minPx) / (maxSvh - minSvh);
-  const intercept = minPx - slope * minSvh;
+  const { minSvh = 40, maxSvh = 100, unit = "rem" } = opts;
+  const slope = (max - min) / (maxSvh - minSvh);
+  const intercept = min - slope * minSvh;
   const svh = (slope * 100).toFixed(4);
-  const px = intercept.toFixed(4);
-  return `clamp(${minPx}px, calc(${px}px + ${svh}svh), ${maxPx}px)`;
+  const base = intercept.toFixed(4);
+  return `clamp(${min}${unit}, calc(${base}${unit} + ${svh}svh), ${max}${unit})`;
 }

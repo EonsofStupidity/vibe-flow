@@ -1,0 +1,44 @@
+/**
+ * Layer 3a — property-scoped brand overrides + free accent tones.
+ *
+ * A shell layout sets `data-brand="eos|news|vibes"` on its outermost element
+ * (or on <html>) to swap the active brand. Free accent tokens are always
+ * available regardless of active brand — any widget can pick a `tone`.
+ */
+
+/* Default (also EoS) already set in semantics.css — this block matches it
+   for explicitness when data-brand="eos" is set. */
+[data-brand="eos"] {
+  --brand:        var(--amber-500);
+  --brand-strong: var(--amber-400);
+  --brand-soft:   var(--amber-200);
+  --brand-ink:    var(--neutral-900);
+  --focus-ring:   var(--amber-500);
+}
+
+[data-brand="news"] {
+  --brand:        var(--cyan-500);
+  --brand-strong: var(--cyan-400);
+  --brand-soft:   var(--cyan-200);
+  --brand-ink:    var(--neutral-900);
+  --focus-ring:   var(--cyan-500);
+}
+
+[data-brand="vibes"] {
+  --brand:        var(--magenta-500);
+  --brand-strong: var(--magenta-400);
+  --brand-soft:   var(--magenta-200);
+  --brand-ink:    var(--neutral-50);
+  --focus-ring:   var(--magenta-500);
+}
+
+/* Free accents — always available. Widgets pick a tone independent of brand. */
+:root {
+  --accent-amber:   var(--amber-500);
+  --accent-cyan:    var(--cyan-500);
+  --accent-magenta: var(--magenta-500);
+  --accent-lime:    var(--lime-500);
+  --accent-coral:   var(--coral-500);
+  --accent-violet:  var(--violet-500);
+  --accent-teal:    var(--teal-500);
+}

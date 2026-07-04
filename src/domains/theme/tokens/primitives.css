@@ -1,0 +1,131 @@
+/**
+ * Layer 1 — primitive tokens.
+ *
+ * Raw material only. No semantic meaning. Colors as OKLCH ramps, sizes in rem.
+ * Components must NEVER read from this layer directly — go through semantics.css.
+ */
+
+:root {
+  /* -------------------------- Neutral surface ramp -------------------------- */
+  --neutral-50:  oklch(0.980 0.005 250);
+  --neutral-100: oklch(0.940 0.007 250);
+  --neutral-200: oklch(0.860 0.009 250);
+  --neutral-300: oklch(0.720 0.011 250);
+  --neutral-400: oklch(0.580 0.013 250);
+  --neutral-500: oklch(0.440 0.014 250);
+  --neutral-600: oklch(0.320 0.015 250);
+  --neutral-700: oklch(0.240 0.012 250);
+  --neutral-800: oklch(0.200 0.012 250);
+  --neutral-850: oklch(0.180 0.011 250);
+  --neutral-900: oklch(0.160 0.010 250);
+  --neutral-950: oklch(0.100 0.008 250);
+
+  /* -------------------------- Brand ramps (7 hues) -------------------------- */
+  /* Amber — EoS / live signal */
+  --amber-50:  oklch(0.980 0.020 85);
+  --amber-100: oklch(0.950 0.050 82);
+  --amber-200: oklch(0.900 0.090 80);
+  --amber-300: oklch(0.850 0.130 78);
+  --amber-400: oklch(0.820 0.150 76);
+  --amber-500: oklch(0.780 0.170 75);
+  --amber-600: oklch(0.700 0.170 72);
+  --amber-700: oklch(0.600 0.160 68);
+  --amber-800: oklch(0.480 0.140 64);
+  --amber-900: oklch(0.360 0.110 60);
+  --amber-950: oklch(0.240 0.080 55);
+
+  /* Cyan — DevPULSE News */
+  --cyan-50:  oklch(0.980 0.020 220);
+  --cyan-100: oklch(0.950 0.045 218);
+  --cyan-200: oklch(0.900 0.080 216);
+  --cyan-300: oklch(0.840 0.110 214);
+  --cyan-400: oklch(0.780 0.135 212);
+  --cyan-500: oklch(0.720 0.150 210);
+  --cyan-600: oklch(0.630 0.150 210);
+  --cyan-700: oklch(0.520 0.140 212);
+  --cyan-800: oklch(0.400 0.115 215);
+  --cyan-900: oklch(0.300 0.085 220);
+  --cyan-950: oklch(0.200 0.055 225);
+
+  /* Magenta — AngryVibes */
+  --magenta-50:  oklch(0.980 0.020 340);
+  --magenta-100: oklch(0.940 0.050 340);
+  --magenta-200: oklch(0.880 0.100 340);
+  --magenta-300: oklch(0.800 0.150 340);
+  --magenta-400: oklch(0.720 0.190 340);
+  --magenta-500: oklch(0.660 0.220 340);
+  --magenta-600: oklch(0.580 0.220 340);
+  --magenta-700: oklch(0.480 0.200 340);
+  --magenta-800: oklch(0.380 0.170 340);
+  --magenta-900: oklch(0.280 0.130 340);
+  --magenta-950: oklch(0.180 0.090 340);
+
+  /* Lime — annotate / ink accent */
+  --lime-50:  oklch(0.980 0.020 130);
+  --lime-100: oklch(0.950 0.055 128);
+  --lime-200: oklch(0.900 0.110 128);
+  --lime-300: oklch(0.860 0.160 128);
+  --lime-400: oklch(0.820 0.190 128);
+  --lime-500: oklch(0.780 0.200 128);
+  --lime-600: oklch(0.680 0.190 128);
+  --lime-700: oklch(0.560 0.170 128);
+  --lime-800: oklch(0.440 0.140 128);
+  --lime-900: oklch(0.320 0.100 128);
+  --lime-950: oklch(0.200 0.065 128);
+
+  /* Coral */
+  --coral-50:  oklch(0.980 0.020 25);
+  --coral-100: oklch(0.940 0.050 25);
+  --coral-200: oklch(0.880 0.100 25);
+  --coral-300: oklch(0.800 0.150 25);
+  --coral-400: oklch(0.740 0.180 25);
+  --coral-500: oklch(0.680 0.200 25);
+  --coral-600: oklch(0.590 0.200 25);
+  --coral-700: oklch(0.480 0.180 25);
+  --coral-800: oklch(0.380 0.150 25);
+  --coral-900: oklch(0.280 0.115 25);
+  --coral-950: oklch(0.180 0.080 25);
+
+  /* Violet */
+  --violet-50:  oklch(0.980 0.020 290);
+  --violet-100: oklch(0.940 0.045 290);
+  --violet-200: oklch(0.880 0.090 290);
+  --violet-300: oklch(0.800 0.140 290);
+  --violet-400: oklch(0.720 0.180 290);
+  --violet-500: oklch(0.660 0.200 290);
+  --violet-600: oklch(0.560 0.200 290);
+  --violet-700: oklch(0.460 0.180 290);
+  --violet-800: oklch(0.360 0.150 290);
+  --violet-900: oklch(0.260 0.115 290);
+  --violet-950: oklch(0.170 0.080 290);
+
+  /* Teal */
+  --teal-50:  oklch(0.980 0.020 190);
+  --teal-100: oklch(0.940 0.045 190);
+  --teal-200: oklch(0.880 0.080 190);
+  --teal-300: oklch(0.800 0.115 190);
+  --teal-400: oklch(0.720 0.135 190);
+  --teal-500: oklch(0.660 0.145 190);
+  --teal-600: oklch(0.560 0.140 190);
+  --teal-700: oklch(0.460 0.125 190);
+  --teal-800: oklch(0.360 0.100 190);
+  --teal-900: oklch(0.260 0.075 190);
+  --teal-950: oklch(0.170 0.050 190);
+
+  /* -------------------------- Raw sizes (rem) ------------------------------- */
+  --size-1:  0.25rem;
+  --size-2:  0.5rem;
+  --size-3:  0.75rem;
+  --size-4:  1rem;
+  --size-5:  1.25rem;
+  --size-6:  1.5rem;
+  --size-7:  2rem;
+  --size-8:  3rem;
+  --size-9:  4rem;
+  --size-10: 5rem;
+  --size-12: 6rem;
+  --size-16: 8rem;
+
+  /* Touchscreen minimum tap target — 4rem = 64px @ 16px root. */
+  --tap-min: 4rem;
+}

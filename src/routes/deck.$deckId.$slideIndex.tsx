@@ -2,7 +2,7 @@
  * Runtime route — /deck/$deckId/$slideIndex renders one slide of one deck.
  */
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { DeckHost } from "@/domains/deck/components/DeckHost/DeckHost";
+import { DeckHost } from "@/domains/deck/components/deck-host/deck-host";
 import { getDeck } from "@/domains/deck/services/deck-registry.service";
 
 export const Route = createFileRoute("/deck/$deckId/$slideIndex")({
