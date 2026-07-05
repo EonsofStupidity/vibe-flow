@@ -1,169 +1,157 @@
+## Goal
+Blow out the token foundry from a 12-palette MVP into a scale/variety substrate — enough raw material for each property (EoS, News, Vibes) and every downstream slide/shell/effect to look genuinely distinct without ever hardcoding a hex.
 
-# DevPULSE Labs — Shell & Token Foundry (Foundation V3)
+The rule stays: components read semantics only; the foundry does the volume, in TS source → generated CSS/TS, validated at build.
 
-Two tracks land together because the shell has to consume the new tokens on day one. No shortcuts, no re-exports, no shims. Everything follows the existing lowercase-kebab, hypermodular, domain-boundary rules already in memory.
+## Expansion tracks
 
-## Track 1 — Token Foundry (built before shell chrome renders)
+### 1. Palette breadth (12 → ~34)
+Add whole hue families and multiple anchors per hue so we have room for variety without collisions.
 
-### Why Style Dictionary
-Style Dictionary (Amazon) is the reference industry tool for multi-platform, multi-brand token pipelines and is what large design systems (Salesforce, Shopify Polaris, Adobe Spectrum, GitHub Primer) publish with. It reads a typed source of truth and emits CSS/JS/whatever at build. Combined with `culori` (OKLCH-native color math) we generate:
+- **Surfaces (1 → 4):** `ink` (cool neutral, current), `graphite` (warm neutral), `slate` (blue-cool), `mocha` (warm dark). Each is a `kind: "surface"` full 11-step ladder. Enables per-brand or per-episode surface swaps without touching semantics.
+- **Brand hues stay 3** but each grows a `-alt` sibling anchor (amber/amber-ember, cyan/cyan-ice, magenta/magenta-orchid) → 6 brand palettes total. Lets a single property express variants (title vs comparator vs still) via brand-level bindings, not ad-hoc color.
+- **Accent expansion (5 → ~18):** add `crimson, orange, gold, chartreuse, emerald, jade, sky, azure, indigo, purple, plum, fuchsia, pink` alongside existing `lime, teal, violet, coral, rose`. Every accent is a full ladder and exposed as `--accent-<name>`.
+- **Utility stays 3** (`danger`, `warning`, `info`) but each gets a `-soft` variant palette for badge/toast fills.
 
-- 11-step OKLCH lightness ladders per palette (50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950) — the Tailwind/Radix cadence, kept because tooling expects it.
-- Gradient recipes per palette (linear, radial, conic, mesh) derived from the palette's own steps — no hand-picked stops.
-- Alpha/overlay scales (`/8, /12, /20, /40, /60, /80`).
-- Semantic aliases per brand context.
-- Fluid rem scales already in `fluid.css` stay; the foundry replaces the hand-authored `primitives.css` color block.
+Naming rule enforced in the palette-name validator: no color-family duplicates unless suffixed with a meaningful variant token (`-alt`, `-soft`, `-ember`, etc.).
 
-### Source of truth
-`src/domains/theme/foundry/source/` — one TS file per palette, typed against `foundry.types.ts`. No JSON hand-editing.
+### 2. Ladder + curve variety
+Right now every palette uses one curve × one chroma modulation. Add:
 
+- **New curves:** `high-contrast` (steeper L delta at extremes), `low-key` (compressed range for muted surfaces), `luminous` (holds L high through 600 for neon vibes).
+- **New chroma modulations:** `peak-at-400`, `peak-at-600`, `bloom` (chroma rises with L for glass/aurora looks).
+- **Ladder extension:** add step `25` (near-white tint) and step `975` (near-black shadow) → 13 steps. Keeps Tailwind cadence but gives room for glassmorphism highlights and deep shadows without hitting pure black (validator still enforces L ≥ 0.10 on 975 and L ≤ 0.99 on 25).
+- Curves live in `build/transforms/curves.transform.ts` (already exists) — extend, don't fork.
+
+### 3. Gradient recipes (4 → 12 per eligible palette)
+Extend `gradient.transform.ts` with recipes so each brand/accent auto-emits:
+
+`linear`, `linear-soft`, `linear-vivid`, `radial`, `radial-spot`, `conic`, `conic-sweep`, `mesh-2` (two-palette blend), `mesh-3`, `duotone` (paired with ink surface), `sheen` (angled highlight), `aurora` (multi-stop OKLCH interpolation).
+
+Two-palette recipes are configured in `source/semantic/gradients.semantic.ts` (new file) listing legal pairings — e.g. `amber × magenta`, `cyan × violet` — so the generator doesn't emit N² combinations.
+
+### 4. Effects tokens (new primitive category)
+Add `source/effects/` producing new sections in `primitives.css`:
+
+- **Shadow ladder:** `--shadow-1..8`, plus branded variants `--shadow-brand-1..4` colored via `color-mix(in oklch, var(--brand) 30%, transparent)`. Generated so brand switch recolors shadows.
+- **Blur ladder:** `--blur-1..6` (2px → 48px).
+- **Glass presets:** `--glass-thin/medium/thick` (backdrop-filter compositions).
+- **Noise/grain:** `--noise-fine/coarse` (data-URL SVG turbulence baked at build).
+- **Ring ladder:** `--ring-1..4` widths.
+
+Components still consume via semantic aliases (`--shadow-card`, `--shadow-popover`, `--overlay-scrim`).
+
+### 5. Motion library (1 → tiered)
+Extend `semantics.css` (or split to `motion.semantic.css`):
+
+- Durations: `instant, fast, base, slow, slower, glacial` (75/120/200/320/480/720ms).
+- Easings: `standard, emphasized, decelerate, accelerate, bounce, spring-soft, spring-crisp`.
+- Named recipes: `--transition-hover`, `--transition-panel`, `--transition-modal`, `--transition-page`.
+
+### 6. Type scale + font stacks
+- Keep `Space Grotesk / Inter Tight / JetBrains Mono` as the default trio but register **font role slots**: `--font-display`, `--font-body`, `--font-mono`, `--font-editorial`, `--font-numeric`. Per-brand overrides live in `brands.css` (e.g. Vibes gets a display swap).
+- Fluid type ramp: `--type-eyebrow, body-sm, body, body-lg, h4, h3, h2, h1, display, display-xl` generated with `fluid()` clamps, plus paired `--leading-*` and `--tracking-*` ladders.
+
+### 7. Size / space / radius scale
+- Space ramp `size-0..24` (currently 1..16) + `size-px` (1px hairline) + fractional `size-1_5/2_5/3_5`.
+- Radius ramp: `sm, md, lg, xl, 2xl, pill, blob-1, blob-2` — blobs are asymmetric radii strings for organic shapes.
+- Aspect ratio tokens: `--ratio-square/video/cinema/portrait/golden`.
+
+### 8. Semantic surface roles (multi-brand aware)
+`semantics.css` gains role slots that resolve through the active brand's chosen surface palette:
+
+- `--surface-base/raised/overlay/sunken/input/inverse/glass/scrim`
+- `--ink-strong/default/muted/subtle/inverse/annotate/onBrand/onDanger`
+- `--border-hairline/strong/brand/focus`
+
+Brand bindings gain `surface: string` and `surfaceInverse: string` so EoS can sit on `mocha`, News on `slate`, Vibes on `ink`, without any component knowing.
+
+### 9. Runtime typing + validation
+- `foundry.tokens.ts` grows typed exports: `palette`, `gradient`, `shadow`, `blur`, `ring`, `motion`, `type`, `space`, `radius`, `ratio`, `brands`. Each is a `Record<name, "var(...)">` so runtime code (canvas, SVG, framer-motion) can bind by name.
+- Build validator (in `build-tokens.ts`) enforces: no L < 0.10 (except explicit `-975` step), no duplicate palette names, every brand binding references an existing palette, every gradient pairing references two existing palettes, every semantic alias resolves.
+- Build fails loudly on any breach — no silent drift.
+
+### 10. Docs + governance
+- Update `src/domains/theme/foundry/readme.md` with: palette taxonomy, when to add vs bind, how to add a curve/gradient recipe, the "never bypass semantics" rule.
+- Update `mem://design/token-architecture.md` and `mem://design/broadcast-console.md` to reflect the expanded ladder and multi-surface model.
+
+## What does NOT change
+- The three-layer contract (primitives → semantics → brands) is untouched.
+- No component code is edited; existing semantic class names keep working. New ones become available.
+- No new runtime dependencies. Still `culori` + valibot at build only.
+- No shadcn, no CVA, no re-exports, no shims.
+- No responsive breakpoints — everything scales via `fluid()` / rem.
+- Deck runtime routes remain chromeless; shell unaffected.
+
+## Technical details
+
+**File additions**
 ```
-src/domains/theme/foundry/
-  foundry.types.ts             # PaletteSource, GradientRecipe, SemanticMap
-  source/
-    palettes/
-      ink.palette.ts           # near-black surface family (never #000)
-      amber.palette.ts         # EoS
-      cyan.palette.ts          # News (from ViziWizi --vf-neon)
-      magenta.palette.ts       # AngryVibes (from ViziWizi --vf-plasma)
-      lime.palette.ts          # free accent (from ViziWizi --vf-matrix)
-      violet.palette.ts        # free accent
-      warning.palette.ts       # amber-warm, non-brand
-      danger.palette.ts        # red
-      info.palette.ts          # blue
-    semantic/
-      surface.semantic.ts      # surface/ink/hairline/focus-ring maps
-      brand.semantic.ts        # brand + brand-ink resolution per data-brand
-      accent.semantic.ts       # accent-1..accent-5 slots
-    gradients/
-      brand.gradients.ts       # per-palette recipes
-  build/
-    build-tokens.ts            # style-dictionary config + culori transforms
-    transforms/
-      oklch-ladder.transform.ts   # generates 50..950 from anchor L/C/H
-      gradient.transform.ts
-      alpha-scale.transform.ts
-    formats/
-      css-tokens.format.ts     # emits primitives.css / semantics.css / brands.css
-      ts-tokens.format.ts      # emits foundry.tokens.ts for runtime type-safe access
-  readme.md
+src/domains/theme/foundry/source/
+  palettes/               (+ ~22 new palette files, one per hue)
+  effects/
+    shadows.effect.ts
+    blurs.effect.ts
+    rings.effect.ts
+    glass.effect.ts
+    noise.effect.ts
+  semantic/
+    gradients.semantic.ts   (legal palette pairings)
+    surfaces.semantic.ts    (per-brand surface bindings)
+    type.semantic.ts        (fluid type ramp definitions)
+    motion.semantic.ts
+    space.semantic.ts
+  build/transforms/
+    curves.transform.ts     (extend with new curves)
+    gradient.transform.ts   (extend with 8 new recipes)
+    shadow.transform.ts     (new)
+    type.transform.ts       (new — emits fluid() clamp CSS)
+    validate.transform.ts   (new — build-time invariants)
 ```
 
-### Palette source shape
+**Generated outputs (regenerated by `bun run tokens`)**
+```
+src/domains/theme/tokens/
+  primitives.css   (much larger — ladders, gradients, shadows, blurs, noise, sizes, ratios)
+  semantics.css    (kept authored, but split into logical sections; no hand color literals)
+  brands.css       (per-brand surface/font/gradient/shadow overrides)
+src/domains/theme/foundry/foundry.tokens.ts   (expanded typed exports)
+```
+
+**Ladder change**
+Update `LadderStep` to include `25` and `975`, update `LADDER_STEPS`, extend `oklch-ladder.transform.ts` L targets per curve. Existing palettes get the two new steps automatically. `foundry.tokens.ts` consumers using numeric keys keep working; only additive change.
+
+**Brand binding shape**
 ```ts
-export interface PaletteSource {
-  readonly name: string;            // "amber"
-  readonly anchor: { l: number; c: number; h: number }; // OKLCH anchor at step 500
-  readonly ladder: LadderCurve;     // "perceptual" | "flat-chroma" | custom
-  readonly gradients?: GradientRecipe[];
-}
-```
-Colors are OKLCH end-to-end; hex never enters the source. Culori validates in-gamut and clips per step.
-
-### Rules baked in
-- **Never pure black.** The `ink` palette bottoms out at OKLCH `L 0.14 C 0.01 h 260` (soft blue-black), never `#000000`. Enforced by a lint transform that rejects `L < 0.10`.
-- **3–5 options per major category.** Brand palettes: 3 (`amber`, `cyan`, `magenta`). Free accent slots: 5 (`lime`, `violet`, `orange`, `teal`, `rose`). Utility: 1 each (`warning`, `danger`, `info`) — the obvious exceptions the user called out.
-- **Multi-brand.** Every brand palette produces a `[data-brand="<name>"]` block in `brands.css` remapping semantic `--brand-*` + `--accent-*` slots. `data-brand` list is authored, not hardcoded per component.
-- **REM everywhere.** Sizes, radii, spacing tokens all emit rem. Fluid clamp helpers stay in `fluid.css`.
-- **Build step.** `bun run tokens` executes `build-tokens.ts` and writes `src/domains/theme/tokens/primitives.css`, `semantics.css`, `brands.css`, plus `foundry.tokens.ts`. Wired as a pre-build hook in `package.json`; the CSS files land at the same paths `tokens.css` already imports so nothing else moves.
-- **Typed runtime access.** `foundry.tokens.ts` exports `const tokens = { surface: { base: "var(--surface-base)", ... } } as const` so the shell can reference tokens with autocomplete and no stringly-typed drift.
-
-### Runtime validation library
-Replace planned zod usage with **valibot** — same schema-first API, ~10× smaller, faster parse, tree-shakable. Used inside foundry build and by shell state persistence. Zod is not added.
-
-## Track 2 — Shell Domain
-
-### New domain
-```
-src/domains/shell/
-  components/
-    app-shell/app-shell.tsx            # grid frame; measures inner rect
-    top-bar/top-bar.tsx
-    left-rail/left-rail.tsx            # collapsed 4rem ↔ expanded ~8.4375rem (135px)
-    bottom-bar/bottom-bar.tsx
-    right-panel/right-panel.tsx        # slide-out overlay, tabbed
-    right-panel/right-panel-tab.tsx
-    fullbleed-exit/fullbleed-exit.tsx  # tiny corner icon while chrome hidden
-  state/
-    shell.store.ts                     # zustand: leftMode, rightOpen, rightTab, fullBleed
-    shell.persist.ts                   # valibot-validated localStorage adapter
-  context/
-    shell-size.context.tsx             # ResizeObserver-driven inner-rect provider
-    use-shell-size.ts                  # typed consumer hook
-  hooks/
-    useShellKeyboard.ts                # Esc → exit fullbleed, `[` `]` toggles, `.` right panel
-    useShellShortcuts.ts               # cmd-registry hook
-  types/
-    shell.types.ts
-  readme.md
-```
-
-### Layout topology
-Flex shell (per user choice), with `ResizeObserver` measuring the inner content rectangle and publishing `{ width, height, dpr }` through React context. Children read via `useShellSize()` and pipe values into existing `fluid()` / `fluidY()` helpers or into CSS custom props for CSS-only consumers.
-
-```text
-┌─────────────────── TopBar (auto-height, rem) ───────────────────┐
-│                                                                 │
-│  Left  │            Content (flex 1, measured)          │ Right │
-│  Rail  │                                                │Overlay│
-│ 4↔8.4  │                                                │(slide)│
-│  rem   │                                                │       │
-│        │                                                │       │
-├─────────────────── BottomBar (auto-height, rem) ────────────────┤
-```
-
-- **TopBar:** brand switcher (data-brand cycle), route title, global search stub, fullbleed toggle.
-- **LeftRail:** collapsible via chevron; two widths `--rail-collapsed: 4rem` / `--rail-expanded: 8.4375rem` (135px). Persists per user.
-- **BottomBar:** fixed status/context bar (deck position, brand indicator, shortcut hints).
-- **RightPanel:** starts closed. Opens as an **overlay** above content (does not push layout). Tabs: `notes`, `queue`, `inspector`, `data`. Content wired to Jotai atoms for tab-local UI state; data tabs use TanStack Query for async and TanStack DB for local reactive stores (Turso decision deferred — see Open Question).
-- **Full-bleed mode:** hides top/left/bottom/right, shows only `FullbleedExit` (tiny corner icon). Toggle via icon or `Esc` key.
-
-### Route integration
-- New pathless layout route `src/routes/_shell.tsx` renders `<AppShell><Outlet /></AppShell>`.
-- Move `index.tsx` → `_shell.index.tsx`; add future workspace routes (`_shell.news.tsx`, `_shell.vibes.tsx`, `_shell.eos.tsx`) under it.
-- `/deck/$deckId/$slideIndex` stays outside `_shell` (chromeless runtime — no regression to the slide surface).
-- `__root.tsx` stays minimal (html shell only).
-
-### Accessibility (WAI-ARIA APG)
-- TopBar uses `role="banner"`, LeftRail `role="navigation"`, BottomBar `role="contentinfo"`, RightPanel `role="complementary"` + `aria-expanded` on trigger.
-- RightPanel tabs implemented on React Aria Components `Tabs` (already the pattern in `src/domains/ui`). Focus trap only in full-bleed exit affordance, not the panel (panel is non-modal complementary content).
-- All triggers ≥ 4rem tap targets via `.tap-target`.
-- Roving tabindex handled by RAC; Esc exits fullbleed; `[`/`]` toggle rail; `.` toggles right panel — all announced via `aria-keyshortcuts`.
-
-### State
-`useShellStore` (zustand + valibot-validated persist):
-```ts
-interface ShellState {
-  leftMode: "collapsed" | "expanded";
-  rightOpen: boolean;
-  rightTab: "notes" | "queue" | "inspector" | "data";
-  fullBleed: boolean;
-  brand: "eos" | "news" | "vibes";
-  toggleLeft(): void; toggleRight(): void; setRightTab(t): void;
-  toggleFullBleed(): void; setBrand(b): void;
+interface BrandBinding {
+  id: string;
+  palette: string;         // primary brand palette
+  paletteAlt?: string;     // optional sibling for variants
+  surface: string;         // surface palette name (ink/graphite/slate/mocha)
+  surfaceInverse: string;
+  ink: string;
+  inkStep: LadderStep;
+  brandStep?: LadderStep;
+  strongStep?: LadderStep;
+  softStep?: LadderStep;
+  fontDisplay?: string;    // optional per-brand display font var
+  gradientHero?: string;   // named gradient token to bind as --gradient-hero
 }
 ```
 
-## Track 3 — Wiring & Cleanup
-- Update `src/domains/theme/tokens.css` only if the foundry output filenames drift; otherwise untouched (foundry writes into the same three files).
-- Delete hand-authored color blocks from current `primitives.css` and `brands.css` — regenerated.
-- `package.json` scripts: `"tokens": "bun run src/domains/theme/foundry/build/build-tokens.ts"`, `"prebuild": "bun run tokens"`, `"predev": "bun run tokens"`.
-- Add `bun add -d style-dictionary culori valibot` (dev-only; runtime never imports style-dictionary).
-- Update `mem://index.md` core rule: valibot over zod; add `mem://design/token-foundry.md` describing the pipeline.
-- No changes to `src/domains/ui/*` primitives in this pass — they already read semantic classes and will inherit new palettes automatically.
-- Deck runtime files untouched.
+**Validation examples (fail build)**
+- Palette `foo` has anchor `l: 0.05` → "must be ≥ 0.10, use ink surface for dark".
+- Brand binding references palette `nonesuch` → "unknown palette".
+- Gradient pairing lists palette not in registry → hard fail.
 
-## Best-practice confirmations
-- **OKLCH ladders + culori:** matches how Radix, Tailwind v4, Adobe Spectrum, and Leonardo generate accessible scales. Recommending "perceptual" curve as default with per-palette override — this is the current industry consensus.
-- **Style Dictionary:** de facto standard for scale. Alternatives (Terrazzo, Tokenami) are newer/less mature for multi-brand emission. Style Dictionary v4 with DTCG-format sources is the aligned recommendation.
-- **Valibot over zod:** correct call for a local-runtime app — smaller, faster, same ergonomics.
-- **`ResizeObserver` context:** correct for a flex shell where inner rect must feed JS layout math. Container queries would also work but require CSS-only consumption; the measured-context approach the user chose lets Zustand/Jotai/deck code read the rect too.
+## Rollout order (single build-mode pass)
+1. Extend types, curves, ladder steps, validator.
+2. Add new palette source files (surfaces, brand alts, accents, utility softs).
+3. Add effects sources + transforms.
+4. Add semantic source files (gradients, surfaces, type, motion, space).
+5. Extend `build-tokens.ts` to emit new sections + updated `foundry.tokens.ts`.
+6. Refresh `semantics.css` bindings (add new roles, keep old ones stable).
+7. Regenerate; verify `bun run tokens` clean; typecheck.
+8. Update foundry readme + memory files.
 
-## Open question (needs answer before build)
-**Local DB pick.** You floated Turso (libSQL) and Mongo. For a local-only touchscreen shell, my recommendation is **TanStack DB + libSQL (Turso local file mode)** — SQL, reactive queries, embedded, zero-server, and TanStack DB has a first-party libSQL collection. Mongo requires a running `mongod` and isn't reactive without extra glue. I'll wait for your call before wiring the `data` right-panel tab; the shell itself doesn't block on this.
-
-## Explicitly out of scope for this pass
-- Actual workspace pages (News/Vibes/EoS route bodies).
-- Right-panel content beyond scaffolding (tabs render placeholders).
-- Any change to slide runtime or deck registry.
-- MCP server (already shipped).
+No component edits, no route edits, no shell edits in this pass.

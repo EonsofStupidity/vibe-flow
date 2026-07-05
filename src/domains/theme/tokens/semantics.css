@@ -2,50 +2,55 @@
  * Layer 2 — semantic tokens (authored, not generated).
  *
  * Role-based. Every component reads from here — never from primitives.css
- * directly. `--brand-*` values are overridden per active brand by
- * `brands.css` (generated).
+ * directly. `--brand-*`, `--surface-*`, and `--hairline` come from
+ * `brands.css` (generated) and swap per active brand.
  */
 
 :root {
-  /* -------------------------------- Surfaces -------------------------------- */
-  --surface-base:    var(--ink-900);
-  --surface-raised:  var(--ink-800);
-  --surface-overlay: var(--ink-700);
-  --surface-input:   var(--ink-700);
-  --surface-sunken:  var(--ink-950);
-  --hairline:        var(--ink-600);
-
   /* ---------------------------------- Ink ---------------------------------- */
   --ink-strong:   var(--ink-50);
   --ink-default:  oklch(0.960 0.010 90);
   --ink-muted:    oklch(0.680 0.020 260);
+  --ink-subtle:   oklch(0.520 0.015 260);
   --ink-inverse:  var(--ink-900);
-
-  /* Annotation stroke — reads as ink over any surface. */
   --ink-annotate: oklch(0.960 0.020 80);
+  --ink-on-brand:   var(--brand-ink);
+  --ink-on-danger:  var(--ink-50);
+  --ink-on-warning: var(--ink-900);
+  --ink-on-info:    var(--ink-50);
 
-  /* --------------------------- Focus + motion ------------------------------- */
-  /* --focus-ring, --brand, --brand-* come from brands.css */
+  /* -------------------------------- Borders --------------------------------- */
+  --border-hairline: var(--hairline);
+  --border-strong:   color-mix(in oklch, var(--hairline) 60%, var(--ink-50) 40%);
+  --border-brand:    var(--brand);
+  --border-focus:    var(--focus-ring);
 
-  --motion-duration-fast:   120ms;
-  --motion-duration-base:   200ms;
-  --motion-duration-slow:   320ms;
-  --motion-ease-standard:   cubic-bezier(0.2, 0, 0, 1);
-  --motion-ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
-  --motion-ease-decelerate: cubic-bezier(0, 0, 0, 1);
+  /* -------------------------------- Overlays -------------------------------- */
+  --overlay-scrim:  color-mix(in oklch, var(--surface-deep, var(--ink-950)) 70%, transparent);
+  --overlay-glass:  color-mix(in oklch, var(--surface-raised) 55%, transparent);
 
-  /* -------------------------------- Font stacks ----------------------------- */
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-body:    "Inter Tight", ui-sans-serif, system-ui, sans-serif;
-  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  /* -------------------------------- Depth ----------------------------------- */
+  --shadow-card:    var(--shadow-3);
+  --shadow-popover: var(--shadow-5);
+  --shadow-modal:   var(--shadow-7);
+  --shadow-hero:    var(--shadow-brand-3);
 
-  /* ----------------------------- Radii (rem) -------------------------------- */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.625rem;
-  --radius-lg: 0.875rem;
-  --radius-xl: 1.125rem;
+  /* --------------------------- Font role slots ------------------------------ */
+  --font-display:   "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body:      "Inter Tight",   ui-sans-serif, system-ui, sans-serif;
+  --font-mono:      "JetBrains Mono", ui-monospace, monospace;
+  --font-editorial: "Space Grotesk", ui-serif, Georgia, serif;
+  --font-numeric:   "JetBrains Mono", ui-monospace, monospace;
 
-  /* ----------------------------- Shell heights (rem) ------------------------ */
+  /* -------------------------- Motion role aliases --------------------------- */
+  --motion-duration-fast:   var(--duration-fast);
+  --motion-duration-base:   var(--duration-base);
+  --motion-duration-slow:   var(--duration-slow);
+  --motion-ease-standard:   var(--ease-standard);
+  --motion-ease-emphasized: var(--ease-emphasized);
+  --motion-ease-decelerate: var(--ease-decelerate);
+
+  /* ----------------------------- Shell heights ------------------------------ */
   --topbar-height:    3.5rem;
   --bottombar-height: 2.5rem;
 }

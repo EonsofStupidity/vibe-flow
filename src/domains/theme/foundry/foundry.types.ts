@@ -16,28 +16,53 @@ export interface Oklch {
 }
 
 /**
- * The 11 canonical ladder steps. Matches Tailwind/Radix cadence so tooling
- * and muscle memory carry over.
+ * The 13 canonical ladder steps. `25` and `975` extend the standard
+ * Tailwind cadence to give room for glassy highlights and deep shadows
+ * without ever landing on pure white / pure black.
  */
 export type LadderStep =
-  | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
+  | 25 | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950 | 975;
 
 export const LADDER_STEPS: readonly LadderStep[] = [
-  50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
+  25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 975,
 ] as const;
 
 /**
- * Target lightness per step for each curve. Curves are perceptual —
- * lower steps are lighter, 500 is the anchor, higher steps are darker.
+ * Target lightness per step for each curve.
+ *
+ * - `perceptual` / `brand`  — standard OKLCH ramp for saturated hues.
+ * - `neutral`               — high-range ramp used by surface palettes.
+ * - `muted`                 — compressed for low-key backgrounds.
+ * - `high-contrast`         — steeper delta at extremes for maximum pop.
+ * - `low-key`               — dim/moody, holds low L for cinema surfaces.
+ * - `luminous`              — holds L high through 600 for neon vibes.
  */
-export type LadderCurve = "perceptual" | "brand" | "neutral" | "muted";
+export type LadderCurve =
+  | "perceptual"
+  | "brand"
+  | "neutral"
+  | "muted"
+  | "high-contrast"
+  | "low-key"
+  | "luminous";
 
 /**
- * Chroma modulation across the ladder. `linear-to-500` peaks chroma near
- * the mid-tone and decays at the extremes (Radix-style). `flat` keeps the
- * anchor chroma; `soft` halves it at ends.
+ * Chroma modulation across the ladder.
+ *
+ * - `linear-to-500` — peaks near the mid-tone, decays at extremes (Radix-style).
+ * - `flat`          — anchor chroma held across the ramp.
+ * - `soft`          — halves chroma at the ends.
+ * - `peak-at-400`   — peak moved lighter, drops at 600+.
+ * - `peak-at-600`   — peak moved darker, rises through 700.
+ * - `bloom`         — chroma rises with lightness (aurora/glass looks).
  */
-export type ChromaCurve = "linear-to-500" | "flat" | "soft";
+export type ChromaCurve =
+  | "linear-to-500"
+  | "flat"
+  | "soft"
+  | "peak-at-400"
+  | "peak-at-600"
+  | "bloom";
 
 /** A single named palette. Anchor lives at step 500. */
 export interface PaletteSource {
@@ -56,13 +81,33 @@ export interface PaletteSource {
 /** A resolved ramp: every step mapped to a concrete OKLCH color. */
 export type Ladder = Record<LadderStep, Oklch>;
 
-/** Brand semantic slot bindings — one per registered brand. */
+/**
+ * Brand semantic slot bindings — one per registered brand.
+ *
+ * @remarks
+ * `surface`/`surfaceInverse` let each brand sit on a different surface
+ * neutral (ink/graphite/slate/mocha) so properties look distinct without
+ * any component code caring. `paletteAlt` exposes a sibling brand palette
+ * for variant slots (`--brand-alt`, `--brand-alt-strong`).
+ */
 export interface BrandBinding {
-  readonly id: string;               // "eos" | "news" | "vibes"
-  readonly palette: string;          // palette name to bind
-  readonly ink: string;              // palette name to source ink from
-  readonly inkStep: LadderStep;      // step to use for ink
-  readonly brandStep?: LadderStep;   // default 500
-  readonly strongStep?: LadderStep;  // default 400
-  readonly softStep?: LadderStep;    // default 200
+  readonly id: string;
+  readonly palette: string;
+  readonly paletteAlt?: string;
+  readonly surface: string;
+  readonly surfaceInverse: string;
+  readonly ink: string;
+  readonly inkStep: LadderStep;
+  readonly brandStep?: LadderStep;
+  readonly strongStep?: LadderStep;
+  readonly softStep?: LadderStep;
+  readonly fontDisplay?: string;
+  readonly gradientHero?: string;
+}
+
+/** Legal two-palette gradient pairing — emits `--gradient-<a>-<b>-mesh`. */
+export interface GradientPairing {
+  readonly a: string;
+  readonly b: string;
+  readonly c?: string;
 }
