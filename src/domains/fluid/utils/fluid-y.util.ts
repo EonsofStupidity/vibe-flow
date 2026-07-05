@@ -1,25 +1,26 @@
 /**
- * fluidY — emit a CSS `clamp()` string for viewport-fluid Y-axis sizing.
+ * fluidY — Y-axis fluid clamp (small-viewport-height driven).
  *
  * @remarks
- * Uses `svh` (small viewport height) so mobile browser chrome shrinking
- * does not cause the value to jump. Same shape as {@link fluid}.
- *
- * @param min - Size at (or below) `minSvh`.
- * @param max - Size at (or above) `maxSvh`.
- * @param opts - `minSvh` / `maxSvh` interpolation bounds and `unit`.
+ * Thin wrapper over {@link fluidAxis} with `axis: "y"`. Uses `svh` so
+ * mobile browser chrome shrinking does not cause a jump.
  *
  * @public
  */
+import { fluidAxis } from "./fluid-axis.util";
+import type { FluidUnit } from "../types/fluid.types";
+
 export function fluidY(
   min: number,
   max: number,
-  opts: { minSvh?: number; maxSvh?: number; unit?: "rem" | "px" } = {},
+  opts: { minSvh?: number; maxSvh?: number; unit?: FluidUnit } = {},
 ): string {
-  const { minSvh = 40, maxSvh = 100, unit = "rem" } = opts;
-  const slope = (max - min) / (maxSvh - minSvh);
-  const intercept = min - slope * minSvh;
-  const svh = (slope * 100).toFixed(4);
-  const base = intercept.toFixed(4);
-  return `clamp(${min}${unit}, calc(${base}${unit} + ${svh}svh), ${max}${unit})`;
+  return fluidAxis({
+    min,
+    max,
+    axis: "y",
+    minVp: opts.minSvh,
+    maxVp: opts.maxSvh,
+    unit: opts.unit,
+  });
 }
