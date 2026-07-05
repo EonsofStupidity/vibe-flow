@@ -2,14 +2,14 @@
  * Token foundry build entry.
  *
  * @remarks
- * Reads typed palette sources + brand bindings and emits:
- *   - src/domains/theme/tokens/primitives.css  (raw ladders, gradients, sizes)
+ * Reads typed palette + effect + semantic sources and emits:
+ *   - src/domains/theme/tokens/primitives.css  (ladders, gradients, meshes, shadows, blurs, rings, glass, noise, sizes, radii, ratios, type ramp, motion)
  *   - src/domains/theme/tokens/brands.css       (per-brand semantic overrides + accents)
  *   - src/domains/theme/foundry/foundry.tokens.ts (typed runtime lookup)
  *
- * `semantics.css` is authored by hand (role bindings, motion, fonts, radii)
- * and is NOT overwritten. Palette-derived defaults for the default brand
- * still land in `:root` inside `brands.css`.
+ * `semantics.css` is authored by hand (role bindings, font stacks) and is
+ * NOT overwritten. Palette-derived defaults for the default brand still
+ * land in `:root` inside `brands.css`.
  *
  * Run with: `bun run tokens`
  */
@@ -18,9 +18,18 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { palettes } from "../source/palettes";
 import { brandBindings, defaultBrandId } from "../source/semantic/brand.semantic";
+import { gradientPairings } from "../source/semantic/gradients.semantic";
+import { typeRamp } from "../source/semantic/type.semantic";
+import { spaceRamp, radiusRamp, ratioRamp } from "../source/semantic/space.semantic";
+import { durations, easings, transitions } from "../source/semantic/motion.semantic";
+import {
+  shadowLadder, shadowBrandLadder, blurLadder, ringLadder,
+  glassPresets, noisePresets,
+} from "../source/effects/effects.source";
 import { LADDER_STEPS, type Ladder, type LadderStep } from "../foundry.types";
 import { buildLadder, oklchString } from "./transforms/oklch-ladder.transform";
-import { buildGradients, type GradientToken } from "./transforms/gradient.transform";
+import { buildGradients, buildMeshes, type GradientToken } from "./transforms/gradient.transform";
+import { typeEntries } from "./transforms/type.transform";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TOKENS_DIR = resolve(HERE, "../../tokens");
@@ -38,29 +47,54 @@ interface BuiltPalette {
   readonly gradients: readonly GradientToken[];
 }
 
+function validate(built: readonly BuiltPalette[]): void {
+  const names = new Set<string>();
+  for (const p of built) {
+    if (names.has(p.name)) throw new Error(`[foundry] duplicate palette name: ${p.name}`);
+    names.add(p.name);
+  }
+  for (const b of brandBindings) {
+    for (const n of [b.palette, b.paletteAlt, b.surface, b.surfaceInverse, b.ink].filter(Boolean) as string[]) {
+      if (!names.has(n)) throw new Error(`[foundry] brand "${b.id}" references unknown palette: ${n}`);
+    }
+  }
+  for (const g of gradientPairings) {
+    for (const n of [g.a, g.b, g.c].filter(Boolean) as string[]) {
+      if (!names.has(n)) throw new Error(`[foundry] gradient pairing references unknown palette: ${n}`);
+    }
+  }
+}
+
 function build(): void {
-  const built: BuiltPalette[] = palettes.map((p) => ({
-    name: p.name,
-    kind: p.kind,
-    ladder: buildLadder(p),
-    gradients: p.kind === "brand" || p.kind === "accent"
-      ? buildGradients(p.name, buildLadder(p))
-      : [],
-  }));
+  const built: BuiltPalette[] = palettes.map((p) => {
+    const ladder = buildLadder(p);
+    return {
+      name: p.name,
+      kind: p.kind,
+      ladder,
+      gradients: p.kind === "brand" || p.kind === "accent"
+        ? buildGradients(p.name, ladder)
+        : [],
+    };
+  });
 
-  writePrimitivesCss(built);
+  validate(built);
+
+  const ladderMap = new Map(built.map((b) => [b.name, b.ladder]));
+  const meshes = buildMeshes(gradientPairings, ladderMap);
+
+  writePrimitivesCss(built, meshes);
   writeBrandsCss(built);
-  writeFoundryTokensTs(built);
+  writeFoundryTokensTs(built, meshes);
 
-  const paletteCount = built.length;
-  const gradientCount = built.reduce((n, p) => n + p.gradients.length, 0);
-  const stepCount = paletteCount * LADDER_STEPS.length;
+  const gradientCount = built.reduce((n, p) => n + p.gradients.length, 0) + meshes.length;
+  const stepCount = built.length * LADDER_STEPS.length;
   console.log(
-    `[foundry] wrote ${paletteCount} palettes, ${stepCount} steps, ${gradientCount} gradients`,
+    `[foundry] wrote ${built.length} palettes, ${stepCount} steps, ${gradientCount} gradients, ${brandBindings.length} brands`,
   );
 }
 
-function writePrimitivesCss(built: readonly BuiltPalette[]): void {
+function writePrimitivesCss(built: readonly BuiltPalette[], meshes: readonly GradientToken[]): void {
   const lines: string[] = [
     "/**",
     " * Layer 1 — primitive tokens. Raw material only, no semantic meaning.",
@@ -75,28 +109,44 @@ function writePrimitivesCss(built: readonly BuiltPalette[]): void {
     for (const step of LADDER_STEPS) {
       lines.push(`  --${p.name}-${step}: ${oklchString(p.ladder[step])};`);
     }
-    for (const g of p.gradients) {
-      lines.push(`  --gradient-${g.name}: ${g.value};`);
-    }
+    for (const g of p.gradients) lines.push(`  --gradient-${g.name}: ${g.value};`);
     lines.push("");
   }
 
-  lines.push("  /* ---- Raw sizes (rem) ---- */");
-  const sizes: Array<[string, string]> = [
-    ["size-1", "0.25rem"], ["size-2", "0.5rem"], ["size-3", "0.75rem"],
-    ["size-4", "1rem"], ["size-5", "1.25rem"], ["size-6", "1.5rem"],
-    ["size-7", "2rem"], ["size-8", "3rem"], ["size-9", "4rem"],
-    ["size-10", "5rem"], ["size-12", "6rem"], ["size-16", "8rem"],
-  ];
-  for (const [name, val] of sizes) lines.push(`  --${name}: ${val};`);
+  lines.push("  /* ---- Multi-palette meshes ---- */");
+  for (const m of meshes) lines.push(`  --gradient-${m.name}: ${m.value};`);
   lines.push("");
-  lines.push("  /* Touchscreen minimum tap target — 4rem = 64px @ 16px root. */");
+
+  lines.push("  /* ---- Space / radius / ratio ramps ---- */");
+  for (const s of spaceRamp)  lines.push(`  --${s.name}: ${s.value};`);
+  for (const r of radiusRamp) lines.push(`  --${r.name}: ${r.value};`);
+  for (const r of ratioRamp)  lines.push(`  --${r.name}: ${r.value};`);
+  lines.push("");
+
+  lines.push("  /* ---- Shell layout ---- */");
   lines.push("  --tap-min: 4rem;");
-  lines.push("");
-  lines.push("  /* Shell layout — rail widths (rem) */");
   lines.push("  --rail-collapsed: 4rem;");
-  lines.push("  --rail-expanded: 8.4375rem;"); // 135px @ 16px root
+  lines.push("  --rail-expanded: 8.4375rem;");
   lines.push("  --panel-width: 24rem;");
+  lines.push("");
+
+  lines.push("  /* ---- Shadows / blurs / rings / glass / noise ---- */");
+  for (const e of shadowLadder)      lines.push(`  --${e.name}: ${e.value};`);
+  for (const e of shadowBrandLadder) lines.push(`  --${e.name}: ${e.value};`);
+  for (const e of blurLadder)        lines.push(`  --${e.name}: ${e.value};`);
+  for (const e of ringLadder)        lines.push(`  --${e.name}: ${e.value};`);
+  for (const e of glassPresets)      lines.push(`  --${e.name}: ${e.value};`);
+  for (const e of noisePresets)      lines.push(`  --${e.name}: ${e.value};`);
+  lines.push("");
+
+  lines.push("  /* ---- Motion (durations, easings, named transitions) ---- */");
+  for (const m of durations)   lines.push(`  --${m.name}: ${m.value};`);
+  for (const m of easings)     lines.push(`  --${m.name}: ${m.value};`);
+  for (const m of transitions) lines.push(`  --${m.name}: ${m.value};`);
+  lines.push("");
+
+  lines.push("  /* ---- Fluid type ramp ---- */");
+  for (const t of typeEntries(typeRamp)) lines.push(`  --${t.name}: ${t.value};`);
   lines.push("}\n");
 
   writeFileSync(resolve(TOKENS_DIR, "primitives.css"), HEADER + lines.join("\n"));
@@ -120,45 +170,60 @@ function writeBrandsCss(built: readonly BuiltPalette[]): void {
       ? `:root, [data-brand="${b.id}"]`
       : `[data-brand="${b.id}"]`;
     lines.push(`${selector} {`);
-    lines.push(`  --brand:        var(--${b.palette}-${brandStep});`);
-    lines.push(`  --brand-strong: var(--${b.palette}-${strongStep});`);
-    lines.push(`  --brand-soft:   var(--${b.palette}-${softStep});`);
-    lines.push(`  --brand-ink:    var(--${b.ink}-${b.inkStep});`);
-    lines.push(`  --focus-ring:   var(--${b.palette}-${brandStep});`);
+    lines.push(`  --brand:            var(--${b.palette}-${brandStep});`);
+    lines.push(`  --brand-strong:     var(--${b.palette}-${strongStep});`);
+    lines.push(`  --brand-soft:       var(--${b.palette}-${softStep});`);
+    lines.push(`  --brand-ink:        var(--${b.ink}-${b.inkStep});`);
+    lines.push(`  --focus-ring:       var(--${b.palette}-${brandStep});`);
+    if (b.paletteAlt) {
+      lines.push(`  --brand-alt:        var(--${b.paletteAlt}-${brandStep});`);
+      lines.push(`  --brand-alt-strong: var(--${b.paletteAlt}-${strongStep});`);
+      lines.push(`  --brand-alt-soft:   var(--${b.paletteAlt}-${softStep});`);
+    }
+    // Surface bindings — per brand
+    lines.push(`  --surface-base:     var(--${b.surface}-900);`);
+    lines.push(`  --surface-raised:   var(--${b.surface}-800);`);
+    lines.push(`  --surface-overlay:  var(--${b.surface}-700);`);
+    lines.push(`  --surface-sunken:   var(--${b.surface}-950);`);
+    lines.push(`  --surface-deep:     var(--${b.surface}-975);`);
+    lines.push(`  --surface-input:    var(--${b.surface}-700);`);
+    lines.push(`  --surface-inverse:  var(--${b.surfaceInverse}-500);`);
+    lines.push(`  --hairline:         var(--${b.surface}-600);`);
+    if (b.gradientHero) {
+      lines.push(`  --gradient-hero:    var(--gradient-${b.gradientHero});`);
+    }
+    if (b.fontDisplay) {
+      lines.push(`  --font-display:     ${b.fontDisplay};`);
+    }
     lines.push("}\n");
   }
 
-  // Free accent slots — every accent palette exposed at :root
   lines.push("/* Free accents — always available regardless of active brand. */");
   lines.push(":root {");
   for (const b of built) {
     if (b.kind === "accent" || b.kind === "brand") {
       lines.push(`  --accent-${b.name}: var(--${b.name}-500);`);
+      lines.push(`  --accent-${b.name}-strong: var(--${b.name}-400);`);
+      lines.push(`  --accent-${b.name}-soft: var(--${b.name}-200);`);
     }
   }
   lines.push("}\n");
 
-  // Utility semantic aliases
-  lines.push("/* Utility semantic aliases (danger/warning/info). */");
+  lines.push("/* Utility semantic aliases. */");
   lines.push(":root {");
-  if (byName.has("danger")) {
-    lines.push("  --danger:     var(--danger-500);");
-    lines.push("  --danger-ink: var(--ink-50);");
-  }
-  if (byName.has("warning")) {
-    lines.push("  --warning:     var(--warning-500);");
-    lines.push("  --warning-ink: var(--ink-900);");
-  }
-  if (byName.has("info")) {
-    lines.push("  --info:     var(--info-500);");
-    lines.push("  --info-ink: var(--ink-50);");
+  for (const util of ["danger", "warning", "info"] as const) {
+    if (byName.has(util)) {
+      lines.push(`  --${util}:      var(--${util}-500);`);
+      lines.push(`  --${util}-soft: var(--${util}-soft-200);`);
+      lines.push(`  --${util}-ink:  var(--ink-50);`);
+    }
   }
   lines.push("}\n");
 
   writeFileSync(resolve(TOKENS_DIR, "brands.css"), HEADER + lines.join("\n"));
 }
 
-function writeFoundryTokensTs(built: readonly BuiltPalette[]): void {
+function writeFoundryTokensTs(built: readonly BuiltPalette[], meshes: readonly GradientToken[]): void {
   const lines: string[] = [
     "/**",
     " * Typed token lookup for runtime code. Every entry resolves to a",
@@ -170,24 +235,22 @@ function writeFoundryTokensTs(built: readonly BuiltPalette[]): void {
 
   const palObj: string[] = [];
   for (const p of built) {
-    palObj.push(`  ${p.name}: {`);
-    for (const step of LADDER_STEPS) {
-      palObj.push(`    ${step}: "var(--${p.name}-${step})",`);
-    }
+    const safeKey = /[^a-zA-Z0-9_$]/.test(p.name) ? `"${p.name}"` : p.name;
+    palObj.push(`  ${safeKey}: {`);
+    for (const step of LADDER_STEPS) palObj.push(`    ${step}: "var(--${p.name}-${step})",`);
     palObj.push("  },");
   }
 
   const gradObj: string[] = [];
-  for (const p of built) {
-    for (const g of p.gradients) {
-      gradObj.push(`  "${g.name}": "var(--gradient-${g.name})",`);
-    }
-  }
+  for (const p of built) for (const g of p.gradients) gradObj.push(`  "${g.name}": "var(--gradient-${g.name})",`);
+  for (const m of meshes) gradObj.push(`  "${m.name}": "var(--gradient-${m.name})",`);
 
-  const brandObj: string[] = [];
-  for (const b of brandBindings) {
-    brandObj.push(`  ${b.id}: "${b.id}",`);
-  }
+  const brandObj = brandBindings.map((b) => `  ${b.id}: "${b.id}",`);
+
+  const emit = (name: string, entries: readonly { name: string; value?: string }[]): string => {
+    const rows = entries.map((e) => `  "${e.name}": "var(--${e.name})",`).join("\n");
+    return `export const ${name} = {\n${rows}\n} as const;\n`;
+  };
 
   lines.push("export const palette = {");
   lines.push(palObj.join("\n"));
@@ -196,6 +259,19 @@ function writeFoundryTokensTs(built: readonly BuiltPalette[]): void {
   lines.push("export const gradient = {");
   lines.push(gradObj.join("\n"));
   lines.push("} as const;\n");
+
+  lines.push(emit("shadow", [...shadowLadder, ...shadowBrandLadder]));
+  lines.push(emit("blur", blurLadder));
+  lines.push(emit("ring", ringLadder));
+  lines.push(emit("glass", glassPresets));
+  lines.push(emit("noise", noisePresets));
+  lines.push(emit("space", spaceRamp));
+  lines.push(emit("radius", radiusRamp));
+  lines.push(emit("ratio", ratioRamp));
+  lines.push(emit("duration", durations));
+  lines.push(emit("easing", easings));
+  lines.push(emit("transition", transitions));
+  lines.push(emit("type", typeEntries(typeRamp)));
 
   lines.push("export const brands = {");
   lines.push(brandObj.join("\n"));
