@@ -33,19 +33,25 @@ export function buildMeshes(
   ladders: ReadonlyMap<string, Ladder>,
 ): readonly GradientToken[] {
   const out: GradientToken[] = [];
+  const seen = new Set<string>();
+  const push = (t: GradientToken) => {
+    if (seen.has(t.name)) return;
+    seen.add(t.name);
+    out.push(t);
+  };
   for (const p of pairings) {
     const a = ladders.get(p.a);
     const b = ladders.get(p.b);
     if (!a || !b) throw new Error(`[foundry] mesh pairing references unknown palette: ${p.a} × ${p.b}`);
     const stop = (l: Ladder, s: LadderStep) => oklchString(l[s]);
-    out.push({
+    push({
       name: `${p.a}-${p.b}-mesh-2`,
       value: `radial-gradient(at 20% 20%, ${stop(a, 400)} 0%, transparent 55%), radial-gradient(at 80% 30%, ${stop(b, 500)} 0%, transparent 60%), radial-gradient(at 40% 90%, ${stop(a, 700)} 0%, transparent 65%), ${stop(a, 900)}`,
     });
     if (p.c) {
       const cLad = ladders.get(p.c);
       if (!cLad) throw new Error(`[foundry] mesh pairing references unknown palette: ${p.c}`);
-      out.push({
+      push({
         name: `${p.a}-${p.b}-${p.c}-mesh-3`,
         value: `radial-gradient(at 15% 15%, ${stop(a, 400)} 0%, transparent 55%), radial-gradient(at 85% 20%, ${stop(b, 400)} 0%, transparent 55%), radial-gradient(at 50% 90%, ${stop(cLad, 500)} 0%, transparent 60%), ${stop(a, 950)}`,
       });
