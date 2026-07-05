@@ -4,7 +4,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { listDecks } from "@/domains/deck/services/deck-registry.service";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_shell/")({
   component: DeckPicker,
 });
 
