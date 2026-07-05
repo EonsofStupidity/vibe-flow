@@ -6,7 +6,7 @@
  * through a valibot-validated adapter — corrupt state resets to defaults.
  */
 import { create } from "zustand";
-import type { BrandId } from "@/domains/theme/foundry.tokens";
+import type { BrandId } from "@/domains/theme/foundry/foundry.tokens";
 import type { LeftMode, RightTab, ShellStateShape } from "../types/shell.types";
 import { loadShellState, saveShellState, shellDefaults } from "./shell.persist";
 

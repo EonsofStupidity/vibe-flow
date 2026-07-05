@@ -1,7 +1,7 @@
 /**
  * Shell types — shared shape used across store, context, components.
  */
-import type { BrandId } from "@/domains/theme/foundry.tokens";
+import type { BrandId } from "@/domains/theme/foundry/foundry.tokens";
 
 export type LeftMode = "collapsed" | "expanded";
 export type RightTab = "notes" | "queue" | "inspector" | "data";
