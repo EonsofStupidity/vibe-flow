@@ -122,13 +122,6 @@ function writePrimitivesCss(built: readonly BuiltPalette[], meshes: readonly Gra
   for (const r of ratioRamp)  lines.push(`  --${r.name}: ${r.value};`);
   lines.push("");
 
-  lines.push("  /* ---- Shell layout ---- */");
-  lines.push("  --tap-min: 4rem;");
-  lines.push("  --rail-collapsed: 4rem;");
-  lines.push("  --rail-expanded: 8.4375rem;");
-  lines.push("  --panel-width: 24rem;");
-  lines.push("");
-
   lines.push("  /* ---- Shadows / blurs / rings / glass / noise ---- */");
   for (const e of shadowLadder)      lines.push(`  --${e.name}: ${e.value};`);
   for (const e of shadowBrandLadder) lines.push(`  --${e.name}: ${e.value};`);
@@ -144,8 +137,11 @@ function writePrimitivesCss(built: readonly BuiltPalette[], meshes: readonly Gra
   for (const m of transitions) lines.push(`  --${m.name}: ${m.value};`);
   lines.push("");
 
-  lines.push("  /* ---- Fluid type ramp ---- */");
-  for (const t of typeEntries(typeRamp)) lines.push(`  --${t.name}: ${t.value};`);
+  lines.push("  /* ---- Fluid XY scale (foundry/source/fluid/*.fluid.ts) ---- */");
+  for (const group of fluidGroups()) {
+    lines.push(`  /* -- ${group.label} -- */`);
+    for (const t of group.tokens) lines.push(`  --${t.name}: ${t.value};`);
+  }
   lines.push("}\n");
 
   writeFileSync(resolve(TOKENS_DIR, "primitives.css"), HEADER + lines.join("\n"));
