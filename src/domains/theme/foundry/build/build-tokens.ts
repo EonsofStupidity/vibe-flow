@@ -62,8 +62,6 @@ function build(): void {
 
 function writePrimitivesCss(built: readonly BuiltPalette[]): void {
   const lines: string[] = [
-    HEADER.trim(),
-    "",
     "/**",
     " * Layer 1 — primitive tokens. Raw material only, no semantic meaning.",
     " * Components must NEVER read from this layer directly — go through semantics.css.",
