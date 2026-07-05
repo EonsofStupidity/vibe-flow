@@ -4,11 +4,6 @@
  */
 
 /**
- * GENERATED FILE — do not edit by hand.
- * Source: src/domains/theme/foundry/source/**  →  bun run tokens
- */
-
-/**
  * Layer 1 — primitive tokens. Raw material only, no semantic meaning.
  * Components must NEVER read from this layer directly — go through semantics.css.
  */

@@ -4,11 +4,6 @@
  */
 
 /**
- * GENERATED FILE — do not edit by hand.
- * Source: src/domains/theme/foundry/source/**  →  bun run tokens
- */
-
-/**
  * Typed token lookup for runtime code. Every entry resolves to a
  * `var(...)` reference, not a literal color — so brand switching still
  * works when consumed inline (e.g. as an SVG stroke or canvas fill).
