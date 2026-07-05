@@ -19,7 +19,6 @@ import { fileURLToPath } from "node:url";
 import { palettes } from "../source/palettes";
 import { brandBindings, defaultBrandId } from "../source/semantic/brand.semantic";
 import { gradientPairings } from "../source/semantic/gradients.semantic";
-import { typeRamp } from "../source/semantic/type.semantic";
 import { spaceRamp, radiusRamp, ratioRamp } from "../source/semantic/space.semantic";
 import { durations, easings, transitions } from "../source/semantic/motion.semantic";
 import {
@@ -29,7 +28,7 @@ import {
 import { LADDER_STEPS, type Ladder, type LadderStep } from "../foundry.types";
 import { buildLadder, oklchString } from "./transforms/oklch-ladder.transform";
 import { buildGradients, buildMeshes, type GradientToken } from "./transforms/gradient.transform";
-import { typeEntries } from "./transforms/type.transform";
+import { fluidGroups } from "./transforms/fluid.transform";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TOKENS_DIR = resolve(HERE, "../../tokens");
