@@ -161,8 +161,6 @@ function writeBrandsCss(built: readonly BuiltPalette[]): void {
 function writeFoundryTokensTs(built: readonly BuiltPalette[]): void {
   const lines: string[] = [
     "/**",
-    "",
-    "/**",
     " * Typed token lookup for runtime code. Every entry resolves to a",
     " * `var(...)` reference, not a literal color — so brand switching still",
     " * works when consumed inline (e.g. as an SVG stroke or canvas fill).",
