@@ -106,8 +106,6 @@ function writeBrandsCss(built: readonly BuiltPalette[]): void {
   const byName = new Map(built.map((b) => [b.name, b]));
   const lines: string[] = [
     "/**",
-    "",
-    "/**",
     " * Layer 3 — brand overrides + free accent tones.",
     " * Set data-brand=\"<id>\" on <html> (or any ancestor) to swap active brand.",
     " */",
