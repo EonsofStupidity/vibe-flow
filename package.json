@@ -4,6 +4,9 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
+    "tokens": "bun run src/domains/theme/foundry/build/build-tokens.ts",
+    "predev": "bun run tokens",
+    "prebuild": "bun run tokens",
     "dev": "vite dev",
     "build": "vite build",
     "build:dev": "vite build --mode development",
