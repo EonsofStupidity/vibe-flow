@@ -1,18 +1,23 @@
 /**
- * Layer 3a — property-scoped brand overrides + free accent tones.
- *
- * A shell layout sets `data-brand="eos|news|vibes"` on its outermost element
- * (or on <html>) to swap the active brand. Free accent tokens are always
- * available regardless of active brand — any widget can pick a `tone`.
+ * GENERATED FILE — do not edit by hand.
+ * Source: src/domains/theme/foundry/source/**  →  bun run tokens
  */
 
-/* Default (also EoS) already set in semantics.css — this block matches it
-   for explicitness when data-brand="eos" is set. */
-[data-brand="eos"] {
+/**
+ * GENERATED FILE — do not edit by hand.
+ * Source: src/domains/theme/foundry/source/**  →  bun run tokens
+ */
+
+/**
+ * Layer 3 — brand overrides + free accent tones.
+ * Set data-brand="<id>" on <html> (or any ancestor) to swap active brand.
+ */
+
+:root, [data-brand="eos"] {
   --brand:        var(--amber-500);
   --brand-strong: var(--amber-400);
   --brand-soft:   var(--amber-200);
-  --brand-ink:    var(--neutral-900);
+  --brand-ink:    var(--ink-900);
   --focus-ring:   var(--amber-500);
 }
 
@@ -20,7 +25,7 @@
   --brand:        var(--cyan-500);
   --brand-strong: var(--cyan-400);
   --brand-soft:   var(--cyan-200);
-  --brand-ink:    var(--neutral-900);
+  --brand-ink:    var(--ink-900);
   --focus-ring:   var(--cyan-500);
 }
 
@@ -28,17 +33,28 @@
   --brand:        var(--magenta-500);
   --brand-strong: var(--magenta-400);
   --brand-soft:   var(--magenta-200);
-  --brand-ink:    var(--neutral-50);
+  --brand-ink:    var(--ink-50);
   --focus-ring:   var(--magenta-500);
 }
 
-/* Free accents — always available. Widgets pick a tone independent of brand. */
+/* Free accents — always available regardless of active brand. */
 :root {
-  --accent-amber:   var(--amber-500);
-  --accent-cyan:    var(--cyan-500);
+  --accent-amber: var(--amber-500);
+  --accent-cyan: var(--cyan-500);
   --accent-magenta: var(--magenta-500);
-  --accent-lime:    var(--lime-500);
-  --accent-coral:   var(--coral-500);
-  --accent-violet:  var(--violet-500);
-  --accent-teal:    var(--teal-500);
+  --accent-lime: var(--lime-500);
+  --accent-violet: var(--violet-500);
+  --accent-coral: var(--coral-500);
+  --accent-teal: var(--teal-500);
+  --accent-rose: var(--rose-500);
+}
+
+/* Utility semantic aliases (danger/warning/info). */
+:root {
+  --danger:     var(--danger-500);
+  --danger-ink: var(--ink-50);
+  --warning:     var(--warning-500);
+  --warning-ink: var(--ink-900);
+  --info:     var(--info-500);
+  --info-ink: var(--ink-50);
 }

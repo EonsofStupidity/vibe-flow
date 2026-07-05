@@ -1,131 +1,226 @@
 /**
- * Layer 1 — primitive tokens.
- *
- * Raw material only. No semantic meaning. Colors as OKLCH ramps, sizes in rem.
+ * GENERATED FILE — do not edit by hand.
+ * Source: src/domains/theme/foundry/source/**  →  bun run tokens
+ */
+
+/**
+ * GENERATED FILE — do not edit by hand.
+ * Source: src/domains/theme/foundry/source/**  →  bun run tokens
+ */
+
+/**
+ * Layer 1 — primitive tokens. Raw material only, no semantic meaning.
  * Components must NEVER read from this layer directly — go through semantics.css.
  */
 
 :root {
-  /* -------------------------- Neutral surface ramp -------------------------- */
-  --neutral-50:  oklch(0.980 0.005 250);
-  --neutral-100: oklch(0.940 0.007 250);
-  --neutral-200: oklch(0.860 0.009 250);
-  --neutral-300: oklch(0.720 0.011 250);
-  --neutral-400: oklch(0.580 0.013 250);
-  --neutral-500: oklch(0.440 0.014 250);
-  --neutral-600: oklch(0.320 0.015 250);
-  --neutral-700: oklch(0.240 0.012 250);
-  --neutral-800: oklch(0.200 0.012 250);
-  --neutral-850: oklch(0.180 0.011 250);
-  --neutral-900: oklch(0.160 0.010 250);
-  --neutral-950: oklch(0.100 0.008 250);
+  /* ---- ink (surface) ---- */
+  --ink-50: oklch(0.9800 0.0140 260.00);
+  --ink-100: oklch(0.9400 0.0140 260.00);
+  --ink-200: oklch(0.8600 0.0140 260.00);
+  --ink-300: oklch(0.7200 0.0140 260.00);
+  --ink-400: oklch(0.5800 0.0140 260.00);
+  --ink-500: oklch(0.4400 0.0140 260.00);
+  --ink-600: oklch(0.3200 0.0140 260.00);
+  --ink-700: oklch(0.2400 0.0140 260.00);
+  --ink-800: oklch(0.2000 0.0140 260.00);
+  --ink-900: oklch(0.1600 0.0140 260.00);
+  --ink-950: oklch(0.1400 0.0120 260.00);
 
-  /* -------------------------- Brand ramps (7 hues) -------------------------- */
-  /* Amber — EoS / live signal */
-  --amber-50:  oklch(0.980 0.020 85);
-  --amber-100: oklch(0.950 0.050 82);
-  --amber-200: oklch(0.900 0.090 80);
-  --amber-300: oklch(0.850 0.130 78);
-  --amber-400: oklch(0.820 0.150 76);
-  --amber-500: oklch(0.780 0.170 75);
-  --amber-600: oklch(0.700 0.170 72);
-  --amber-700: oklch(0.600 0.160 68);
-  --amber-800: oklch(0.480 0.140 64);
-  --amber-900: oklch(0.360 0.110 60);
-  --amber-950: oklch(0.240 0.080 55);
+  /* ---- amber (brand) ---- */
+  --amber-50: oklch(0.9800 0.0255 75.00);
+  --amber-100: oklch(0.9500 0.0510 75.00);
+  --amber-200: oklch(0.9000 0.0935 75.00);
+  --amber-300: oklch(0.8400 0.1360 75.00);
+  --amber-400: oklch(0.7900 0.1615 75.00);
+  --amber-500: oklch(0.7200 0.1700 75.00);
+  --amber-600: oklch(0.6200 0.1700 75.00);
+  --amber-700: oklch(0.5200 0.1530 75.00);
+  --amber-800: oklch(0.4200 0.1275 75.00);
+  --amber-900: oklch(0.3200 0.0935 75.00);
+  --amber-950: oklch(0.2200 0.0595 75.00);
+  --gradient-amber-linear: linear-gradient(135deg, oklch(0.7900 0.1615 75.00) 0%, oklch(0.5200 0.1530 75.00) 100%);
+  --gradient-amber-vivid: linear-gradient(135deg, oklch(0.8400 0.1360 75.00) 0%, oklch(0.6200 0.1700 75.00) 100%);
+  --gradient-amber-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1700 75.00) 0%, oklch(0.3200 0.0935 75.00) 100%);
+  --gradient-amber-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1700 75.00), oklch(0.8400 0.1360 75.00), oklch(0.7200 0.1700 75.00));
 
-  /* Cyan — DevPULSE News */
-  --cyan-50:  oklch(0.980 0.020 220);
-  --cyan-100: oklch(0.950 0.045 218);
-  --cyan-200: oklch(0.900 0.080 216);
-  --cyan-300: oklch(0.840 0.110 214);
-  --cyan-400: oklch(0.780 0.135 212);
-  --cyan-500: oklch(0.720 0.150 210);
-  --cyan-600: oklch(0.630 0.150 210);
-  --cyan-700: oklch(0.520 0.140 212);
-  --cyan-800: oklch(0.400 0.115 215);
-  --cyan-900: oklch(0.300 0.085 220);
-  --cyan-950: oklch(0.200 0.055 225);
+  /* ---- cyan (brand) ---- */
+  --cyan-50: oklch(0.9800 0.0225 210.00);
+  --cyan-100: oklch(0.9500 0.0450 210.00);
+  --cyan-200: oklch(0.9000 0.0825 210.00);
+  --cyan-300: oklch(0.8400 0.1200 210.00);
+  --cyan-400: oklch(0.7900 0.1425 210.00);
+  --cyan-500: oklch(0.7200 0.1500 210.00);
+  --cyan-600: oklch(0.6200 0.1500 210.00);
+  --cyan-700: oklch(0.5200 0.1350 210.00);
+  --cyan-800: oklch(0.4200 0.1125 210.00);
+  --cyan-900: oklch(0.3200 0.0825 210.00);
+  --cyan-950: oklch(0.2200 0.0525 210.00);
+  --gradient-cyan-linear: linear-gradient(135deg, oklch(0.7900 0.1425 210.00) 0%, oklch(0.5200 0.1350 210.00) 100%);
+  --gradient-cyan-vivid: linear-gradient(135deg, oklch(0.8400 0.1200 210.00) 0%, oklch(0.6200 0.1500 210.00) 100%);
+  --gradient-cyan-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1500 210.00) 0%, oklch(0.3200 0.0825 210.00) 100%);
+  --gradient-cyan-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1500 210.00), oklch(0.8400 0.1200 210.00), oklch(0.7200 0.1500 210.00));
 
-  /* Magenta — AngryVibes */
-  --magenta-50:  oklch(0.980 0.020 340);
-  --magenta-100: oklch(0.940 0.050 340);
-  --magenta-200: oklch(0.880 0.100 340);
-  --magenta-300: oklch(0.800 0.150 340);
-  --magenta-400: oklch(0.720 0.190 340);
-  --magenta-500: oklch(0.660 0.220 340);
-  --magenta-600: oklch(0.580 0.220 340);
-  --magenta-700: oklch(0.480 0.200 340);
-  --magenta-800: oklch(0.380 0.170 340);
-  --magenta-900: oklch(0.280 0.130 340);
-  --magenta-950: oklch(0.180 0.090 340);
+  /* ---- magenta (brand) ---- */
+  --magenta-50: oklch(0.9800 0.0330 340.00);
+  --magenta-100: oklch(0.9500 0.0660 340.00);
+  --magenta-200: oklch(0.9000 0.1210 340.00);
+  --magenta-300: oklch(0.8400 0.1760 340.00);
+  --magenta-400: oklch(0.7900 0.2090 340.00);
+  --magenta-500: oklch(0.7200 0.2200 340.00);
+  --magenta-600: oklch(0.6200 0.2200 340.00);
+  --magenta-700: oklch(0.5200 0.1980 340.00);
+  --magenta-800: oklch(0.4200 0.1650 340.00);
+  --magenta-900: oklch(0.3200 0.1210 340.00);
+  --magenta-950: oklch(0.2200 0.0770 340.00);
+  --gradient-magenta-linear: linear-gradient(135deg, oklch(0.7900 0.2090 340.00) 0%, oklch(0.5200 0.1980 340.00) 100%);
+  --gradient-magenta-vivid: linear-gradient(135deg, oklch(0.8400 0.1760 340.00) 0%, oklch(0.6200 0.2200 340.00) 100%);
+  --gradient-magenta-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.2200 340.00) 0%, oklch(0.3200 0.1210 340.00) 100%);
+  --gradient-magenta-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.2200 340.00), oklch(0.8400 0.1760 340.00), oklch(0.7200 0.2200 340.00));
 
-  /* Lime — annotate / ink accent */
-  --lime-50:  oklch(0.980 0.020 130);
-  --lime-100: oklch(0.950 0.055 128);
-  --lime-200: oklch(0.900 0.110 128);
-  --lime-300: oklch(0.860 0.160 128);
-  --lime-400: oklch(0.820 0.190 128);
-  --lime-500: oklch(0.780 0.200 128);
-  --lime-600: oklch(0.680 0.190 128);
-  --lime-700: oklch(0.560 0.170 128);
-  --lime-800: oklch(0.440 0.140 128);
-  --lime-900: oklch(0.320 0.100 128);
-  --lime-950: oklch(0.200 0.065 128);
+  /* ---- lime (accent) ---- */
+  --lime-50: oklch(0.9800 0.0300 128.00);
+  --lime-100: oklch(0.9500 0.0600 128.00);
+  --lime-200: oklch(0.9000 0.1100 128.00);
+  --lime-300: oklch(0.8400 0.1600 128.00);
+  --lime-400: oklch(0.7900 0.1900 128.00);
+  --lime-500: oklch(0.7200 0.2000 128.00);
+  --lime-600: oklch(0.6200 0.2000 128.00);
+  --lime-700: oklch(0.5200 0.1800 128.00);
+  --lime-800: oklch(0.4200 0.1500 128.00);
+  --lime-900: oklch(0.3200 0.1100 128.00);
+  --lime-950: oklch(0.2200 0.0700 128.00);
+  --gradient-lime-linear: linear-gradient(135deg, oklch(0.7900 0.1900 128.00) 0%, oklch(0.5200 0.1800 128.00) 100%);
+  --gradient-lime-vivid: linear-gradient(135deg, oklch(0.8400 0.1600 128.00) 0%, oklch(0.6200 0.2000 128.00) 100%);
+  --gradient-lime-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.2000 128.00) 0%, oklch(0.3200 0.1100 128.00) 100%);
+  --gradient-lime-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.2000 128.00), oklch(0.8400 0.1600 128.00), oklch(0.7200 0.2000 128.00));
 
-  /* Coral */
-  --coral-50:  oklch(0.980 0.020 25);
-  --coral-100: oklch(0.940 0.050 25);
-  --coral-200: oklch(0.880 0.100 25);
-  --coral-300: oklch(0.800 0.150 25);
-  --coral-400: oklch(0.740 0.180 25);
-  --coral-500: oklch(0.680 0.200 25);
-  --coral-600: oklch(0.590 0.200 25);
-  --coral-700: oklch(0.480 0.180 25);
-  --coral-800: oklch(0.380 0.150 25);
-  --coral-900: oklch(0.280 0.115 25);
-  --coral-950: oklch(0.180 0.080 25);
+  /* ---- violet (accent) ---- */
+  --violet-50: oklch(0.9800 0.0300 290.00);
+  --violet-100: oklch(0.9500 0.0600 290.00);
+  --violet-200: oklch(0.9000 0.1100 290.00);
+  --violet-300: oklch(0.8400 0.1600 290.00);
+  --violet-400: oklch(0.7900 0.1900 290.00);
+  --violet-500: oklch(0.7200 0.2000 290.00);
+  --violet-600: oklch(0.6200 0.2000 290.00);
+  --violet-700: oklch(0.5200 0.1800 290.00);
+  --violet-800: oklch(0.4200 0.1500 290.00);
+  --violet-900: oklch(0.3200 0.1100 290.00);
+  --violet-950: oklch(0.2200 0.0700 290.00);
+  --gradient-violet-linear: linear-gradient(135deg, oklch(0.7900 0.1900 290.00) 0%, oklch(0.5200 0.1800 290.00) 100%);
+  --gradient-violet-vivid: linear-gradient(135deg, oklch(0.8400 0.1600 290.00) 0%, oklch(0.6200 0.2000 290.00) 100%);
+  --gradient-violet-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.2000 290.00) 0%, oklch(0.3200 0.1100 290.00) 100%);
+  --gradient-violet-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.2000 290.00), oklch(0.8400 0.1600 290.00), oklch(0.7200 0.2000 290.00));
 
-  /* Violet */
-  --violet-50:  oklch(0.980 0.020 290);
-  --violet-100: oklch(0.940 0.045 290);
-  --violet-200: oklch(0.880 0.090 290);
-  --violet-300: oklch(0.800 0.140 290);
-  --violet-400: oklch(0.720 0.180 290);
-  --violet-500: oklch(0.660 0.200 290);
-  --violet-600: oklch(0.560 0.200 290);
-  --violet-700: oklch(0.460 0.180 290);
-  --violet-800: oklch(0.360 0.150 290);
-  --violet-900: oklch(0.260 0.115 290);
-  --violet-950: oklch(0.170 0.080 290);
+  /* ---- coral (accent) ---- */
+  --coral-50: oklch(0.9800 0.0300 25.00);
+  --coral-100: oklch(0.9500 0.0600 25.00);
+  --coral-200: oklch(0.9000 0.1100 25.00);
+  --coral-300: oklch(0.8400 0.1600 25.00);
+  --coral-400: oklch(0.7900 0.1900 25.00);
+  --coral-500: oklch(0.7200 0.2000 25.00);
+  --coral-600: oklch(0.6200 0.2000 25.00);
+  --coral-700: oklch(0.5200 0.1800 25.00);
+  --coral-800: oklch(0.4200 0.1500 25.00);
+  --coral-900: oklch(0.3200 0.1100 25.00);
+  --coral-950: oklch(0.2200 0.0700 25.00);
+  --gradient-coral-linear: linear-gradient(135deg, oklch(0.7900 0.1900 25.00) 0%, oklch(0.5200 0.1800 25.00) 100%);
+  --gradient-coral-vivid: linear-gradient(135deg, oklch(0.8400 0.1600 25.00) 0%, oklch(0.6200 0.2000 25.00) 100%);
+  --gradient-coral-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.2000 25.00) 0%, oklch(0.3200 0.1100 25.00) 100%);
+  --gradient-coral-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.2000 25.00), oklch(0.8400 0.1600 25.00), oklch(0.7200 0.2000 25.00));
 
-  /* Teal */
-  --teal-50:  oklch(0.980 0.020 190);
-  --teal-100: oklch(0.940 0.045 190);
-  --teal-200: oklch(0.880 0.080 190);
-  --teal-300: oklch(0.800 0.115 190);
-  --teal-400: oklch(0.720 0.135 190);
-  --teal-500: oklch(0.660 0.145 190);
-  --teal-600: oklch(0.560 0.140 190);
-  --teal-700: oklch(0.460 0.125 190);
-  --teal-800: oklch(0.360 0.100 190);
-  --teal-900: oklch(0.260 0.075 190);
-  --teal-950: oklch(0.170 0.050 190);
+  /* ---- teal (accent) ---- */
+  --teal-50: oklch(0.9800 0.0217 190.00);
+  --teal-100: oklch(0.9500 0.0435 190.00);
+  --teal-200: oklch(0.9000 0.0798 190.00);
+  --teal-300: oklch(0.8400 0.1160 190.00);
+  --teal-400: oklch(0.7900 0.1377 190.00);
+  --teal-500: oklch(0.7200 0.1450 190.00);
+  --teal-600: oklch(0.6200 0.1450 190.00);
+  --teal-700: oklch(0.5200 0.1305 190.00);
+  --teal-800: oklch(0.4200 0.1087 190.00);
+  --teal-900: oklch(0.3200 0.0798 190.00);
+  --teal-950: oklch(0.2200 0.0507 190.00);
+  --gradient-teal-linear: linear-gradient(135deg, oklch(0.7900 0.1377 190.00) 0%, oklch(0.5200 0.1305 190.00) 100%);
+  --gradient-teal-vivid: linear-gradient(135deg, oklch(0.8400 0.1160 190.00) 0%, oklch(0.6200 0.1450 190.00) 100%);
+  --gradient-teal-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1450 190.00) 0%, oklch(0.3200 0.0798 190.00) 100%);
+  --gradient-teal-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1450 190.00), oklch(0.8400 0.1160 190.00), oklch(0.7200 0.1450 190.00));
 
-  /* -------------------------- Raw sizes (rem) ------------------------------- */
-  --size-1:  0.25rem;
-  --size-2:  0.5rem;
-  --size-3:  0.75rem;
-  --size-4:  1rem;
-  --size-5:  1.25rem;
-  --size-6:  1.5rem;
-  --size-7:  2rem;
-  --size-8:  3rem;
-  --size-9:  4rem;
+  /* ---- rose (accent) ---- */
+  --rose-50: oklch(0.9800 0.0255 10.00);
+  --rose-100: oklch(0.9500 0.0510 10.00);
+  --rose-200: oklch(0.9000 0.0935 10.00);
+  --rose-300: oklch(0.8400 0.1360 10.00);
+  --rose-400: oklch(0.7900 0.1615 10.00);
+  --rose-500: oklch(0.7200 0.1700 10.00);
+  --rose-600: oklch(0.6200 0.1700 10.00);
+  --rose-700: oklch(0.5200 0.1530 10.00);
+  --rose-800: oklch(0.4200 0.1275 10.00);
+  --rose-900: oklch(0.3200 0.0935 10.00);
+  --rose-950: oklch(0.2200 0.0595 10.00);
+  --gradient-rose-linear: linear-gradient(135deg, oklch(0.7900 0.1615 10.00) 0%, oklch(0.5200 0.1530 10.00) 100%);
+  --gradient-rose-vivid: linear-gradient(135deg, oklch(0.8400 0.1360 10.00) 0%, oklch(0.6200 0.1700 10.00) 100%);
+  --gradient-rose-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1700 10.00) 0%, oklch(0.3200 0.0935 10.00) 100%);
+  --gradient-rose-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1700 10.00), oklch(0.8400 0.1360 10.00), oklch(0.7200 0.1700 10.00));
+
+  /* ---- warning (utility) ---- */
+  --warning-50: oklch(0.9800 0.0225 65.00);
+  --warning-100: oklch(0.9500 0.0450 65.00);
+  --warning-200: oklch(0.9000 0.0825 65.00);
+  --warning-300: oklch(0.8400 0.1200 65.00);
+  --warning-400: oklch(0.7900 0.1425 65.00);
+  --warning-500: oklch(0.7200 0.1500 65.00);
+  --warning-600: oklch(0.6200 0.1500 65.00);
+  --warning-700: oklch(0.5200 0.1350 65.00);
+  --warning-800: oklch(0.4200 0.1125 65.00);
+  --warning-900: oklch(0.3200 0.0825 65.00);
+  --warning-950: oklch(0.2200 0.0525 65.00);
+
+  /* ---- danger (utility) ---- */
+  --danger-50: oklch(0.9800 0.0330 25.00);
+  --danger-100: oklch(0.9500 0.0660 25.00);
+  --danger-200: oklch(0.9000 0.1210 25.00);
+  --danger-300: oklch(0.8400 0.1760 25.00);
+  --danger-400: oklch(0.7900 0.2090 25.00);
+  --danger-500: oklch(0.7200 0.2200 25.00);
+  --danger-600: oklch(0.6200 0.2200 25.00);
+  --danger-700: oklch(0.5200 0.1980 25.00);
+  --danger-800: oklch(0.4200 0.1650 25.00);
+  --danger-900: oklch(0.3200 0.1210 25.00);
+  --danger-950: oklch(0.2200 0.0770 25.00);
+
+  /* ---- info (utility) ---- */
+  --info-50: oklch(0.9800 0.0210 240.00);
+  --info-100: oklch(0.9500 0.0420 240.00);
+  --info-200: oklch(0.9000 0.0770 240.00);
+  --info-300: oklch(0.8400 0.1120 240.00);
+  --info-400: oklch(0.7900 0.1330 240.00);
+  --info-500: oklch(0.7200 0.1400 240.00);
+  --info-600: oklch(0.6200 0.1400 240.00);
+  --info-700: oklch(0.5200 0.1260 240.00);
+  --info-800: oklch(0.4200 0.1050 240.00);
+  --info-900: oklch(0.3200 0.0770 240.00);
+  --info-950: oklch(0.2200 0.0490 240.00);
+
+  /* ---- Raw sizes (rem) ---- */
+  --size-1: 0.25rem;
+  --size-2: 0.5rem;
+  --size-3: 0.75rem;
+  --size-4: 1rem;
+  --size-5: 1.25rem;
+  --size-6: 1.5rem;
+  --size-7: 2rem;
+  --size-8: 3rem;
+  --size-9: 4rem;
   --size-10: 5rem;
   --size-12: 6rem;
   --size-16: 8rem;
 
   /* Touchscreen minimum tap target — 4rem = 64px @ 16px root. */
   --tap-min: 4rem;
+
+  /* Shell layout — rail widths (rem) */
+  --rail-collapsed: 4rem;
+  --rail-expanded: 8.4375rem;
+  --panel-width: 24rem;
 }
