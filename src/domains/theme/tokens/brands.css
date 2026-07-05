@@ -9,47 +9,150 @@
  */
 
 :root, [data-brand="eos"] {
-  --brand:        var(--amber-500);
-  --brand-strong: var(--amber-400);
-  --brand-soft:   var(--amber-200);
-  --brand-ink:    var(--ink-900);
-  --focus-ring:   var(--amber-500);
+  --brand:            var(--amber-500);
+  --brand-strong:     var(--amber-400);
+  --brand-soft:       var(--amber-200);
+  --brand-ink:        var(--ink-900);
+  --focus-ring:       var(--amber-500);
+  --brand-alt:        var(--amber-ember-500);
+  --brand-alt-strong: var(--amber-ember-400);
+  --brand-alt-soft:   var(--amber-ember-200);
+  --surface-base:     var(--mocha-900);
+  --surface-raised:   var(--mocha-800);
+  --surface-overlay:  var(--mocha-700);
+  --surface-sunken:   var(--mocha-950);
+  --surface-deep:     var(--mocha-975);
+  --surface-input:    var(--mocha-700);
+  --surface-inverse:  var(--amber-500);
+  --hairline:         var(--mocha-600);
+  --gradient-hero:    var(--gradient-amber-aurora);
 }
 
 [data-brand="news"] {
-  --brand:        var(--cyan-500);
-  --brand-strong: var(--cyan-400);
-  --brand-soft:   var(--cyan-200);
-  --brand-ink:    var(--ink-900);
-  --focus-ring:   var(--cyan-500);
+  --brand:            var(--cyan-500);
+  --brand-strong:     var(--cyan-400);
+  --brand-soft:       var(--cyan-200);
+  --brand-ink:        var(--ink-900);
+  --focus-ring:       var(--cyan-500);
+  --brand-alt:        var(--cyan-ice-500);
+  --brand-alt-strong: var(--cyan-ice-400);
+  --brand-alt-soft:   var(--cyan-ice-200);
+  --surface-base:     var(--slate-900);
+  --surface-raised:   var(--slate-800);
+  --surface-overlay:  var(--slate-700);
+  --surface-sunken:   var(--slate-950);
+  --surface-deep:     var(--slate-975);
+  --surface-input:    var(--slate-700);
+  --surface-inverse:  var(--cyan-500);
+  --hairline:         var(--slate-600);
+  --gradient-hero:    var(--gradient-cyan-aurora);
 }
 
 [data-brand="vibes"] {
-  --brand:        var(--magenta-500);
-  --brand-strong: var(--magenta-400);
-  --brand-soft:   var(--magenta-200);
-  --brand-ink:    var(--ink-50);
-  --focus-ring:   var(--magenta-500);
+  --brand:            var(--magenta-500);
+  --brand-strong:     var(--magenta-400);
+  --brand-soft:       var(--magenta-200);
+  --brand-ink:        var(--ink-50);
+  --focus-ring:       var(--magenta-500);
+  --brand-alt:        var(--magenta-orchid-500);
+  --brand-alt-strong: var(--magenta-orchid-400);
+  --brand-alt-soft:   var(--magenta-orchid-200);
+  --surface-base:     var(--ink-900);
+  --surface-raised:   var(--ink-800);
+  --surface-overlay:  var(--ink-700);
+  --surface-sunken:   var(--ink-950);
+  --surface-deep:     var(--ink-975);
+  --surface-input:    var(--ink-700);
+  --surface-inverse:  var(--magenta-500);
+  --hairline:         var(--ink-600);
+  --gradient-hero:    var(--gradient-magenta-aurora);
 }
 
 /* Free accents — always available regardless of active brand. */
 :root {
   --accent-amber: var(--amber-500);
+  --accent-amber-strong: var(--amber-400);
+  --accent-amber-soft: var(--amber-200);
   --accent-cyan: var(--cyan-500);
+  --accent-cyan-strong: var(--cyan-400);
+  --accent-cyan-soft: var(--cyan-200);
   --accent-magenta: var(--magenta-500);
+  --accent-magenta-strong: var(--magenta-400);
+  --accent-magenta-soft: var(--magenta-200);
+  --accent-amber-ember: var(--amber-ember-500);
+  --accent-amber-ember-strong: var(--amber-ember-400);
+  --accent-amber-ember-soft: var(--amber-ember-200);
+  --accent-cyan-ice: var(--cyan-ice-500);
+  --accent-cyan-ice-strong: var(--cyan-ice-400);
+  --accent-cyan-ice-soft: var(--cyan-ice-200);
+  --accent-magenta-orchid: var(--magenta-orchid-500);
+  --accent-magenta-orchid-strong: var(--magenta-orchid-400);
+  --accent-magenta-orchid-soft: var(--magenta-orchid-200);
   --accent-lime: var(--lime-500);
+  --accent-lime-strong: var(--lime-400);
+  --accent-lime-soft: var(--lime-200);
   --accent-violet: var(--violet-500);
+  --accent-violet-strong: var(--violet-400);
+  --accent-violet-soft: var(--violet-200);
   --accent-coral: var(--coral-500);
+  --accent-coral-strong: var(--coral-400);
+  --accent-coral-soft: var(--coral-200);
   --accent-teal: var(--teal-500);
+  --accent-teal-strong: var(--teal-400);
+  --accent-teal-soft: var(--teal-200);
   --accent-rose: var(--rose-500);
+  --accent-rose-strong: var(--rose-400);
+  --accent-rose-soft: var(--rose-200);
+  --accent-crimson: var(--crimson-500);
+  --accent-crimson-strong: var(--crimson-400);
+  --accent-crimson-soft: var(--crimson-200);
+  --accent-orange: var(--orange-500);
+  --accent-orange-strong: var(--orange-400);
+  --accent-orange-soft: var(--orange-200);
+  --accent-gold: var(--gold-500);
+  --accent-gold-strong: var(--gold-400);
+  --accent-gold-soft: var(--gold-200);
+  --accent-chartreuse: var(--chartreuse-500);
+  --accent-chartreuse-strong: var(--chartreuse-400);
+  --accent-chartreuse-soft: var(--chartreuse-200);
+  --accent-emerald: var(--emerald-500);
+  --accent-emerald-strong: var(--emerald-400);
+  --accent-emerald-soft: var(--emerald-200);
+  --accent-jade: var(--jade-500);
+  --accent-jade-strong: var(--jade-400);
+  --accent-jade-soft: var(--jade-200);
+  --accent-sky: var(--sky-500);
+  --accent-sky-strong: var(--sky-400);
+  --accent-sky-soft: var(--sky-200);
+  --accent-azure: var(--azure-500);
+  --accent-azure-strong: var(--azure-400);
+  --accent-azure-soft: var(--azure-200);
+  --accent-indigo: var(--indigo-500);
+  --accent-indigo-strong: var(--indigo-400);
+  --accent-indigo-soft: var(--indigo-200);
+  --accent-purple: var(--purple-500);
+  --accent-purple-strong: var(--purple-400);
+  --accent-purple-soft: var(--purple-200);
+  --accent-plum: var(--plum-500);
+  --accent-plum-strong: var(--plum-400);
+  --accent-plum-soft: var(--plum-200);
+  --accent-fuchsia: var(--fuchsia-500);
+  --accent-fuchsia-strong: var(--fuchsia-400);
+  --accent-fuchsia-soft: var(--fuchsia-200);
+  --accent-pink: var(--pink-500);
+  --accent-pink-strong: var(--pink-400);
+  --accent-pink-soft: var(--pink-200);
 }
 
-/* Utility semantic aliases (danger/warning/info). */
+/* Utility semantic aliases. */
 :root {
-  --danger:     var(--danger-500);
-  --danger-ink: var(--ink-50);
-  --warning:     var(--warning-500);
-  --warning-ink: var(--ink-900);
-  --info:     var(--info-500);
-  --info-ink: var(--ink-50);
+  --danger:      var(--danger-500);
+  --danger-soft: var(--danger-soft-200);
+  --danger-ink:  var(--ink-50);
+  --warning:      var(--warning-500);
+  --warning-soft: var(--warning-soft-200);
+  --warning-ink:  var(--ink-50);
+  --info:      var(--info-500);
+  --info-soft: var(--info-soft-200);
+  --info-ink:  var(--ink-50);
 }
