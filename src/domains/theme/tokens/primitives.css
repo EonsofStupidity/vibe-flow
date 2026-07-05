@@ -768,11 +768,8 @@
   --gradient-magenta-fuchsia-mesh-2: radial-gradient(at 20% 20%, oklch(0.7900 0.2090 340.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7800 0.2280 345.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.5200 0.1980 340.00) 0%, transparent 65%), oklch(0.3200 0.1210 340.00);
   --gradient-emerald-cyan-mesh-2: radial-gradient(at 20% 20%, oklch(0.7200 0.1360 150.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.1500 210.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.3600 0.1568 150.00) 0%, transparent 65%), oklch(0.1800 0.1040 150.00);
   --gradient-orange-crimson-mesh-2: radial-gradient(at 20% 20%, oklch(0.7900 0.1710 50.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.6000 0.2200 20.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.5200 0.1620 50.00) 0%, transparent 65%), oklch(0.3200 0.0990 50.00);
-  --gradient-amber-magenta-mesh-2: radial-gradient(at 20% 20%, oklch(0.7900 0.1615 75.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.2200 340.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.5200 0.1530 75.00) 0%, transparent 65%), oklch(0.3200 0.0935 75.00);
   --gradient-amber-magenta-cyan-mesh-3: radial-gradient(at 15% 15%, oklch(0.7900 0.1615 75.00) 0%, transparent 55%), radial-gradient(at 85% 20%, oklch(0.7900 0.2090 340.00) 0%, transparent 55%), radial-gradient(at 50% 90%, oklch(0.7200 0.1500 210.00) 0%, transparent 60%), oklch(0.2200 0.0595 75.00);
-  --gradient-cyan-violet-mesh-2: radial-gradient(at 20% 20%, oklch(0.7900 0.1425 210.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.2000 290.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.5200 0.1350 210.00) 0%, transparent 65%), oklch(0.3200 0.0825 210.00);
   --gradient-cyan-violet-magenta-mesh-3: radial-gradient(at 15% 15%, oklch(0.7900 0.1425 210.00) 0%, transparent 55%), radial-gradient(at 85% 20%, oklch(0.7900 0.1900 290.00) 0%, transparent 55%), radial-gradient(at 50% 90%, oklch(0.7200 0.2200 340.00) 0%, transparent 60%), oklch(0.2200 0.0525 210.00);
-  --gradient-emerald-cyan-mesh-2: radial-gradient(at 20% 20%, oklch(0.7200 0.1360 150.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.1500 210.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.3600 0.1568 150.00) 0%, transparent 65%), oklch(0.1800 0.1040 150.00);
   --gradient-emerald-cyan-azure-mesh-3: radial-gradient(at 15% 15%, oklch(0.7200 0.1360 150.00) 0%, transparent 55%), radial-gradient(at 85% 20%, oklch(0.7900 0.1425 210.00) 0%, transparent 55%), radial-gradient(at 50% 90%, oklch(0.7200 0.1800 250.00) 0%, transparent 60%), oklch(0.1400 0.0672 150.00);
 
   /* ---- Space / radius / ratio ramps ---- */
@@ -809,12 +806,6 @@
   --ratio-cinema: 2.39 / 1;
   --ratio-portrait: 3 / 4;
   --ratio-golden: 1.618 / 1;
-
-  /* ---- Shell layout ---- */
-  --tap-min: 4rem;
-  --rail-collapsed: 4rem;
-  --rail-expanded: 8.4375rem;
-  --panel-width: 24rem;
 
   /* ---- Shadows / blurs / rings / glass / noise ---- */
   --shadow-1: 0 0.0625rem 0.125rem 0 oklch(0.10 0.01 260 / 0.28);
@@ -864,32 +855,56 @@
   --transition-modal: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 200ms linear;
   --transition-page: opacity 320ms cubic-bezier(0.2, 0, 0, 1);
 
-  /* ---- Fluid type ramp ---- */
-  --type-eyebrow: clamp(0.6875rem, calc(0.6563rem + 0.1302vw), 0.8125rem);
+  /* ---- Fluid XY scale (foundry/source/fluid/*.fluid.ts) ---- */
+  /* -- Type ramp -- */
+  --fs-eyebrow: clamp(0.6875rem, calc(0.6250rem + 0.2604vw), 0.9375rem);
   --leading-eyebrow: 1.4;
   --tracking-eyebrow: 0.08em;
-  --type-body-sm: clamp(0.8125rem, calc(0.7813rem + 0.1302vw), 0.9375rem);
+  --fs-body-sm: clamp(0.8125rem, calc(0.7813rem + 0.1302vw), 0.9375rem);
   --leading-body-sm: 1.5;
-  --type-body: clamp(0.9375rem, calc(0.9063rem + 0.1302vw), 1.0625rem);
+  --fs-body: clamp(0.9375rem, calc(0.8906rem + 0.1953vw), 1.1250rem);
   --leading-body: 1.55;
-  --type-body-lg: clamp(1.0625rem, calc(1.0156rem + 0.1953vw), 1.25rem);
+  --fs-body-lg: clamp(1.0625rem, calc(1.0156rem + 0.1953vw), 1.2500rem);
   --leading-body-lg: 1.5;
-  --type-h4: clamp(1.125rem, calc(1.0625rem + 0.2604vw), 1.375rem);
+  --fs-h4: clamp(1.1250rem, calc(1.0625rem + 0.2604vw), 1.3750rem);
   --leading-h4: 1.35;
   --tracking-h4: -0.005em;
-  --type-h3: clamp(1.375rem, calc(1.2813rem + 0.3906vw), 1.75rem);
+  --fs-h3: clamp(1.3750rem, calc(1.2813rem + 0.3906vw), 1.7500rem);
   --leading-h3: 1.25;
   --tracking-h3: -0.01em;
-  --type-h2: clamp(1.75rem, calc(1.5625rem + 0.7813vw), 2.5rem);
+  --fs-h2: clamp(1.7500rem, calc(1.5625rem + 0.7813vw), 2.5000rem);
   --leading-h2: 1.15;
   --tracking-h2: -0.015em;
-  --type-h1: clamp(2.25rem, calc(1.9375rem + 1.3021vw), 3.5rem);
+  --fs-h1: clamp(2.2500rem, calc(1.9375rem + 1.3021vw), 3.5000rem);
   --leading-h1: 1.05;
   --tracking-h1: -0.02em;
-  --type-display: clamp(3rem, calc(2.3750rem + 2.6042vw), 5.5rem);
+  --fs-display: clamp(3.0000rem, calc(2.3750rem + 2.6042vw), 5.5000rem);
   --leading-display: 0.98;
   --tracking-display: -0.03em;
-  --type-display-xl: clamp(4rem, calc(2.8750rem + 4.6875vw), 8.5rem);
+  --fs-display-xl: clamp(4.0000rem, calc(2.8750rem + 4.6875vw), 8.5000rem);
   --leading-display-xl: 0.94;
   --tracking-display-xl: -0.035em;
+  /* -- Spacing steps -- */
+  --sp-1: clamp(0.2500rem, calc(0.2188rem + 0.1302vw), 0.3750rem);
+  --sp-2: clamp(0.5000rem, calc(0.4375rem + 0.2604vw), 0.7500rem);
+  --sp-3: clamp(0.7500rem, calc(0.6563rem + 0.3906vw), 1.1250rem);
+  --sp-4: clamp(1.0000rem, calc(0.8750rem + 0.5208vw), 1.5000rem);
+  --sp-5: clamp(1.2500rem, calc(1.0938rem + 0.6510vw), 1.8750rem);
+  --sp-6: clamp(1.5000rem, calc(1.3125rem + 0.7813vw), 2.2500rem);
+  --sp-7: clamp(2.0000rem, calc(1.7500rem + 1.0417vw), 3.0000rem);
+  --sp-8: clamp(3.0000rem, calc(2.6250rem + 1.5625vw), 4.5000rem);
+  /* -- Radii -- */
+  --r-sm: clamp(0.2500rem, calc(0.2188rem + 0.1302vw), 0.3750rem);
+  --r-md: clamp(0.5000rem, calc(0.4375rem + 0.2604vw), 0.7500rem);
+  --r-lg: clamp(0.7500rem, calc(0.6563rem + 0.3906vw), 1.1250rem);
+  /* -- Shell chrome -- */
+  --rail-collapsed: clamp(3.5000rem, calc(3.3125rem + 0.7813vw), 4.2500rem);
+  --rail-expanded: clamp(8.5000rem, calc(8.0469rem + 1.8880vw), 10.3125rem);
+  --panel-width: clamp(20.0000rem, calc(18.0000rem + 8.3333vw), 28.0000rem);
+  --topbar-height: clamp(3.0000rem, calc(2.8125rem + 0.7813vw), 3.7500rem);
+  --bottombar-height: clamp(2.2500rem, calc(2.1250rem + 0.5208vw), 2.7500rem);
+  --tap-min: clamp(4.0000rem, calc(4.0000rem + 0.0000vw), 4.0000rem);
+  /* -- Slide chrome -- */
+  --slide-pad-x: clamp(1.0000rem, calc(0.2500rem + 3.1250vw), 4.0000rem);
+  --slide-pad-y: clamp(1.0000rem, calc(-0.3333rem + 3.3333svh), 3.0000rem);
 }

@@ -19,7 +19,6 @@ import { fileURLToPath } from "node:url";
 import { palettes } from "../source/palettes";
 import { brandBindings, defaultBrandId } from "../source/semantic/brand.semantic";
 import { gradientPairings } from "../source/semantic/gradients.semantic";
-import { typeRamp } from "../source/semantic/type.semantic";
 import { spaceRamp, radiusRamp, ratioRamp } from "../source/semantic/space.semantic";
 import { durations, easings, transitions } from "../source/semantic/motion.semantic";
 import {
@@ -29,7 +28,7 @@ import {
 import { LADDER_STEPS, type Ladder, type LadderStep } from "../foundry.types";
 import { buildLadder, oklchString } from "./transforms/oklch-ladder.transform";
 import { buildGradients, buildMeshes, type GradientToken } from "./transforms/gradient.transform";
-import { typeEntries } from "./transforms/type.transform";
+import { fluidGroups } from "./transforms/fluid.transform";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TOKENS_DIR = resolve(HERE, "../../tokens");
@@ -123,13 +122,6 @@ function writePrimitivesCss(built: readonly BuiltPalette[], meshes: readonly Gra
   for (const r of ratioRamp)  lines.push(`  --${r.name}: ${r.value};`);
   lines.push("");
 
-  lines.push("  /* ---- Shell layout ---- */");
-  lines.push("  --tap-min: 4rem;");
-  lines.push("  --rail-collapsed: 4rem;");
-  lines.push("  --rail-expanded: 8.4375rem;");
-  lines.push("  --panel-width: 24rem;");
-  lines.push("");
-
   lines.push("  /* ---- Shadows / blurs / rings / glass / noise ---- */");
   for (const e of shadowLadder)      lines.push(`  --${e.name}: ${e.value};`);
   for (const e of shadowBrandLadder) lines.push(`  --${e.name}: ${e.value};`);
@@ -145,8 +137,11 @@ function writePrimitivesCss(built: readonly BuiltPalette[], meshes: readonly Gra
   for (const m of transitions) lines.push(`  --${m.name}: ${m.value};`);
   lines.push("");
 
-  lines.push("  /* ---- Fluid type ramp ---- */");
-  for (const t of typeEntries(typeRamp)) lines.push(`  --${t.name}: ${t.value};`);
+  lines.push("  /* ---- Fluid XY scale (foundry/source/fluid/*.fluid.ts) ---- */");
+  for (const group of fluidGroups()) {
+    lines.push(`  /* -- ${group.label} -- */`);
+    for (const t of group.tokens) lines.push(`  --${t.name}: ${t.value};`);
+  }
   lines.push("}\n");
 
   writeFileSync(resolve(TOKENS_DIR, "primitives.css"), HEADER + lines.join("\n"));
@@ -271,7 +266,7 @@ function writeFoundryTokensTs(built: readonly BuiltPalette[], meshes: readonly G
   lines.push(emit("duration", durations));
   lines.push(emit("easing", easings));
   lines.push(emit("transition", transitions));
-  lines.push(emit("type", typeEntries(typeRamp)));
+  lines.push(emit("fluid", fluidGroups().flatMap((g) => g.tokens)));
 
   lines.push("export const brands = {");
   lines.push(brandObj.join("\n"));

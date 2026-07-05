@@ -30,7 +30,7 @@ export function TopBar() {
         >
           DevPULSE <span className="text-brand">Labs</span>
         </Link>
-        <span className="hidden truncate font-mono text-eyebrow uppercase tracking-[0.25em] text-ink-muted sm:inline">
+        <span className="min-w-0 truncate font-mono text-eyebrow uppercase tracking-[0.25em] text-ink-muted">
           {pathname}
         </span>
       </div>

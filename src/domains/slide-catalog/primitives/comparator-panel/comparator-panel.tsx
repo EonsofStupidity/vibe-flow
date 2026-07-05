@@ -49,7 +49,7 @@ export function ComparatorPanel({ heading, left, right }: ComparatorPanelProps) 
       {heading ? (
         <h2 className="font-display text-h1 font-semibold text-ink-strong">{heading}</h2>
       ) : null}
-      <div className="grid flex-1 grid-cols-1 gap-f5 [@media(min-width:64rem)]:grid-cols-2">
+      <div className="grid flex-1 gap-f5 [grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--size-16)),1fr))]">
         <Column side={left} />
         <Column side={right} />
       </div>

@@ -1,5 +1,7 @@
 /**
- * LeftRail — collapsible navigation rail (4rem ↔ 8.4375rem/135px).
+ * LeftRail — collapsible navigation rail. Width driven by the fluid XY
+ * foundation: collapsed 3.5→4.25rem, expanded 8.5→10.3125rem
+ * (hard-capped at 165px). See `src/domains/theme/foundry/source/fluid/shell.fluid.ts`.
  */
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Radio, Flame, GraduationCap, ChevronLeft, ChevronRight } from "lucide-react";
