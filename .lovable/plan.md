@@ -1,157 +1,108 @@
 ## Goal
-Blow out the token foundry from a 12-palette MVP into a scale/variety substrate — enough raw material for each property (EoS, News, Vibes) and every downstream slide/shell/effect to look genuinely distinct without ever hardcoding a hex.
 
-The rule stays: components read semantics only; the foundry does the volume, in TS source → generated CSS/TS, validated at build.
+One canonical Fluid XY foundation, generated at build time from a single math core, consumed everywhere (tokens, components, inline styles). No breakpoints. No hand-tuned `clamp()` strings scattered across files. No duplication between the foundry, `fluid.css`, and the runtime helpers.
 
-## Expansion tracks
+## Current mess (why hours felt wasted)
 
-### 1. Palette breadth (12 → ~34)
-Add whole hue families and multiple anchors per hue so we have room for variety without collisions.
+- `src/domains/fluid/utils/fluid.util.ts` + `fluid-y.util.ts` compute clamps at runtime call sites — fine, but nothing wires them into the token pipeline.
+- `src/domains/theme/tokens/fluid.css` is **hand-authored** clamps for `--fs-*`, `--sp-*`, `--r-*`, `--slide-pad-y` — parallel scale, out of sync with the foundry.
+- The foundry emits **static rem** `--size-*`, `--radius-*`, `--rail-*`, `--type-*` (some clamps from `typeRamp`, but spacing/radius/rail are flat). Same categories, three different generators, three different sources of truth.
+- Result: to change the fluid curve or the min/max viewport window, you have to hunt through the foundry, `fluid.css`, and every runtime call.
 
-- **Surfaces (1 → 4):** `ink` (cool neutral, current), `graphite` (warm neutral), `slate` (blue-cool), `mocha` (warm dark). Each is a `kind: "surface"` full 11-step ladder. Enables per-brand or per-episode surface swaps without touching semantics.
-- **Brand hues stay 3** but each grows a `-alt` sibling anchor (amber/amber-ember, cyan/cyan-ice, magenta/magenta-orchid) → 6 brand palettes total. Lets a single property express variants (title vs comparator vs still) via brand-level bindings, not ad-hoc color.
-- **Accent expansion (5 → ~18):** add `crimson, orange, gold, chartreuse, emerald, jade, sky, azure, indigo, purple, plum, fuchsia, pink` alongside existing `lime, teal, violet, coral, rose`. Every accent is a full ladder and exposed as `--accent-<name>`.
-- **Utility stays 3** (`danger`, `warning`, `info`) but each gets a `-soft` variant palette for badge/toast fills.
+## Fix — build the foundation once, drive everything through it
 
-Naming rule enforced in the palette-name validator: no color-family duplicates unless suffixed with a meaningful variant token (`-alt`, `-soft`, `-ember`, etc.).
+### 1. Single math core: `src/domains/fluid/utils/fluid-axis.util.ts` (new)
 
-### 2. Ladder + curve variety
-Right now every palette uses one curve × one chroma modulation. Add:
+Pure, tree-shakable. Both runtime and the foundry build script import this — no duplicated math anywhere.
 
-- **New curves:** `high-contrast` (steeper L delta at extremes), `low-key` (compressed range for muted surfaces), `luminous` (holds L high through 600 for neon vibes).
-- **New chroma modulations:** `peak-at-400`, `peak-at-600`, `bloom` (chroma rises with L for glass/aurora looks).
-- **Ladder extension:** add step `25` (near-white tint) and step `975` (near-black shadow) → 13 steps. Keeps Tailwind cadence but gives room for glassmorphism highlights and deep shadows without hitting pure black (validator still enforces L ≥ 0.10 on 975 and L ≤ 0.99 on 25).
-- Curves live in `build/transforms/curves.transform.ts` (already exists) — extend, don't fork.
-
-### 3. Gradient recipes (4 → 12 per eligible palette)
-Extend `gradient.transform.ts` with recipes so each brand/accent auto-emits:
-
-`linear`, `linear-soft`, `linear-vivid`, `radial`, `radial-spot`, `conic`, `conic-sweep`, `mesh-2` (two-palette blend), `mesh-3`, `duotone` (paired with ink surface), `sheen` (angled highlight), `aurora` (multi-stop OKLCH interpolation).
-
-Two-palette recipes are configured in `source/semantic/gradients.semantic.ts` (new file) listing legal pairings — e.g. `amber × magenta`, `cyan × violet` — so the generator doesn't emit N² combinations.
-
-### 4. Effects tokens (new primitive category)
-Add `source/effects/` producing new sections in `primitives.css`:
-
-- **Shadow ladder:** `--shadow-1..8`, plus branded variants `--shadow-brand-1..4` colored via `color-mix(in oklch, var(--brand) 30%, transparent)`. Generated so brand switch recolors shadows.
-- **Blur ladder:** `--blur-1..6` (2px → 48px).
-- **Glass presets:** `--glass-thin/medium/thick` (backdrop-filter compositions).
-- **Noise/grain:** `--noise-fine/coarse` (data-URL SVG turbulence baked at build).
-- **Ring ladder:** `--ring-1..4` widths.
-
-Components still consume via semantic aliases (`--shadow-card`, `--shadow-popover`, `--overlay-scrim`).
-
-### 5. Motion library (1 → tiered)
-Extend `semantics.css` (or split to `motion.semantic.css`):
-
-- Durations: `instant, fast, base, slow, slower, glacial` (75/120/200/320/480/720ms).
-- Easings: `standard, emphasized, decelerate, accelerate, bounce, spring-soft, spring-crisp`.
-- Named recipes: `--transition-hover`, `--transition-panel`, `--transition-modal`, `--transition-page`.
-
-### 6. Type scale + font stacks
-- Keep `Space Grotesk / Inter Tight / JetBrains Mono` as the default trio but register **font role slots**: `--font-display`, `--font-body`, `--font-mono`, `--font-editorial`, `--font-numeric`. Per-brand overrides live in `brands.css` (e.g. Vibes gets a display swap).
-- Fluid type ramp: `--type-eyebrow, body-sm, body, body-lg, h4, h3, h2, h1, display, display-xl` generated with `fluid()` clamps, plus paired `--leading-*` and `--tracking-*` ladders.
-
-### 7. Size / space / radius scale
-- Space ramp `size-0..24` (currently 1..16) + `size-px` (1px hairline) + fractional `size-1_5/2_5/3_5`.
-- Radius ramp: `sm, md, lg, xl, 2xl, pill, blob-1, blob-2` — blobs are asymmetric radii strings for organic shapes.
-- Aspect ratio tokens: `--ratio-square/video/cinema/portrait/golden`.
-
-### 8. Semantic surface roles (multi-brand aware)
-`semantics.css` gains role slots that resolve through the active brand's chosen surface palette:
-
-- `--surface-base/raised/overlay/sunken/input/inverse/glass/scrim`
-- `--ink-strong/default/muted/subtle/inverse/annotate/onBrand/onDanger`
-- `--border-hairline/strong/brand/focus`
-
-Brand bindings gain `surface: string` and `surfaceInverse: string` so EoS can sit on `mocha`, News on `slate`, Vibes on `ink`, without any component knowing.
-
-### 9. Runtime typing + validation
-- `foundry.tokens.ts` grows typed exports: `palette`, `gradient`, `shadow`, `blur`, `ring`, `motion`, `type`, `space`, `radius`, `ratio`, `brands`. Each is a `Record<name, "var(...)">` so runtime code (canvas, SVG, framer-motion) can bind by name.
-- Build validator (in `build-tokens.ts`) enforces: no L < 0.10 (except explicit `-975` step), no duplicate palette names, every brand binding references an existing palette, every gradient pairing references two existing palettes, every semantic alias resolves.
-- Build fails loudly on any breach — no silent drift.
-
-### 10. Docs + governance
-- Update `src/domains/theme/foundry/readme.md` with: palette taxonomy, when to add vs bind, how to add a curve/gradient recipe, the "never bypass semantics" rule.
-- Update `mem://design/token-architecture.md` and `mem://design/broadcast-console.md` to reflect the expanded ladder and multi-surface model.
-
-## What does NOT change
-- The three-layer contract (primitives → semantics → brands) is untouched.
-- No component code is edited; existing semantic class names keep working. New ones become available.
-- No new runtime dependencies. Still `culori` + valibot at build only.
-- No shadcn, no CVA, no re-exports, no shims.
-- No responsive breakpoints — everything scales via `fluid()` / rem.
-- Deck runtime routes remain chromeless; shell unaffected.
-
-## Technical details
-
-**File additions**
-```
-src/domains/theme/foundry/source/
-  palettes/               (+ ~22 new palette files, one per hue)
-  effects/
-    shadows.effect.ts
-    blurs.effect.ts
-    rings.effect.ts
-    glass.effect.ts
-    noise.effect.ts
-  semantic/
-    gradients.semantic.ts   (legal palette pairings)
-    surfaces.semantic.ts    (per-brand surface bindings)
-    type.semantic.ts        (fluid type ramp definitions)
-    motion.semantic.ts
-    space.semantic.ts
-  build/transforms/
-    curves.transform.ts     (extend with new curves)
-    gradient.transform.ts   (extend with 8 new recipes)
-    shadow.transform.ts     (new)
-    type.transform.ts       (new — emits fluid() clamp CSS)
-    validate.transform.ts   (new — build-time invariants)
-```
-
-**Generated outputs (regenerated by `bun run tokens`)**
-```
-src/domains/theme/tokens/
-  primitives.css   (much larger — ladders, gradients, shadows, blurs, noise, sizes, ratios)
-  semantics.css    (kept authored, but split into logical sections; no hand color literals)
-  brands.css       (per-brand surface/font/gradient/shadow overrides)
-src/domains/theme/foundry/foundry.tokens.ts   (expanded typed exports)
-```
-
-**Ladder change**
-Update `LadderStep` to include `25` and `975`, update `LADDER_STEPS`, extend `oklch-ladder.transform.ts` L targets per curve. Existing palettes get the two new steps automatically. `foundry.tokens.ts` consumers using numeric keys keep working; only additive change.
-
-**Brand binding shape**
 ```ts
-interface BrandBinding {
-  id: string;
-  palette: string;         // primary brand palette
-  paletteAlt?: string;     // optional sibling for variants
-  surface: string;         // surface palette name (ink/graphite/slate/mocha)
-  surfaceInverse: string;
-  ink: string;
-  inkStep: LadderStep;
-  brandStep?: LadderStep;
-  strongStep?: LadderStep;
-  softStep?: LadderStep;
-  fontDisplay?: string;    // optional per-brand display font var
-  gradientHero?: string;   // named gradient token to bind as --gradient-hero
+// axis: "x" uses vw, "y" uses svh; window bounds are configurable and default to project constants.
+export interface FluidAxisInput {
+  readonly min: number;   // value at minVp
+  readonly max: number;   // value at maxVp
+  readonly minVp?: number;
+  readonly maxVp?: number;
+  readonly axis?: "x" | "y";
+  readonly unit?: "rem" | "px";
 }
+export function fluidAxis(input: FluidAxisInput): string; // returns clamp(...)
+export function fluidRange(input: FluidAxisInput): FluidRange; // typed, non-stringified
 ```
 
-**Validation examples (fail build)**
-- Palette `foo` has anchor `l: 0.05` → "must be ≥ 0.10, use ink surface for dark".
-- Brand binding references palette `nonesuch` → "unknown palette".
-- Gradient pairing lists palette not in registry → hard fail.
+`fluid()` and `fluidY()` become thin wrappers over `fluidAxis({ axis: "x" })` / `{ axis: "y" }` — same output, no behavior change for existing call sites.
 
-## Rollout order (single build-mode pass)
-1. Extend types, curves, ladder steps, validator.
-2. Add new palette source files (surfaces, brand alts, accents, utility softs).
-3. Add effects sources + transforms.
-4. Add semantic source files (gradients, surfaces, type, motion, space).
-5. Extend `build-tokens.ts` to emit new sections + updated `foundry.tokens.ts`.
-6. Refresh `semantics.css` bindings (add new roles, keep old ones stable).
-7. Regenerate; verify `bun run tokens` clean; typecheck.
-8. Update foundry readme + memory files.
+### 2. Single window constants: `src/domains/fluid/config/fluid-window.const.ts` (new)
 
-No component edits, no route edits, no shell edits in this pass.
+```ts
+export const FLUID_X = { minVp: 24, maxVp: 120 } as const; // 384px → 1920px
+export const FLUID_Y = { minSvh: 40, maxSvh: 100 } as const;
+```
+
+Imported by the runtime util AND by the foundry transforms so type/space/radius scales are computed from the same window.
+
+### 3. Single scale source: `src/domains/theme/foundry/source/fluid/*.source.ts` (new)
+
+Typed scale declarations, one file per category — no CSS strings, just min/max pairs:
+
+- `type.fluid.ts` — `eyebrow, body-sm, body, body-lg, h3, h2, h1, display, display-xl` with min/max rem
+- `space.fluid.ts` — `f0..f10` with min/max rem
+- `radius.fluid.ts` — `sm, md, lg, xl, blob` with min/max rem
+- `shell.fluid.ts` — `rail-collapsed (3.5→4.25rem)`, `rail-expanded (8.5→10.3125rem = 165px cap)`, `panel-width`, `topbar-height`, `bottombar-height`
+- `slide.fluid.ts` — `slide-pad-y` on the Y axis, `slide-pad-x` on the X axis
+
+Every entry declares its axis (`"x"` default, `"y"` opt-in). This replaces the current `spaceRamp` / `radiusRamp` / hand-authored `fluid.css` values in one place.
+
+### 4. New foundry transform: `build/transforms/fluid.transform.ts` (new)
+
+```ts
+// Reads all *.fluid.ts sources, calls fluidAxis(...) for each entry,
+// returns [{ name, value }, ...] ready to write to primitives.css.
+export function fluidTokens(): readonly FluidToken[];
+```
+
+Emitted into `primitives.css` under a `/* Fluid scale (generated) */` block by `build-tokens.ts`, replacing the currently-inline Shell layout / space / radius sections. Names stay identical (`--rail-collapsed`, `--sp-3`, `--r-md`, `--fs-body`, etc.) so no downstream file breaks.
+
+### 5. Retire `src/domains/theme/tokens/fluid.css`
+
+Delete it. Every clamp that lives there is now emitted by the foundry from the single source. `tokens.css` drops the import of `fluid.css`. `styles.css` `@theme inline` block continues to reference `--fs-*` / `--sp-*` / `--r-*` — unchanged from Tailwind's POV.
+
+### 6. Runtime hook: `src/domains/fluid/hooks/useFluid.ts` (new, optional consumer surface)
+
+For rare cases where a component needs a clamp string at render time (SVG attributes, canvas, inline style props that can't take a CSS var):
+
+```ts
+export function useFluid(min: number, max: number, opts?: FluidAxisOptions): string;
+```
+
+Memoized, returns the same string `fluidAxis` would produce. Not used by default — token vars are always preferred.
+
+### 7. Runtime hook: `src/domains/fluid/hooks/useFluidBox.ts` (new)
+
+Reads `ResizeObserver` on a ref and returns `{ width, height, xt, yt }` where `xt`/`yt` are 0..1 progress across the fluid window — for components that want to *drive* their own interpolations (particle density, mesh stops) off the same window the tokens use. Container-driven, no `window` reads, SSR-safe (returns `null` until first observation).
+
+### 8. Types + readme
+
+- `src/domains/fluid/types/fluid.types.ts` extended with `FluidAxisInput`, `FluidToken`, `FluidBox`.
+- `src/domains/fluid/readme.md` rewritten as the canonical explainer: math core → window constants → scale sources → build transform → hooks. Names the exact file every kind of change goes in.
+- Update `mem://design/token-architecture.md` note that fluid scale is now foundry-generated from `src/domains/fluid/`.
+
+## What this fixes concretely
+
+- The Fluid XY foundation exists as one system: math core + window + typed scales + foundry emitter + hooks.
+- Every clamp on the site — type, spacing, radius, rail width, slide padding — comes from the same generator with the same window. Change `FLUID_X.maxVp` once and the entire site rescales.
+- Left rail becomes fluid clamp capped at 165px via `shell.fluid.ts` (`{ min: 8.5, max: 10.3125 }` rem) instead of a flat `8.4375rem`.
+- No breakpoints. Existing breakpoint offenders (`comparator-panel`, `top-bar`, `bottom-bar`) get container-driven equivalents in the same pass so the foundation stops being contradicted by component code.
+- `fluid.css` — the parallel hand-authored file — is gone.
+
+## Not touched
+
+- Palettes, brand bindings, gradients, effects, motion, ink colors — no changes.
+- Zustand shell store, routing, deck, slide-catalog primitives beyond the three breakpoint-removal edits already scoped.
+- No new deps. No shadcn. No JS at runtime for CSS values (hooks are opt-in).
+
+## Verify
+
+- `bun run tokens` regenerates `primitives.css`; diff shows the previously hand-written `--sp-*`, `--fs-*`, `--r-*`, `--rail-*` blocks now come from the foundry with byte-identical `clamp()` output (matches the current `fluid.css` values within rounding).
+- `rg -n "clamp\(" src/ --glob '!*.gen.ts' --glob '!primitives.css' --glob '!fluid-axis.util.ts'` → empty.
+- `rg -n "sm:|md:|lg:|xl:|@media" src/ --glob '!*.gen.ts' --glob '!*.css'` → empty.
+- Rail width interpolates smoothly 320px → 1920px, hard-capped at 165px, no jumps.
