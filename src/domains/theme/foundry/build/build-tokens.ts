@@ -266,7 +266,7 @@ function writeFoundryTokensTs(built: readonly BuiltPalette[], meshes: readonly G
   lines.push(emit("duration", durations));
   lines.push(emit("easing", easings));
   lines.push(emit("transition", transitions));
-  lines.push(emit("type", typeEntries(typeRamp)));
+  lines.push(emit("fluid", fluidGroups().flatMap((g) => g.tokens)));
 
   lines.push("export const brands = {");
   lines.push(brandObj.join("\n"));
