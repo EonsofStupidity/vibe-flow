@@ -105,7 +105,7 @@ function writePrimitivesCss(built: readonly BuiltPalette[]): void {
 function writeBrandsCss(built: readonly BuiltPalette[]): void {
   const byName = new Map(built.map((b) => [b.name, b]));
   const lines: string[] = [
-    HEADER.trim(),
+    "/**",
     "",
     "/**",
     " * Layer 3 — brand overrides + free accent tones.",
@@ -162,7 +162,7 @@ function writeBrandsCss(built: readonly BuiltPalette[]): void {
 
 function writeFoundryTokensTs(built: readonly BuiltPalette[]): void {
   const lines: string[] = [
-    HEADER.trim(),
+    "/**",
     "",
     "/**",
     " * Typed token lookup for runtime code. Every entry resolves to a",
