@@ -65,7 +65,7 @@ const ROW_BASE = [
   "hover:before:scale-y-100 hover:before:opacity-100 focus-visible:before:scale-y-100 focus-visible:before:opacity-100",
   "data-[hovered]:before:scale-y-100 data-[hovered]:before:opacity-100",
   // tonal glass sweep via ::after
-  "after:pointer-events-none after:absolute after:inset-[0.125rem] after:rounded-f-sm after:bg-[var(--rail-sheen)] after:opacity-0",
+  "after:pointer-events-none after:absolute after:inset-[0.125rem] after:rounded-f-sm after:bg-[image:var(--rail-sheen)] after:opacity-0",
   "after:transition-opacity after:duration-[var(--motion-duration-base)] after:ease-[var(--motion-ease-standard)]",
   "hover:after:opacity-100 focus-visible:after:opacity-100 data-[hovered]:after:opacity-100",
   // reduced motion

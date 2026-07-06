@@ -20,7 +20,7 @@ export const tooltipVariants = tv({
       "font-mono uppercase tracking-[0.15em] backdrop-blur-xl backdrop-saturate-150",
       "shadow-[var(--tooltip-shadow)] ring-1 ring-[var(--tooltip-ring)]",
       "[text-shadow:var(--tooltip-text-shadow)] will-change-[transform,opacity,filter] outline-none",
-      "before:pointer-events-none before:absolute before:inset-0 before:bg-[var(--tooltip-sheen)] before:content-['']",
+      "before:pointer-events-none before:absolute before:inset-0 before:bg-[image:var(--tooltip-sheen)] before:content-['']",
       "motion-reduce:transition-none",
     ].join(" "),
     arrow: [
