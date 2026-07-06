@@ -30,6 +30,8 @@ import { LADDER_STEPS, type Ladder, type LadderStep } from "../foundry.types";
 import { buildLadder, oklchString } from "./transforms/oklch-ladder.transform";
 import { buildGradients, buildMeshes, type GradientToken } from "./transforms/gradient.transform";
 import { fluidGroups } from "./transforms/fluid.transform";
+import { assertContrast, type BuiltPaletteSummary } from "./transforms/contrast.transform";
+import { TONES, CATEGORIES } from "../source/effects/effects.matrix";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TOKENS_DIR = resolve(HERE, "../../tokens");
