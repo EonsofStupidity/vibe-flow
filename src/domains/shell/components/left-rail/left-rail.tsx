@@ -92,16 +92,21 @@ const LABEL_FX = [
   "motion-reduce:transition-none",
 ].join(" ");
 
+/**
+ * Publish the row-local `--rail-*` vars as pass-throughs of the effects
+ * matrix column for this tone. The rail declares no color logic itself —
+ * swap a tone (or add a new one to `effects.matrix.ts`) and every hover /
+ * focus / active / press state re-tints automatically.
+ */
 function toneStyle(tone: TooltipTone): CSSProperties {
-  const toneVar = `var(--tooltip-bg-${tone})`;
   return {
-    ["--rail-tone" as string]: toneVar,
-    ["--rail-glass" as string]: `color-mix(in oklch, ${toneVar} 16%, transparent)`,
-    ["--rail-active-glass" as string]: `color-mix(in oklch, ${toneVar} 22%, transparent)`,
-    ["--rail-sheen" as string]: `linear-gradient(115deg in oklch, color-mix(in oklch, ${toneVar} 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%)`,
-    ["--rail-shadow" as string]: `0 0 0 0.0625rem color-mix(in oklch, ${toneVar} 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, ${toneVar} 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent)`,
-    ["--rail-focus-shadow" as string]: `0 0 0 0.125rem color-mix(in oklch, ${toneVar} 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, ${toneVar} 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent)`,
-    ["--rail-active-shadow" as string]: `inset 0 0 0 0.0625rem color-mix(in oklch, ${toneVar} 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, ${toneVar} 60%, transparent)`,
+    ["--rail-tone" as string]: `var(--fx-surface-${tone})`,
+    ["--rail-glass" as string]: `var(--fx-wash-${tone})`,
+    ["--rail-active-glass" as string]: `var(--fx-glass-${tone})`,
+    ["--rail-sheen" as string]: `var(--fx-sheen-${tone})`,
+    ["--rail-shadow" as string]: `var(--fx-halo-${tone})`,
+    ["--rail-focus-shadow" as string]: `var(--fx-halo-focus-${tone})`,
+    ["--rail-active-shadow" as string]: `var(--fx-halo-active-${tone})`,
   } as CSSProperties;
 }
 
