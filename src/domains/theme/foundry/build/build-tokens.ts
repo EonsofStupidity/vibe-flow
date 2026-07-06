@@ -84,6 +84,7 @@ function build(): void {
   const meshes = buildMeshes(gradientPairings, ladderMap);
 
   writePrimitivesCss(built, meshes);
+  writeEffectsCss();
   writeBrandsCss(built);
   writeFoundryTokensTs(built, meshes);
 
@@ -92,6 +93,36 @@ function build(): void {
   console.log(
     `[foundry] wrote ${built.length} palettes, ${stepCount} steps, ${gradientCount} gradients, ${brandBindings.length} brands`,
   );
+}
+
+/**
+ * Emit `src/domains/theme/tokens/effects.css` — the tone × category matrix.
+ * One `:root` block per category so a diff shows exactly which column
+ * changed when a recipe is edited.
+ */
+function writeEffectsCss(): void {
+  const matrix = buildEffectsMatrix();
+  const lines: string[] = [
+    "/**",
+    " * Layer 2a — effects matrix (tone × category).",
+    " *",
+    " * Every cell is `--fx-<category>-<tone>`. Components read from here",
+    " * directly — never re-declare per-domain shadow / glass / edge vars.",
+    " * See src/domains/theme/foundry/source/effects/effects.matrix.ts for",
+    " * the recipes; add a category or tone there, then re-run `bun run tokens`.",
+    " */",
+    "",
+  ];
+  for (const col of matrix) {
+    lines.push(`:root {`);
+    lines.push(`  /* ---- ${col.category} ---- */`);
+    for (const cell of col.cells) {
+      lines.push(`  --${cell.name}: ${cell.value};`);
+    }
+    lines.push(`}`);
+    lines.push("");
+  }
+  writeFileSync(resolve(TOKENS_DIR, "effects.css"), HEADER + lines.join("\n"));
 }
 
 function writePrimitivesCss(built: readonly BuiltPalette[], meshes: readonly GradientToken[]): void {
