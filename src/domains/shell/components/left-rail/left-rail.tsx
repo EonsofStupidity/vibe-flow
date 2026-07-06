@@ -40,55 +40,69 @@ const NAV: readonly NavItem[] = [
  */
 const ROW_BASE = [
   // layout + tap
-  "group relative isolate tap-target flex items-center gap-f3 rounded-f-md px-f3",
+  "group relative isolate tap-target flex items-center gap-f3 overflow-hidden rounded-f-md px-f3",
   "font-mono text-eyebrow uppercase tracking-[0.2em] text-ink-muted",
   // outline/focus
   "outline-none",
   "focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
   // motion baseline
-  "transition-[background-color,color,box-shadow,transform] duration-[var(--motion-duration-base)] ease-[var(--motion-ease-emphasized)]",
+  "transition-[background-color,color,box-shadow,transform,filter] duration-[var(--motion-duration-base)] ease-[var(--motion-ease-emphasized)]",
   // halo via box-shadow (no pseudo, keeps SSR clean)
   "shadow-[0_0_0_0_transparent]",
   // hover / focus-visible / RAC data states
   "hover:text-[var(--rail-tone)] focus-visible:text-[var(--rail-tone)]",
   "data-[hovered]:text-[var(--rail-tone)] data-[focus-visible]:text-[var(--rail-tone)]",
-  "hover:bg-[color-mix(in_oklch,var(--rail-tone)_10%,transparent)]",
-  "hover:shadow-[0_0_0_0.25rem_color-mix(in_oklch,var(--rail-tone)_18%,transparent)]",
-  "focus-visible:shadow-[0_0_0_0.25rem_color-mix(in_oklch,var(--rail-tone)_22%,transparent)]",
+  "hover:bg-[var(--rail-glass)] focus-visible:bg-[var(--rail-glass)] data-[hovered]:bg-[var(--rail-glass)]",
+  "hover:[box-shadow:var(--rail-shadow)] focus-visible:[box-shadow:var(--rail-focus-shadow)] data-[hovered]:[box-shadow:var(--rail-shadow)]",
+  "hover:backdrop-blur-md focus-visible:backdrop-blur-md",
   // press
   "active:scale-[0.98] data-[pressed]:scale-[0.98]",
   // left tone bar via ::before
-  "before:pointer-events-none before:absolute before:left-0 before:top-1/2 before:h-[60%] before:w-[0.1875rem]",
+  "before:pointer-events-none before:absolute before:left-0 before:top-1/2 before:z-10 before:h-[64%] before:w-[0.1875rem]",
   "before:-translate-y-1/2 before:origin-center before:scale-y-0 before:rounded-full",
-  "before:bg-[var(--rail-tone)] before:opacity-0",
-  "before:transition-[transform,opacity] before:duration-[var(--motion-duration-base)] before:ease-[var(--motion-ease-emphasized)]",
-  "hover:before:scale-y-100 hover:before:opacity-100",
-  "focus-visible:before:scale-y-100 focus-visible:before:opacity-100",
+  "before:bg-[var(--rail-tone)] before:opacity-0 before:shadow-[0_0_1rem_var(--rail-tone)]",
+  "before:transition-[transform,opacity,box-shadow] before:duration-[var(--motion-duration-base)] before:ease-[var(--motion-ease-emphasized)]",
+  "hover:before:scale-y-100 hover:before:opacity-100 focus-visible:before:scale-y-100 focus-visible:before:opacity-100",
+  "data-[hovered]:before:scale-y-100 data-[hovered]:before:opacity-100",
+  // tonal glass sweep via ::after
+  "after:pointer-events-none after:absolute after:inset-[0.125rem] after:rounded-f-sm after:bg-[image:var(--rail-sheen)] after:opacity-0",
+  "after:transition-opacity after:duration-[var(--motion-duration-base)] after:ease-[var(--motion-ease-standard)]",
+  "hover:after:opacity-100 focus-visible:after:opacity-100 data-[hovered]:after:opacity-100",
   // reduced motion
-  "motion-reduce:transition-none motion-reduce:before:transition-none motion-reduce:hover:transform-none",
+  "motion-reduce:transition-none motion-reduce:before:transition-none motion-reduce:after:transition-none motion-reduce:hover:transform-none",
 ].join(" ");
 
 const ROW_ACTIVE = [
-  "bg-[color-mix(in_oklch,var(--rail-tone)_14%,transparent)]",
+  "bg-[var(--rail-active-glass)] [box-shadow:var(--rail-active-shadow)]",
   "text-[var(--rail-tone)]",
   "before:scale-y-100 before:opacity-100",
 ].join(" ");
 
 const ICON_FX = [
-  "h-5 w-5 shrink-0 transition-transform duration-[var(--motion-duration-fast)] ease-[var(--motion-ease-emphasized)]",
-  "group-hover:translate-x-[0.125rem] group-hover:scale-110",
-  "group-focus-visible:translate-x-[0.125rem] group-focus-visible:scale-110",
-  "motion-reduce:transform-none group-hover:motion-reduce:transform-none",
+  "relative z-20 h-5 w-5 shrink-0 transition-[color,filter,transform] duration-[var(--motion-duration-fast)] ease-[var(--motion-ease-emphasized)]",
+  "group-hover:translate-x-[0.125rem] group-hover:scale-110 group-hover:drop-shadow-[0_0_0.75rem_var(--rail-tone)]",
+  "group-focus-visible:translate-x-[0.125rem] group-focus-visible:scale-110 group-focus-visible:drop-shadow-[0_0_0.75rem_var(--rail-tone)]",
+  "motion-reduce:transform-none motion-reduce:filter-none group-hover:motion-reduce:transform-none",
 ].join(" ");
 
 const LABEL_FX = [
-  "truncate transition-[letter-spacing] duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
+  "relative z-20 truncate transition-[letter-spacing,text-shadow] duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
   "group-hover:tracking-[0.24em] group-focus-visible:tracking-[0.24em]",
+  "group-hover:[text-shadow:0_0_0.75rem_var(--rail-tone)] group-focus-visible:[text-shadow:0_0_0.75rem_var(--rail-tone)]",
   "motion-reduce:transition-none",
 ].join(" ");
 
 function toneStyle(tone: TooltipTone): CSSProperties {
-  return { ["--rail-tone" as string]: `var(--tooltip-bg-${tone})` } as CSSProperties;
+  const toneVar = `var(--tooltip-bg-${tone})`;
+  return {
+    ["--rail-tone" as string]: toneVar,
+    ["--rail-glass" as string]: `color-mix(in oklch, ${toneVar} 16%, transparent)`,
+    ["--rail-active-glass" as string]: `color-mix(in oklch, ${toneVar} 22%, transparent)`,
+    ["--rail-sheen" as string]: `linear-gradient(115deg in oklch, color-mix(in oklch, ${toneVar} 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%)`,
+    ["--rail-shadow" as string]: `0 0 0 0.0625rem color-mix(in oklch, ${toneVar} 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, ${toneVar} 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent)`,
+    ["--rail-focus-shadow" as string]: `0 0 0 0.125rem color-mix(in oklch, ${toneVar} 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, ${toneVar} 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent)`,
+    ["--rail-active-shadow" as string]: `inset 0 0 0 0.0625rem color-mix(in oklch, ${toneVar} 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, ${toneVar} 60%, transparent)`,
+  } as CSSProperties;
 }
 
 export function LeftRail() {
@@ -108,7 +122,7 @@ export function LeftRail() {
         {NAV.map((item) => {
           const active = pathname === item.to;
           return (
-            <TooltipTrigger key={item.label} delay={220} closeDelay={80}>
+            <TooltipTrigger key={item.label} delay={120} closeDelay={80}>
               <Focusable>
                 <Link
                   to={item.to}
@@ -131,7 +145,7 @@ export function LeftRail() {
         })}
       </nav>
 
-      <TooltipTrigger delay={220} closeDelay={80}>
+      <TooltipTrigger delay={120} closeDelay={80}>
         <Focusable>
           <button
             type="button"
