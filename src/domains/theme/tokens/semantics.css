@@ -53,4 +53,24 @@
   /* ----------------------------- Shell heights ------------------------------ */
   --topbar-height:    3.5rem;
   --bottombar-height: 2.5rem;
+
+  /* -------------------------------- Tooltip -------------------------------- */
+  --tooltip-bg-neutral:  color-mix(in oklch, var(--surface-overlay) 92%, var(--ink-950) 8%);
+  --tooltip-ink-neutral: var(--ink-strong);
+  --tooltip-bg-brand:    var(--brand);
+  --tooltip-ink-brand:   var(--brand-ink);
+  --tooltip-bg-info:     var(--info);
+  --tooltip-ink-info:    var(--info-ink);
+  --tooltip-bg-warning:  var(--warning);
+  --tooltip-ink-warning: var(--warning-ink);
+  --tooltip-bg-danger:   var(--danger);
+  --tooltip-ink-danger:  var(--danger-ink);
+  --tooltip-bg-lime:     var(--accent-lime);
+  --tooltip-bg-cyan:     var(--accent-cyan);
+  --tooltip-bg-magenta:  var(--accent-magenta);
+  --tooltip-bg-violet:   var(--accent-violet);
+  --tooltip-bg-coral:    var(--accent-coral);
+  --tooltip-ink-on-accent: var(--ink-inverse);
+  --tooltip-ring:        var(--focus-ring);
+  --tooltip-shadow:      var(--shadow-popover);
 }
