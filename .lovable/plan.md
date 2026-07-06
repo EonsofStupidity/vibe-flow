@@ -1,173 +1,118 @@
 
-# Plan — Effects Matrix + RAC Template Library
+# Revised Plan — Aligned Pass
 
-Two coordinated tracks. Track A fixes the token architecture so any component picks effects from a shared matrix instead of inventing `--tooltip-*` / `--rail-*` per domain. Track B stands up the presentation/lesson template library on top of that matrix. Nothing gets deleted until the replacement is proven; existing tooltip + left-rail work stays until it migrates onto the new tokens.
+Fresh read of current posture. Findings that reshape the remaining work:
 
----
+### What changed since the original plan
 
-## Track A — Effects Matrix (theme tokens)
+- Track A steps 1–4 already shipped and verified live. `effects.matrix.ts` + generated `effects.css` are in place; `tooltipVariants` and left-rail `toneStyle()` consume `--fx-<cat>-<tone>` pass-throughs; the tooltip token spam in `semantics.css` is gone.
+- `culori@^4.0.2` (+ `@types/culori`) is already a dependency — no install needed for the contrast gate.
+- `foundry.types.ts` already carries typed `Ladder` / `Oklch` shapes and `buildLadder()` already enforces the "never pure black" floor. The contrast gate slots in beside those checks.
 
-### Goal
-One 2-D grid of tokens:
-- **Rows = tones** (`neutral`, `brand`, `info`, `warning`, `danger`, `lime`, `cyan`, `magenta`, `violet`, `coral`, plus future).
-- **Columns = effect categories** (`surface`, `glass`, `edge`, `ring`, `shadow`, `glow`, `sheen`, `halo`, `text-shadow`, `background`, `outline`, `noise`, plus future).
+### Boundary corrections to the earlier plan
 
-Every cell is a CSS var: `--fx-<category>-<tone>` (e.g. `--fx-glow-cyan`, `--fx-glass-magenta`, `--fx-sheen-brand`). Adding a new category = one new file that appends a column across all tones. Adding a new tone = one new palette + one line per category. Nothing in components changes.
+The earlier plan drifted from established conventions. Corrections:
 
-### File layout (new)
-
-```text
-src/domains/theme/foundry/source/effects/
-  tones.effect.ts          # canonical tone list (single source of truth)
-  categories/
-    surface.category.ts    # solid tone-tinted fills
-    glass.category.ts      # translucent tone fills for backdrop-blur surfaces
-    edge.category.ts       # hairline / border tone
-    ring.category.ts       # focus + selection rings
-    shadow.category.ts     # depth ladder tinted by tone
-    glow.category.ts       # outer glow / drop-shadow tint
-    sheen.category.ts      # diagonal linear-gradient sweep
-    halo.category.ts       # composed box-shadow stack (border + drop + inset highlight)
-    text-shadow.category.ts
-    background.category.ts # top-of-app background washes (ambient tone bloom)
-    noise.category.ts      # tone-tinted grain overlays
-  effects.matrix.ts        # cross-product builder: for each tone × category → tokens
-  effects.types.ts         # ToneName, EffectCategory, MatrixCell types
-```
-
-The foundry build already emits `primitives.css` → `semantics.css`. Add `effects.css` between them, generated from `effects.matrix.ts`:
-
-```text
-src/domains/theme/tokens/
-  primitives.css   (generated, unchanged)
-  effects.css      (generated, NEW — one section per category, one row per tone)
-  semantics.css    (authored, thinned — role aliases only, no tone-scoped copies)
-  brands.css       (generated, unchanged)
-```
-
-`tokens.css` imports in order: primitives → effects → semantics → brands.
-
-### Backgrounds (top layer)
-
-New `background.category.ts` emits ambient page washes that live at the shell root, not scoped per domain:
-
-- `--fx-background-base` — the neutral app canvas (currently spread across `--surface-deep`, `--surface`, `--surface-raised` — those stay but the shell reads `--fx-background-base`).
-- `--fx-background-bloom-<tone>` — a large soft radial-gradient bloom keyed off the active brand or the currently focused domain, applied to `<body>` or `<AppShell>` as `background-image`. Swappable via a single data-attribute on the shell.
-- `--fx-background-grain` — noise overlay layer.
-
-The `top-bar`, `bottom-bar`, `left-rail`, `right-panel` all read the same background tokens — no component re-declares surface colors.
-
-### Component migration
-
-Every existing component that currently declares `--tooltip-bg-*`, `--rail-tone`, `--rail-glass`, `--rail-shadow`, etc. changes to read the matrix:
-
-- Tooltip drops the entire `--tooltip-bg-<tone>` / `--tooltip-glass-<tone>` / `--tooltip-edge-<tone>` blocks in `semantics.css`. Its variant recipe sets `[--tone:<tone>]` once and the CSS reads `var(--fx-glass-<tone>)`, `var(--fx-edge-<tone>)`, etc.
-- LeftRail row keeps the `--tone` local var but stops synthesizing shadows/sheens inline in `toneStyle()`. Instead it reads `var(--fx-halo-<tone>)`, `var(--fx-sheen-<tone>)`, `var(--fx-glow-<tone>)` directly.
-- Any future primitive (button, popover, menu, dialog, toast, badge, tab) uses the same pattern — pick a tone, read from the matrix.
-
-### WCAG / WAI-ARIA compliance pass
-
-- Every tone × surface pairing gets a contrast check baked into the foundry build (fail the build if the tone's `--fx-ink-*` pair on `--fx-glass-*` drops below 4.5:1 for body / 3:1 for large text). Uses culori's contrast math already in the foundry.
-- `--fx-ring-focus` is a distinct token (not brand) so focus-visible is always high-contrast against any tone surface.
-- Motion tokens gain a `motion-reduce` mirror: `--fx-motion-*-reduced` = `0ms` / `linear`, and utilities respect `prefers-reduced-motion` automatically.
-- All interactive primitives keep `.tap-target` (min 4rem).
-
-### Deliverables (Track A)
-
-1. New effects source files + matrix builder + types.
-2. Regenerated `effects.css` (added to `tokens.css` import chain).
-3. Thinned `semantics.css` (removes per-domain tone token spam).
-4. Tooltip + LeftRail migrated to the matrix (behavior identical, tokens sourced centrally).
-5. Foundry build extended with contrast assertion + a docs page (`src/domains/theme/foundry/readme.md` addendum) showing the tone×category grid.
+1. **Folder is `src/domains/slide-catalog/primitives/`, not `templates/`.** Project memory says "compose from `slide-catalog/primitives/`, promote before reuse." Everything content-driven ships as a new primitive under that same folder.
+2. **`SlideDefinition.kind` stays as `"title" | "still" | "comparator" | "custom"`.** New primitives register as `kind: "custom"` — the deck domain is not modified.
+3. **Do not touch existing primitives** (`SlideFrame`, `TitleCard`, `CalloutBadge`, `StillZoomable`, `ComparatorPanel`). Per user memory, unsolicited changes to unrelated domain logic are forbidden. New tone-aware content primitives are added alongside them; existing ones keep their current tone system (`neutral | live` / brand-scoped) untouched.
+4. **Slide-catalog primitives adopt the split file layout** (`<name>.tsx` + `<name>.types.ts` + `<name>.variants.ts` + `readme.md`) **only for the new ones**. Matches the UI-primitives rule in `src/domains/ui/readme.md`; existing single-file primitives remain as-is.
+5. **Interactive state stays Jotai-per-slide** per workspace guidance ("Jotai for feature workflow UI"). Primitives expose optional controlled props; uncontrolled instances use an internal atom scoped by an `id` prop.
+6. **`data-no-swipe`** on every zoomable / scrollable / dragged surface so `useSwipeNav` doesn't hijack the gesture (matches `StillZoomable` / `ComparatorPanel`).
 
 ---
 
-## Track B — RAC Presentation/Lesson Template Library
+## Track A — Step 5 (Contrast gate + docs)
 
-### Goal
+### Where it lands
+New file `src/domains/theme/foundry/build/transforms/contrast.transform.ts`. Consumed once per build from `build-tokens.ts`, immediately after `validate(built)`.
 
-A set of owned RAC template components under `src/domains/slide-catalog/templates/` that accept **content as a typed prop** and render fully interactive, touchscreen-ready slides. Each template is fluid XY (rem + `fluid()` / `fluidY()`), reads only from the effects matrix (Track A), and is WAI-ARIA correct via RAC.
+### What it asserts
+Uses `culori.wcagContrast()` against the resolved OKLCH triples the ladder transform already produces:
 
-### Template catalog (v1)
+- **Brand pairs** — for every `BrandBinding`, `ladder[brandStep]` vs `ink-ladder[inkStep]` must meet **WCAG AA large text (3:1)** and be reported for normal text (4.5:1). Hard fail on <3:1.
+- **Utility pairs** — `danger` / `warning` / `info` at step 500 vs the configured `--<util>-ink` step. Hard fail on <3:1.
+- **Free-accent readout** — every `kind: "accent"` palette at step 500 vs `--ink-strong` is measured and printed to the build log at info level (no fail). This surfaces which accents are safe on light ink without preventing edits.
 
-| Template            | Content prop shape                                                    | Interactions                                                    |
-| ------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `TitleTemplate`     | `{ kicker?, title, subtitle?, tone }`                                 | none (hero)                                                     |
-| `BulletsTemplate`   | `{ title, tone, bullets: {id, label, detail?}[] }`                    | tap/keyboard-reveal per bullet, RAC `ListBox` selection         |
-| `ComparatorTemplate`| `{ title, left, right, criteria: {label, leftValue, rightValue}[] }`  | RAC `ToggleButton` per criterion to highlight side              |
-| `StatsTemplate`     | `{ title, stats: {value, label, tone}[] }`                            | tap-to-flip card (RAC `ToggleButton`) for detail                |
-| `TimelineTemplate`  | `{ title, milestones: {when, label, detail}[] }`                      | RAC `Slider` for scrubbing, tap milestone → expand              |
-| `QuizTemplate`      | `{ prompt, options: {id, label, correct?}[], mode: "single"\|"multi"}`| RAC `RadioGroup`/`CheckboxGroup`, reveal on submit              |
-| `CalloutTemplate`   | `{ tone, title, body, cta? }`                                         | optional RAC `Button` CTA                                       |
-| `MediaTemplate`     | `{ title?, src, alt, caption?, hotspots?: {x,y,label}[] }`            | RAC `Tooltip` on each hotspot                                   |
-| `DiagramTemplate`   | `{ nodes, edges, activeId? }`                                         | RAC `Focusable` nodes, tap→highlight, keyboard walk             |
-| `CodeTemplate`      | `{ title, language, code, highlights?: number[] }`                    | none (readonly), copy button via RAC `Button`                   |
+The gate operates on numeric OKLCH triples — it never has to parse `color-mix()` strings from the matrix. The matrix inherits confidence from the pairs the gate proves.
 
-Each template:
-- Lives at `src/domains/slide-catalog/templates/<name>/<name>.tsx` + `.types.ts` + `.variants.ts` + `readme.md`.
-- Accepts `tone: ToneName` prop → sets `[--tone:<tone>]` once → reads matrix tokens.
-- Accepts `density: "comfy" | "compact"` → drives fluid scale + card min-heights per the slides-app density budget.
-- Uses `SlideFrame` as its outer container (already exists).
-- Ships example usage in its `readme.md`.
+### Reduced-motion tokens (semantics-only sibling of the matrix)
+Add three tokens to `semantics.css` (authored file, single edit):
+- `--motion-duration-reduced: 0.01ms;`
+- `--motion-ease-reduced: linear;`
+- `--motion-transition-reduced: none;`
 
-### Author ergonomics
+Existing `motion-reduce:` Tailwind variants keep working; primitives that inline a `[transition:...]` value can read the reduced token behind a `@media (prefers-reduced-motion: reduce)` block in `styles.css`. No component churn — only future primitives use it.
 
-A slide file becomes pure data:
+### Docs
+Append a "Effects matrix" section to `src/domains/theme/foundry/readme.md` with a rendered tone × category table (generated from `buildEffectsMatrix()` at build time, written to the readme's fenced block — no manual sync).
 
-```tsx
-// src/episodes/ep-000-template/slides/05-comparator.slide.tsx
-import { ComparatorTemplate } from "@/domains/slide-catalog/templates/comparator/comparator";
-
-export default function Slide() {
-  return (
-    <ComparatorTemplate
-      tone="cyan"
-      title="GB10 vs Desktop"
-      left={{ label: "GB10 Cluster", tone: "cyan" }}
-      right={{ label: "Single Workstation", tone: "magenta" }}
-      criteria={[
-        { label: "Throughput",  leftValue: "4.2x", rightValue: "1x"   },
-        { label: "Latency P99", leftValue: "38ms", rightValue: "112ms"},
-      ]}
-    />
-  );
-}
-```
-
-No custom markup, no per-slide styling, no per-slide color decisions — the tone prop drives every visual state through the effects matrix.
-
-### Touchscreen guarantees
-
-- Every interactive element is min 4rem via `.tap-target` at the primitive level.
-- Hit targets are edge-anchored (top/bottom/side padding rails) — nothing critical in center bottom where thumbs sit.
-- `usePinchZoom` + `useSwipeNav` hooks (already present) are wired into every template that has zoomable/swipeable content.
-- `hover:` effects are duplicated on `data-[pressed]` / `data-[focus-visible]` so touch and keyboard get parity with mouse.
-
-### Deliverables (Track B)
-
-1. `src/domains/slide-catalog/templates/` scaffolding with the 10 templates above (start with `Title`, `Bullets`, `Comparator`, `Stats`, `Callout` in first pass; queue the rest).
-2. Shared `template.types.ts` with `ToneName`, `Density`, and a discriminated union of all template prop shapes for router-driven or JSON-driven decks later.
-3. `src/domains/slide-catalog/readme.md` updated with the template catalog table.
-4. One demo episode (`src/episodes/ep-001-template-showcase/`) that renders every template once so regressions are visible.
+### Deliverables
+1. `contrast.transform.ts` + integration in `build-tokens.ts`.
+2. Reduced-motion tokens in `semantics.css`.
+3. Readme section auto-emitted by the build.
+4. Verified with `bun run tokens` — build must still pass; any real contrast failure is a signal, not something to suppress.
 
 ---
 
-## Technical notes
+## Track B — First-pass content-driven primitives
 
-- **Zero shadcn / Radix / CVA** — RAC + tailwind-variants only, per project memory.
-- **Zero breakpoints** — every size uses `fluid()` / `fluidY()` from the fluid domain.
-- **Zero raw hex/rgb** — everything reads matrix tokens; the matrix is OKLCH end-to-end.
-- **Zero per-domain color declarations** — components ship a `tone` prop and consume `--fx-*-<tone>` from CSS. `semantics.css` shrinks; `effects.css` (generated) grows.
-- **No backend, no Cloud, no auth** — presentation library is local-only per project scope.
-- **Named exports only, kebab-case files, WAI-ARIA via RAC** — enforced by existing UI-primitive rules.
-- **Build gates**: foundry contrast check on tone×surface pairs; typecheck on the discriminated template prop union so misconfigured slides fail at build.
+All under `src/domains/slide-catalog/primitives/`, each in its own folder with the split layout. Every primitive:
+- Accepts `tone: ToneName` (imported from `@/domains/theme/foundry/source/effects/effects.matrix`).
+- Sets one row of `[--tone-*:var(--fx-*-<tone>)]` locals and reads the matrix — zero color logic in the component.
+- Wraps interactive elements in owned RAC primitives (`Button`, `ToggleButton`, `TooltipTrigger`, `Focusable`, or new RAC primitives added as needed).
+- Enforces `.tap-target` at every interactive leaf.
+- Applies `data-no-swipe` on any surface that owns the gesture.
+- Uses `fluid()` / `fluidY()` / rem-based token classes (`p-f5`, `text-h2`, `rounded-f-md`) — never breakpoints, never hex.
+
+### Primitives added (this pass)
+
+| Primitive        | Folder                                | New RAC primitives needed          |
+| ---------------- | ------------------------------------- | ---------------------------------- |
+| `BulletsList`    | `primitives/bullets-list/`            | none (uses `Focusable` + list markup) |
+| `StatsGrid`      | `primitives/stats-grid/`              | none (uses owned `ToggleButton` for flip) |
+| `CalloutCard`    | `primitives/callout-card/`            | none (uses owned `Button` for CTA) |
+| `MediaHotspots`  | `primitives/media-hotspots/`          | uses `TooltipTrigger` per hotspot  |
+| `CodeBlock`      | `primitives/code-block/`              | uses owned `Button` for copy       |
+
+### Primitives deferred to a second pass (need new RAC UI primitives first)
+
+| Primitive   | Blocked on new UI primitive                                          |
+| ----------- | --------------------------------------------------------------------- |
+| `Timeline`  | `src/domains/ui/slider/` (RAC `Slider`)                              |
+| `QuizPoll`  | `src/domains/ui/radio-group/` + `src/domains/ui/checkbox-group/`     |
+| `DiagramMap`| `src/domains/ui/focus-ring/` node walker (or reuse `Focusable`)      |
+
+Adding those UI primitives is boundary-clean but doubles the surface area of one pass. Deferring keeps this turn tight; a follow-up turn ships each new UI primitive under `src/domains/ui/<name>/` with `.tsx` + `.types.ts` + `.variants.ts` + `readme.md` then wires the slide-catalog primitive on top.
+
+### Reference episode
+New folder `src/episodes/ep-001-catalog-showcase/` renders each new primitive once as a `kind: "custom"` slide, so any regression in tone application, contrast, or interaction is visible immediately. Registered via `registerDeck()` at import time exactly like `ep-000-template`.
+
+### Shared type surface
+New `src/domains/slide-catalog/primitives/types.ts` (single flat file, no `types/` folder — matches the domain scope) exporting:
+- `ToneName` re-exported from the effects matrix source so slide files import from the slide-catalog domain, not from theme internals.
+- `Density = "comfy" | "compact"` — drives per-primitive padding / min-height.
+- No discriminated union of prop shapes at this stage. That was speculative in the earlier plan and only pays off once a JSON deck loader exists.
+
+---
+
+## Technical notes (unchanged, re-affirmed)
+
+- RAC only — no shadcn / Radix / CVA.
+- `tailwind-variants` for slot/variant recipes.
+- OKLCH end-to-end via matrix; no hex/rgb; no per-domain color declarations.
+- No breakpoints; `fluid()` / `fluidY()` only.
+- Named exports, kebab-case files, hypermodular colocation.
+- No re-exports, no shims, no backwards-compat glue.
+- `sideEffects: false` respected — every new file is tree-shakeable.
+- WAI-ARIA / APG compliance inherited from RAC; nothing hand-rolled.
+- No backend, no Cloud, no auth touched.
 
 ## Order of execution (once approved)
 
-1. Track A steps 1–3 (matrix + effects.css + thinned semantics) — no visible change.
-2. Track A step 4 (migrate Tooltip + LeftRail) — visible parity check.
-3. Track A step 5 (contrast gate + docs).
-4. Track B first-pass templates (`Title`, `Bullets`, `Comparator`, `Stats`, `Callout`) + showcase episode.
-5. Track B remaining templates (`Timeline`, `Quiz`, `Media`, `Diagram`, `Code`).
+1. Track A step 5 — contrast gate + reduced-motion tokens + auto-emitted readme table. One typecheck + one `bun run tokens` at the end.
+2. Track B first-pass primitives — `BulletsList`, `StatsGrid`, `CalloutCard`, `MediaHotspots`, `CodeBlock` — each with its own readme and one showcase slide.
+3. Register `ep-001-catalog-showcase` and verify each primitive renders correctly with three different tones.
+4. Report back with the deferred UI-primitive queue (`Slider`, `RadioGroup`, `CheckboxGroup`) so you decide the sequencing for pass two.
 
-Each step ends with a typecheck + visual check in the running preview.
+Each step ends with a typecheck and a live-preview visual check.
