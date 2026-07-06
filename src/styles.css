@@ -114,19 +114,79 @@
   container-type: size;
 }
 
-/* Tooltip enter/exit keyframes — driven by RAC data-entering / data-exiting
- * on <Tooltip>. Slide direction comes from data-placement=* which we read
- * in the variant via arbitrary selectors. */
-@keyframes tooltip-in {
-  from { opacity: 0; transform: scale(0.96) translate(var(--tt-tx, 0), var(--tt-ty, 0)); }
-  to   { opacity: 1; transform: scale(1) translate(0, 0); }
+/* RAC tooltip motion — scoped to the owned tooltip primitive. */
+@utility tooltip-motion {
+  --tt-tx: 0;
+  --tt-ty: 0;
+  --tt-scale: 0.92;
+  transform-origin: center;
+
+  &[data-placement="top"] {
+    --tt-ty: 0.375rem;
+    transform-origin: center bottom;
+  }
+
+  &[data-placement="bottom"] {
+    --tt-ty: -0.375rem;
+    transform-origin: center top;
+  }
+
+  &[data-placement="left"] {
+    --tt-tx: 0.375rem;
+    transform-origin: right center;
+  }
+
+  &[data-placement="right"] {
+    --tt-tx: -0.375rem;
+    transform-origin: left center;
+  }
+
+  &[data-entering] {
+    animation: tooltip-glass-in var(--motion-duration-base) var(--motion-ease-emphasized) both;
+  }
+
+  &[data-exiting] {
+    animation: tooltip-glass-out var(--motion-duration-fast) var(--motion-ease-standard) both;
+  }
 }
-@keyframes tooltip-out {
-  from { opacity: 1; transform: scale(1) translate(0, 0); }
-  to   { opacity: 0; transform: scale(0.98) translate(var(--tt-tx, 0), var(--tt-ty, 0)); }
+
+@keyframes tooltip-glass-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--tt-tx), var(--tt-ty), 0) scale(var(--tt-scale));
+    filter: blur(0.3125rem) saturate(0.72);
+  }
+  62% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1.035);
+    filter: blur(0) saturate(1.45);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0) saturate(1.2);
+  }
 }
-[data-placement="top"]    { --tt-ty: 0.25rem; --tt-tx: 0; }
-[data-placement="bottom"] { --tt-ty: -0.25rem; --tt-tx: 0; }
-[data-placement="left"]   { --tt-tx: 0.25rem; --tt-ty: 0; }
-[data-placement="right"]  { --tt-tx: -0.25rem; --tt-ty: 0; }
+
+@keyframes tooltip-glass-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0) saturate(1.2);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(var(--tt-tx), var(--tt-ty), 0) scale(0.96);
+    filter: blur(0.1875rem) saturate(0.86);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip-motion[data-entering],
+  .tooltip-motion[data-exiting] {
+    animation: none;
+    transform: none;
+    filter: none;
+  }
+}
 

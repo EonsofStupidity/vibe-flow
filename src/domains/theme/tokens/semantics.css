@@ -55,22 +55,51 @@
   --bottombar-height: 2.5rem;
 
   /* -------------------------------- Tooltip -------------------------------- */
-  --tooltip-bg-neutral:  color-mix(in oklch, var(--surface-overlay) 92%, var(--ink-950) 8%);
-  --tooltip-ink-neutral: var(--ink-strong);
+  --tooltip-bg-neutral:  color-mix(in oklch, var(--surface-overlay) 72%, var(--ink-strong) 28%);
   --tooltip-bg-brand:    var(--brand);
-  --tooltip-ink-brand:   var(--brand-ink);
   --tooltip-bg-info:     var(--info);
-  --tooltip-ink-info:    var(--info-ink);
   --tooltip-bg-warning:  var(--warning);
-  --tooltip-ink-warning: var(--warning-ink);
   --tooltip-bg-danger:   var(--danger);
-  --tooltip-ink-danger:  var(--danger-ink);
   --tooltip-bg-lime:     var(--accent-lime);
   --tooltip-bg-cyan:     var(--accent-cyan);
   --tooltip-bg-magenta:  var(--accent-magenta);
   --tooltip-bg-violet:   var(--accent-violet);
   --tooltip-bg-coral:    var(--accent-coral);
-  --tooltip-ink-on-accent: var(--ink-inverse);
-  --tooltip-ring:        var(--focus-ring);
-  --tooltip-shadow:      var(--shadow-popover);
+
+  --tooltip-ink-neutral: var(--ink-strong);
+  --tooltip-ink-brand:   var(--ink-strong);
+  --tooltip-ink-info:    var(--ink-strong);
+  --tooltip-ink-warning: var(--ink-strong);
+  --tooltip-ink-danger:  var(--ink-strong);
+  --tooltip-ink-on-accent: var(--ink-strong);
+
+  --tooltip-glass-neutral: color-mix(in oklch, var(--surface-overlay) 66%, transparent);
+  --tooltip-glass-brand:   color-mix(in oklch, var(--tooltip-bg-brand) 34%, transparent);
+  --tooltip-glass-info:    color-mix(in oklch, var(--tooltip-bg-info) 34%, transparent);
+  --tooltip-glass-warning: color-mix(in oklch, var(--tooltip-bg-warning) 34%, transparent);
+  --tooltip-glass-danger:  color-mix(in oklch, var(--tooltip-bg-danger) 36%, transparent);
+  --tooltip-glass-lime:    color-mix(in oklch, var(--tooltip-bg-lime) 34%, transparent);
+  --tooltip-glass-cyan:    color-mix(in oklch, var(--tooltip-bg-cyan) 34%, transparent);
+  --tooltip-glass-magenta: color-mix(in oklch, var(--tooltip-bg-magenta) 34%, transparent);
+  --tooltip-glass-violet:  color-mix(in oklch, var(--tooltip-bg-violet) 34%, transparent);
+  --tooltip-glass-coral:   color-mix(in oklch, var(--tooltip-bg-coral) 36%, transparent);
+
+  --tooltip-edge-neutral: color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --tooltip-edge-brand:   color-mix(in oklch, var(--tooltip-bg-brand) 58%, var(--ink-strong) 12%);
+  --tooltip-edge-info:    color-mix(in oklch, var(--tooltip-bg-info) 58%, var(--ink-strong) 12%);
+  --tooltip-edge-warning: color-mix(in oklch, var(--tooltip-bg-warning) 58%, var(--ink-strong) 12%);
+  --tooltip-edge-danger:  color-mix(in oklch, var(--tooltip-bg-danger) 62%, var(--ink-strong) 12%);
+  --tooltip-edge-lime:    color-mix(in oklch, var(--tooltip-bg-lime) 58%, var(--ink-strong) 12%);
+  --tooltip-edge-cyan:    color-mix(in oklch, var(--tooltip-bg-cyan) 58%, var(--ink-strong) 12%);
+  --tooltip-edge-magenta: color-mix(in oklch, var(--tooltip-bg-magenta) 58%, var(--ink-strong) 12%);
+  --tooltip-edge-violet:  color-mix(in oklch, var(--tooltip-bg-violet) 58%, var(--ink-strong) 12%);
+  --tooltip-edge-coral:   color-mix(in oklch, var(--tooltip-bg-coral) 62%, var(--ink-strong) 12%);
+
+  --tooltip-highlight: color-mix(in oklch, var(--ink-strong) 24%, transparent);
+  --tooltip-lowlight:  color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --tooltip-ring:      color-mix(in oklch, var(--tooltip-edge) 70%, transparent);
+  --tooltip-glow:      color-mix(in oklch, var(--tooltip-tone) 42%, transparent);
+  --tooltip-sheen:     linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--tooltip-tone) 20%, transparent) 100%);
+  --tooltip-shadow:    0 0.875rem 2.75rem -1.125rem var(--tooltip-glow), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 var(--tooltip-highlight), inset 0 -0.0625rem 0 var(--tooltip-lowlight);
+  --tooltip-text-shadow: 0 0 0.875rem color-mix(in oklch, var(--tooltip-tone) 44%, transparent);
 }
