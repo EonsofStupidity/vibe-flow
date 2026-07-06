@@ -7,6 +7,8 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Radio, Flame, GraduationCap, ChevronLeft, ChevronRight } from "lucide-react";
 import { Tooltip, TooltipTrigger } from "@/domains/ui/tooltip/tooltip";
 import type { TooltipTone } from "@/domains/ui/tooltip/tooltip.types";
+import { useShellStore } from "../../state/shell.store";
+import { cn } from "@/domains/ui/utils/cn.util";
 
 interface NavItem {
   readonly to: string;
