@@ -33,21 +33,22 @@ import { Tooltip, TooltipTrigger } from "@/domains/ui/tooltip/tooltip";
 
 ## Tone tokens
 
-Each tone reads `--tooltip-bg-<tone>` and `--tooltip-ink-<tone>` from
-`src/domains/theme/tokens/semantics.css`. Accent tones share
-`--tooltip-ink-on-accent` (defaulted to `--ink-inverse`). Because tokens are
-resolved at paint, a `data-brand` swap re-tints `brand` tooltips automatically.
+Every tone is resolved through the **effects matrix**
+(`src/domains/theme/foundry/source/effects/effects.matrix.ts` →
+`src/domains/theme/tokens/effects.css`). The variant recipe sets one row of
+`[--tooltip-*:var(--fx-*-<tone>)]` local vars and the surface reads them —
+the tooltip primitive itself declares no color logic. Adding a new tone is
+one entry in `TONES` (matrix) plus one line in `tooltipVariants.variants.tone`.
 
-Contrast — verified against OKLCH anchors:
+| tone     | glass source           | edge source           | ink source              |
+| -------- | ---------------------- | --------------------- | ----------------------- |
+| neutral  | `--fx-glass-neutral`   | `--fx-edge-neutral`   | `--fx-ink-neutral`      |
+| brand    | `--fx-glass-brand`     | `--fx-edge-brand`     | `--fx-ink-brand`        |
+| info / warning / danger | `--fx-glass-<tone>`  | `--fx-edge-<tone>` | `--fx-ink-<tone>` |
+| lime / cyan / magenta / violet / coral | `--fx-glass-<tone>` | `--fx-edge-<tone>` | `--fx-ink-<tone>` |
 
-| tone     | bg source           | ink source              |
-| -------- | ------------------- | ----------------------- |
-| neutral  | `--surface-overlay` + 8% `--ink-950` mix | `--ink-strong` |
-| brand    | `--brand`           | `--brand-ink`           |
-| info     | `--info`            | `--info-ink`            |
-| warning  | `--warning`         | `--warning-ink`         |
-| danger   | `--danger`          | `--danger-ink`          |
-| lime/cyan/magenta/violet/coral | `--accent-<name>` | `--ink-inverse` |
+A `data-brand` swap on any ancestor re-tints `brand` tooltips automatically
+because the matrix cell resolves to `var(--brand)` at paint time.
 
 ## Accessibility
 
