@@ -1,90 +1,112 @@
-# Content Auto-Fit + Palette Expansion
+# RAC Tooltip Primitive + LeftRail Wiring
 
-Two independent tracks. Both build on the fluid XY foundation already shipped — no new math, no breakpoints, no shortcuts.
+Goal: A production-grade, WAI-ARIA APG-compliant tooltip primitive under `src/domains/ui/tooltip/` that supports a variety of tone colors (semantic + brand + accent), animated enter/exit with placement-aware transforms, and is wired into every link in `LeftRail`. No shadcn, no Radix, no CVA — pure RAC + `tailwind-variants` + our semantic tokens. All values OKLCH via existing token layer; sizing/offsets in `rem`.
 
----
+## Scope
+- New primitive only: `src/domains/ui/tooltip/`.
+- Small addition to `semantics.css` for tooltip role tokens (bg/ink/ring per tone, arrow inheritance).
+- Small addition to `motion.semantic.ts` if a `transition-tooltip` recipe is missing (reuse existing durations/easings — no new math).
+- Refactor `LeftRail` nav links to wrap in `TooltipTrigger` and render `Tooltip` content with a per-item tone.
+- No changes to fluid system, no changes to brand palettes, no changes to router or store.
 
-## Track 1 — Content auto-resize primitives
+## Files
 
-The shell already publishes the inner content rect via `ShellSizeContext`, and `useFluidBox` exposes `{ width, height, xt, yt }` for any element. What is missing is a **canonical set of container primitives** so every future slide/panel/widget inherits fluid behavior without hand-rolling `ResizeObserver` or clamp strings.
+Created
+- `src/domains/ui/tooltip/tooltip.tsx` — owned RAC wrapper. Exports:
+  - `TooltipTrigger` (re-typed re-export of `TooltipTrigger` from RAC — required by RAC contract; this is not a shim, it's a named surface with our types).
+  - `Tooltip` — renders `AriaTooltip` + `OverlayArrow` with variants applied.
+- `src/domains/ui/tooltip/tooltip.types.ts` — `TooltipProps` extending `AriaTooltipProps` with `tone`, `size`, `placement`, `offset`, `showArrow`.
+- `src/domains/ui/tooltip/tooltip.variants.ts` — `tailwind-variants` recipe: base, `tone`, `size`, arrow variants; all state via RAC `data-entering` / `data-exiting` / `data-placement=*`.
+- `src/domains/ui/tooltip/readme.md` — usage + WAI-ARIA notes, tone matrix, examples.
 
-### New domain: `src/domains/fluid/`
+Edited
+- `src/domains/theme/tokens/semantics.css` — add tooltip role tokens (see Tokens).
+- `src/domains/shell/components/left-rail/left-rail.tsx` — wrap each `Link` with `TooltipTrigger` + `Tooltip`, cycle tones across nav items so the rail demonstrates variety.
 
-#### 1. `hooks/useContentSize.ts`
-Thin, typed re-export of `useShellSize()` for consumption outside the shell domain — keeps content components from importing shell internals. Returns `{ width, height, dpr, xt, yt }` (adds the 0..1 progress the raw context doesn't compute).
+Nothing deleted. No exports moved. No barrel files.
 
-#### 2. `hooks/useFluidScale.ts`
-`useFluidScale({ minPx, maxPx, axis? }) → number` — returns the current interpolated numeric value (not a clamp string) using the SAME `FLUID_X/Y` windows. For SVG viewBox math, canvas draws, framer-motion values.
+## Tokens (semantics.css additions)
 
-#### 3. `components/fluid-frame/fluid-frame.tsx`
-```tsx
-<FluidFrame ratio="16/9" min="20rem" max="80rem">…</FluidFrame>
+Add a role block; values are derived from existing brand/accent/utility tokens so they follow `data-brand` swaps automatically. All OKLCH via already-defined vars.
+
 ```
-- Self-observing container that clamps its own width via `--fluid-frame-w: clamp(min, 100cqi, max)` using container queries (`container-type: inline-size`).
-- Publishes `--frame-w` / `--frame-h` custom properties on itself so children can read local size without a hook.
-- Sets `aspect-ratio` from `ratio` prop.
-- Zero JS at steady state — pure CSS containment.
+--tooltip-bg-neutral:  color-mix(in oklch, var(--surface-overlay) 92%, var(--ink-950) 8%);
+--tooltip-ink-neutral: var(--ink-strong);
+--tooltip-bg-brand:    var(--brand);
+--tooltip-ink-brand:   var(--brand-ink);
+--tooltip-bg-info:     var(--info);
+--tooltip-ink-info:    var(--ink-on-info);
+--tooltip-bg-warning:  var(--warning);
+--tooltip-ink-warning: var(--ink-on-warning);
+--tooltip-bg-danger:   var(--danger);
+--tooltip-ink-danger:  var(--ink-on-danger);
+--tooltip-bg-accent-1: var(--accent-lime);
+--tooltip-bg-accent-2: var(--accent-cyan);
+--tooltip-bg-accent-3: var(--accent-magenta);
+--tooltip-bg-accent-4: var(--accent-violet);
+--tooltip-bg-accent-5: var(--accent-coral);
+--tooltip-ring:        var(--focus-ring);
+--tooltip-shadow:      var(--shadow-popover);
+--tooltip-radius:      var(--r-md);
+--tooltip-offset:      0.5rem;
+```
 
-#### 4. `components/fluid-stack.tsx` and `fluid-grid.tsx`
-- `FluidStack`: vertical stack whose gap uses `--sp-*` tokens by "density" prop (`compact | comfortable | spacious`).
-- `FluidGrid`: container-driven auto-fit grid — `grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr))` where `--col-min` is a fluid token. This is what replaces every `sm:/md:/lg:grid-cols-*` in the codebase.
+Accent ink resolves via `color-mix(in oklch, <bg> 100%, transparent) contrast` fallback → we set `--tooltip-ink-accent: var(--ink-inverse)` and per-accent overrides only when contrast requires it (verified per accent from existing ramps; documented in the tooltip readme).
 
-#### 5. `utils/fluid-container.util.ts`
-Emits the CSS var payload for a container: `containerType`, `containerName`, and the `--frame-*` publishing rules. Used by `FluidFrame` and any custom container that needs the same contract.
+## Variants (tailwind-variants)
 
-#### 6. `styles.css` additions (in `src/styles.css`)
-- `@utility container-q { container-type: inline-size; }`
-- `@utility container-qy { container-type: size; }`
-- Container-query variants aren't Tailwind-native in v4 without config; register `--breakpoint-*` alternatives as **container-query tokens only** (no viewport media queries).
+Base classes:
+- `rounded-f-md px-f3 py-f2 font-mono text-eyebrow uppercase tracking-[0.15em]`
+- `shadow-[var(--tooltip-shadow)] ring-1 ring-[color-mix(in_oklch,var(--tooltip-ring)_40%,transparent)]`
+- `will-change-[transform,opacity]`
+- Enter/exit via RAC data attrs:
+  - `data-[entering]:animate-in data-[entering]:fade-in-0 data-[entering]:zoom-in-95`
+  - `data-[exiting]:animate-out data-[exiting]:fade-out-0 data-[exiting]:zoom-out-95`
+  - Placement-directional slides using `data-[placement=top|bottom|left|right]:slide-in-from-*` — mapped to fluid rem offsets (no px).
+- `motion-reduce:transition-none motion-reduce:animate-none`
 
-### Content components use one of three surfaces
-1. `<FluidFrame>` — bounded region with intrinsic aspect ratio.
-2. `<FluidGrid>` — auto-fit grid, no breakpoints.
-3. `<FluidStack>` — vertical rhythm from token gaps.
+Variants:
+- `tone`: `neutral | brand | info | warning | danger | lime | cyan | magenta | violet | coral` — each sets `bg-[var(--tooltip-bg-*)]` and `text-[var(--tooltip-ink-*)]` and arrow `fill-[var(--tooltip-bg-*)]`.
+- `size`: `sm | md | lg` → `text-eyebrow|body|h3` + `px-f2/3/4 py-f1/2/3`.
+- Arrow rendered via `<OverlayArrow>` when `showArrow` true; SVG uses `currentColor` set to the same tone bg.
 
-That's the contract. Any future slide primitive that doesn't compose these gets rejected in review.
+Default variants: `tone: "neutral"`, `size: "md"`, `showArrow: true`, `offset: 0.5rem` (converted to `rem→px` at RAC boundary via `parseFloat(rem)*16` in a tiny local helper — kept inside `tooltip.tsx`, no util domain leak).
 
-### Small shell touch-up
-`app-shell.tsx` currently only publishes size via context — add `container-type: inline-size` and `container-name: shell-content` on the `<main>` so descendants can use `@container shell-content` queries directly.
+## API
 
----
+```
+<TooltipTrigger delay={200} closeDelay={80}>
+  <Link to="/…">…</Link>
+  <Tooltip tone="cyan" size="md" placement="right">
+    Home
+  </Tooltip>
+</TooltipTrigger>
+```
 
-## Track 2 — Primary color expansion (OKLCH, foundry-driven)
+Types are exhaustive: `TooltipTone`, `TooltipSize` exported for consumers (nav configs, notice registries). `TooltipProps` = `Omit<AriaTooltipProps,"className"> & { tone?; size?; showArrow?; className?: string }`.
 
-Current registry has amber/cyan/magenta as brand primaries plus ~30 accents. Add a **second tier of true primaries** — hues currently missing from the ramp, all following the existing `PaletteSource` contract (OKLCH anchor + curve + chroma). No overrides, no hand-tuned hex.
+## LeftRail wiring
 
-### New palettes to add (14, evenly distributed around the OKLCH hue wheel)
+- Extend `NavItem` with `tooltipTone: TooltipTone` and keep `label` as tooltip text.
+- Tone cycle across the four items: `cyan → magenta → lime → violet` (demonstrates variety; matches Broadcast Console brand accents without hardcoding brand).
+- `placement="right"` for expanded and collapsed states.
+- Tooltip shows in both collapsed AND expanded states (collapsed = discovery aid, expanded = affordance/confirmation) — consistent behavior, opt-out via prop if later needed.
+- Preserves existing `.tap-target`, active state, and rail width behavior. No breakpoint additions.
 
-| Name | Kind | Anchor OKLCH | Curve | Chroma | Gap filled |
-|---|---|---|---|---|---|
-| `viridian` | brand | `{ l: 0.62, c: 0.16, h: 155 }` | brand | linear-to-500 | true green primary |
-| `cerulean` | brand | `{ l: 0.66, c: 0.17, h: 230 }` | brand | linear-to-500 | between sky and azure |
-| `vermilion` | brand | `{ l: 0.65, c: 0.20, h: 30 }` | brand | peak-at-500 | red-orange primary |
-| `saffron` | brand | `{ l: 0.80, c: 0.17, h: 65 }` | brand | linear-to-500 | warm yellow between gold and amber |
-| `electric` | brand | `{ l: 0.70, c: 0.22, h: 275 }` | luminous | bloom | high-energy neon |
-| `botanical` | accent | `{ l: 0.55, c: 0.13, h: 140 }` | brand | soft | earthy green |
-| `oxblood` | accent | `{ l: 0.42, c: 0.15, h: 20 }` | low-key | peak-at-600 | dark red |
-| `midnight` | surface | `{ l: 0.20, c: 0.04, h: 260 }` | low-key | flat | deep blue surface |
-| `porcelain` | surface | `{ l: 0.96, c: 0.008, h: 90 }` | neutral | flat | warm light surface |
-| `sage` | accent | `{ l: 0.72, c: 0.06, h: 150 }` | muted | soft | desaturated green |
-| `terracotta` | accent | `{ l: 0.62, c: 0.13, h: 40 }` | brand | soft | earthy warm |
-| `lavender` | accent | `{ l: 0.75, c: 0.10, h: 295 }` | luminous | soft | soft purple |
-| `mint` | accent | `{ l: 0.82, c: 0.11, h: 165 }` | luminous | bloom | fresh light green |
-| `aubergine` | accent | `{ l: 0.35, c: 0.10, h: 320 }` | low-key | peak-at-600 | deep magenta-purple |
+## Accessibility
+- RAC `TooltipTrigger` owns `aria-describedby` linkage — no manual ARIA.
+- Tooltips are non-interactive (no focus stealing); pointer + keyboard focus both trigger per RAC defaults.
+- `motion-reduce` respected via Tailwind variant.
+- Contrast: every tone bg/ink pair verified against the OKLCH ramp anchors (documented in `tooltip/readme.md`).
 
-Each is a single `*.palette.ts` file appended to `source/palettes/index.ts`. The existing `writeBrandsCss` pass (from the last round) already emits every registered palette globally as `--color-<name>-<step>`, `--surface-<name>`, `--gradient-<name>-*` regardless of active brand — so these become instantly available to every domain without brand switching.
-
-### Optional new gradient pairings
-Add ~6 pairings to `source/semantic/gradients.semantic.ts`:
-- `viridian × cerulean`, `vermilion × saffron`, `electric × lavender`, `midnight × cerulean`, `sage × porcelain`, `oxblood × terracotta`.
-
----
+## Out of scope
+- No Notice/Toast primitive (separate future task; tokens sized to be reusable).
+- No changes to fluid utilities, palettes, or gradients.
+- No routing/store changes.
 
 ## Verify
-- `bun run tokens` regenerates `primitives.css` + `brands.css` — grep confirms every new palette emits a full 13-step ramp.
-- New `FluidFrame` / `FluidGrid` / `FluidStack` demo at `/deck/ep-000-template/…` — content resizes smoothly 320px → 1920px, no breakpoints, no jumps.
-- `rg -n "sm:|md:|lg:|@media" src/` stays empty.
-- Rail still capped at 165px, `useContentSize`/`useFluidBox` progress values match.
-
-## Not touched
-- Existing palettes, brand bindings, ink surface bindings, motion tokens, Zustand/Jotai stores, routing, MCP, RAC primitives.
+- `bun run tokens` (no-op — no foundry source added, only static semantic CSS).
+- Type check: `TooltipProps` exhaustive with RAC generics.
+- Visual: hover + keyboard-focus each of the 4 rail items → 4 distinct-tone tooltips with slide+fade animation from the correct side; collapsed and expanded rail both animate; `prefers-reduced-motion` disables animation.
+- `rg -n "sm:|md:|lg:|@media" src/domains/ui/tooltip` returns empty.
+- `rg -n "#|rgb\\(" src/domains/ui/tooltip` returns empty (OKLCH via tokens only).

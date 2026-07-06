@@ -114,3 +114,19 @@
   container-type: size;
 }
 
+/* Tooltip enter/exit keyframes — driven by RAC data-entering / data-exiting
+ * on <Tooltip>. Slide direction comes from data-placement=* which we read
+ * in the variant via arbitrary selectors. */
+@keyframes tooltip-in {
+  from { opacity: 0; transform: scale(0.96) translate(var(--tt-tx, 0), var(--tt-ty, 0)); }
+  to   { opacity: 1; transform: scale(1) translate(0, 0); }
+}
+@keyframes tooltip-out {
+  from { opacity: 1; transform: scale(1) translate(0, 0); }
+  to   { opacity: 0; transform: scale(0.98) translate(var(--tt-tx, 0), var(--tt-ty, 0)); }
+}
+[data-placement="top"]    { --tt-ty: 0.25rem; --tt-tx: 0; }
+[data-placement="bottom"] { --tt-ty: -0.25rem; --tt-tx: 0; }
+[data-placement="left"]   { --tt-tx: 0.25rem; --tt-ty: 0; }
+[data-placement="right"]  { --tt-tx: -0.25rem; --tt-ty: 0; }
+
