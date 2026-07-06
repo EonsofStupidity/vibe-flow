@@ -64,7 +64,9 @@ export function Tooltip({
           </svg>
         </OverlayArrow>
       ) : null}
-      {children}
+      <span className="relative z-10 inline-flex items-center whitespace-nowrap">
+        {children}
+      </span>
     </AriaTooltip>
   );
 }

@@ -15,12 +15,11 @@ import { tv } from "tailwind-variants";
 export const tooltipVariants = tv({
   slots: {
     root: [
-      "tooltip-motion relative z-50 max-w-[18rem] select-none overflow-hidden rounded-f-md",
+      "tooltip-motion relative isolate z-50 max-w-[18rem] select-none overflow-hidden rounded-f-md",
       "border border-[var(--tooltip-edge)] bg-[var(--tooltip-glass)] text-[var(--tooltip-ink)]",
       "font-mono uppercase tracking-[0.15em] backdrop-blur-xl backdrop-saturate-150",
       "[box-shadow:var(--tooltip-shadow)] ring-1 ring-[var(--tooltip-ring)]",
       "[text-shadow:var(--tooltip-text-shadow)] will-change-[transform,opacity,filter] outline-none",
-      "before:pointer-events-none before:absolute before:inset-0 before:bg-[image:var(--tooltip-sheen)] before:content-['']",
       "motion-reduce:transition-none",
     ].join(" "),
     arrow: [
@@ -42,9 +41,9 @@ export const tooltipVariants = tv({
       coral:   { root: "[--tooltip-tone:var(--tooltip-bg-coral)] [--tooltip-glass:var(--tooltip-glass-coral)] [--tooltip-edge:var(--tooltip-edge-coral)] [--tooltip-ink:var(--tooltip-ink-on-accent)]" },
     },
     size: {
-      sm: { root: "px-f2 py-f1 text-eyebrow" },
-      md: { root: "px-f3 py-f2 text-eyebrow" },
-      lg: { root: "px-f4 py-f3 text-body" },
+      sm: { root: "py-f1 pl-f4 pr-f2 text-eyebrow" },
+      md: { root: "py-f2 pl-f4 pr-f3 text-eyebrow" },
+      lg: { root: "py-f3 pl-f5 pr-f4 text-body" },
     },
   },
   defaultVariants: {
