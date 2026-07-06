@@ -51,17 +51,15 @@ export function Tooltip({
       className={root({ className })}
     >
       {showArrow ? (
-        <OverlayArrow>
-          <svg
-            viewBox="0 0 12 8"
-            aria-hidden="true"
-            className={
-              arrow() +
-              " group-data-[placement=bottom]:rotate-180" +
-              " group-data-[placement=left]:-rotate-90" +
-              " group-data-[placement=right]:rotate-90"
-            }
-          >
+        <OverlayArrow
+          className={[
+            "flex origin-center",
+            "data-[placement=bottom]:rotate-180",
+            "data-[placement=left]:-rotate-90",
+            "data-[placement=right]:rotate-90",
+          ].join(" ")}
+        >
+          <svg viewBox="0 0 12 8" aria-hidden="true" className={arrow()}>
             <path d="M0 0 L6 8 L12 0 Z" />
           </svg>
         </OverlayArrow>
