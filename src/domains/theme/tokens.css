@@ -1,8 +1,9 @@
 /**
  * Token aggregator. Imported once by src/styles.css. Order matters:
- * primitives (includes the generated fluid XY scale) → semantics → brand
- * overrides.
+ * primitives (raw ladders + fluid scale) → effects (tone × category matrix)
+ * → semantics (role aliases) → brand overrides.
  */
 @import "./tokens/primitives.css";
+@import "./tokens/effects.css";
 @import "./tokens/semantics.css";
 @import "./tokens/brands.css";
