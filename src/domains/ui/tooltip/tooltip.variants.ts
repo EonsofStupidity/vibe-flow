@@ -3,14 +3,36 @@
  *
  * @remarks
  * Base class enables RAC `data-entering` / `data-exiting` / `data-placement`
- * keyframe hooks defined in `src/styles.css` (`tooltip-*` keyframes) — no JS
- * animation controller, the browser owns the timeline.
+ * keyframe hooks defined in `src/styles.css` (`tooltip-motion` utility) — no
+ * JS animation controller, the browser owns the timeline.
  *
- * Tones map to the tooltip role tokens in `semantics.css`. Each tone sets
- * the surface color, ink color, and arrow fill from the same CSS var so a
- * `data-brand` swap re-tints the tooltip automatically.
+ * Tones read directly from the effects matrix (`--fx-glass-<tone>`,
+ * `--fx-edge-<tone>`, `--fx-ink-<tone>`, `--fx-glow-<tone>`,
+ * `--fx-sheen-diag-<tone>`, `--fx-shadow-pop-<tone>`,
+ * `--fx-text-shadow-<tone>`) — the tooltip itself declares zero
+ * color vars, and a new tone is one row in the matrix.
  */
 import { tv } from "tailwind-variants";
+import type { ToneName } from "@/domains/theme/foundry/source/effects/effects.matrix";
+
+/**
+ * Emit the `[--tooltip-tone:...]` local vars that the `tooltip-motion`
+ * utility reads. Every value is a pass-through of the matrix column for
+ * this tone — no per-domain color logic.
+ */
+function toneClass(tone: ToneName): string {
+  return [
+    `[--tooltip-tone:var(--fx-surface-${tone})]`,
+    `[--tooltip-glass:var(--fx-glass-${tone})]`,
+    `[--tooltip-edge:var(--fx-edge-${tone})]`,
+    `[--tooltip-ink:var(--fx-ink-${tone})]`,
+    `[--tooltip-ring:var(--fx-ring-${tone})]`,
+    `[--tooltip-glow:var(--fx-glow-${tone})]`,
+    `[--tooltip-sheen:var(--fx-sheen-diag-${tone})]`,
+    `[--tooltip-shadow:var(--fx-shadow-pop-${tone})]`,
+    `[--tooltip-text-shadow:var(--fx-text-shadow-${tone})]`,
+  ].join(" ");
+}
 
 export const tooltipVariants = tv({
   slots: {
@@ -29,16 +51,16 @@ export const tooltipVariants = tv({
   },
   variants: {
     tone: {
-      neutral: { root: "[--tooltip-tone:var(--tooltip-bg-neutral)] [--tooltip-glass:var(--tooltip-glass-neutral)] [--tooltip-edge:var(--tooltip-edge-neutral)] [--tooltip-ink:var(--tooltip-ink-neutral)]" },
-      brand:   { root: "[--tooltip-tone:var(--tooltip-bg-brand)] [--tooltip-glass:var(--tooltip-glass-brand)] [--tooltip-edge:var(--tooltip-edge-brand)] [--tooltip-ink:var(--tooltip-ink-brand)]" },
-      info:    { root: "[--tooltip-tone:var(--tooltip-bg-info)] [--tooltip-glass:var(--tooltip-glass-info)] [--tooltip-edge:var(--tooltip-edge-info)] [--tooltip-ink:var(--tooltip-ink-info)]" },
-      warning: { root: "[--tooltip-tone:var(--tooltip-bg-warning)] [--tooltip-glass:var(--tooltip-glass-warning)] [--tooltip-edge:var(--tooltip-edge-warning)] [--tooltip-ink:var(--tooltip-ink-warning)]" },
-      danger:  { root: "[--tooltip-tone:var(--tooltip-bg-danger)] [--tooltip-glass:var(--tooltip-glass-danger)] [--tooltip-edge:var(--tooltip-edge-danger)] [--tooltip-ink:var(--tooltip-ink-danger)]" },
-      lime:    { root: "[--tooltip-tone:var(--tooltip-bg-lime)] [--tooltip-glass:var(--tooltip-glass-lime)] [--tooltip-edge:var(--tooltip-edge-lime)] [--tooltip-ink:var(--tooltip-ink-on-accent)]" },
-      cyan:    { root: "[--tooltip-tone:var(--tooltip-bg-cyan)] [--tooltip-glass:var(--tooltip-glass-cyan)] [--tooltip-edge:var(--tooltip-edge-cyan)] [--tooltip-ink:var(--tooltip-ink-on-accent)]" },
-      magenta: { root: "[--tooltip-tone:var(--tooltip-bg-magenta)] [--tooltip-glass:var(--tooltip-glass-magenta)] [--tooltip-edge:var(--tooltip-edge-magenta)] [--tooltip-ink:var(--tooltip-ink-on-accent)]" },
-      violet:  { root: "[--tooltip-tone:var(--tooltip-bg-violet)] [--tooltip-glass:var(--tooltip-glass-violet)] [--tooltip-edge:var(--tooltip-edge-violet)] [--tooltip-ink:var(--tooltip-ink-on-accent)]" },
-      coral:   { root: "[--tooltip-tone:var(--tooltip-bg-coral)] [--tooltip-glass:var(--tooltip-glass-coral)] [--tooltip-edge:var(--tooltip-edge-coral)] [--tooltip-ink:var(--tooltip-ink-on-accent)]" },
+      neutral: { root: toneClass("neutral") },
+      brand:   { root: toneClass("brand") },
+      info:    { root: toneClass("info") },
+      warning: { root: toneClass("warning") },
+      danger:  { root: toneClass("danger") },
+      lime:    { root: toneClass("lime") },
+      cyan:    { root: toneClass("cyan") },
+      magenta: { root: toneClass("magenta") },
+      violet:  { root: toneClass("violet") },
+      coral:   { root: toneClass("coral") },
     },
     size: {
       sm: { root: "py-f1 pl-f4 pr-f2 text-eyebrow" },
@@ -52,7 +74,5 @@ export const tooltipVariants = tv({
   },
 });
 
-export type TooltipTone =
-  | "neutral" | "brand" | "info" | "warning" | "danger"
-  | "lime" | "cyan" | "magenta" | "violet" | "coral";
+export type TooltipTone = ToneName;
 export type TooltipSize = "sm" | "md" | "lg";
