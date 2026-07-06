@@ -82,6 +82,13 @@ function build(): void {
 
   validate(built);
 
+  const summaries: BuiltPaletteSummary[] = built.map((b) => ({
+    name: b.name,
+    kind: b.kind,
+    ladder: b.ladder,
+  }));
+  assertContrast(summaries, brandBindings);
+
   const ladderMap = new Map(built.map((b) => [b.name, b.ladder]));
   const meshes = buildMeshes(gradientPairings, ladderMap);
 
@@ -89,12 +96,60 @@ function build(): void {
   writeEffectsCss();
   writeBrandsCss(built);
   writeFoundryTokensTs(built, meshes);
+  writeFoundryReadme();
 
   const gradientCount = built.reduce((n, p) => n + p.gradients.length, 0) + meshes.length;
   const stepCount = built.length * LADDER_STEPS.length;
   console.log(
     `[foundry] wrote ${built.length} palettes, ${stepCount} steps, ${gradientCount} gradients, ${brandBindings.length} brands`,
   );
+}
+
+/**
+ * Rewrite the "Effects matrix" section of `foundry/readme.md` in place, so
+ * the tone × category grid always matches the compiled matrix. The section
+ * is delimited by fenced markers and no other prose is touched.
+ */
+function writeFoundryReadme(): void {
+  const readmePath = resolve(FOUNDRY_DIR, "readme.md");
+  const startMark = "<!-- effects-matrix:start -->";
+  const endMark = "<!-- effects-matrix:end -->";
+  const header = ["tone", ...CATEGORIES.map((c) => c.name)];
+  const rows: string[][] = TONES.map((t) => [
+    t.name,
+    ...CATEGORIES.map((c) => `\`--fx-${c.name}-${t.name}\``),
+  ]);
+  const table = [
+    `| ${header.join(" | ")} |`,
+    `| ${header.map(() => "---").join(" | ")} |`,
+    ...rows.map((r) => `| ${r.join(" | ")} |`),
+  ].join("\n");
+
+  const body = [
+    "",
+    "## Effects matrix",
+    "",
+    `Auto-generated from \`source/effects/effects.matrix.ts\` (${TONES.length} tones × ${CATEGORIES.length} categories = ${TONES.length * CATEGORIES.length} cells). Do not edit by hand — run \`bun run tokens\`.`,
+    "",
+    table,
+    "",
+  ].join("\n");
+
+  let readme = "";
+  try {
+    readme = require("node:fs").readFileSync(readmePath, "utf8") as string;
+  } catch {
+    readme = "";
+  }
+  const startIdx = readme.indexOf(startMark);
+  const endIdx = readme.indexOf(endMark);
+  const block = `${startMark}${body}${endMark}`;
+  if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+    readme = `${readme.slice(0, startIdx)}${block}${readme.slice(endIdx + endMark.length)}`;
+  } else {
+    readme = `${readme.trimEnd()}\n\n${block}\n`;
+  }
+  writeFileSync(readmePath, readme);
 }
 
 /**
