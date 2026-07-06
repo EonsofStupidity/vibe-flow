@@ -1,112 +1,52 @@
-# RAC Tooltip Primitive + LeftRail Wiring
+# Fix LeftRail Tooltips + Add Interaction FX
 
-Goal: A production-grade, WAI-ARIA APG-compliant tooltip primitive under `src/domains/ui/tooltip/` that supports a variety of tone colors (semantic + brand + accent), animated enter/exit with placement-aware transforms, and is wired into every link in `LeftRail`. No shadcn, no Radix, no CVA — pure RAC + `tailwind-variants` + our semantic tokens. All values OKLCH via existing token layer; sizing/offsets in `rem`.
+Two problems to fix, scoped to LeftRail + Tooltip primitive only.
 
-## Scope
-- New primitive only: `src/domains/ui/tooltip/`.
-- Small addition to `semantics.css` for tooltip role tokens (bg/ink/ring per tone, arrow inheritance).
-- Small addition to `motion.semantic.ts` if a `transition-tooltip` recipe is missing (reuse existing durations/easings — no new math).
-- Refactor `LeftRail` nav links to wrap in `TooltipTrigger` and render `Tooltip` content with a per-item tone.
-- No changes to fluid system, no changes to brand palettes, no changes to router or store.
+## Problem 1 — Tooltips don't render
 
-## Files
+RAC `TooltipTrigger` binds hover/focus handlers to its child via `useFocusable`. A raw TanStack `<Link>` (renders an `<a>`) doesn't accept those props, so the trigger silently no-ops. RAC's documented fix is wrapping the non-RAC child in `<Focusable>` from `react-aria-components`, which forwards `ref` + event handlers to the underlying DOM node.
 
-Created
-- `src/domains/ui/tooltip/tooltip.tsx` — owned RAC wrapper. Exports:
-  - `TooltipTrigger` (re-typed re-export of `TooltipTrigger` from RAC — required by RAC contract; this is not a shim, it's a named surface with our types).
-  - `Tooltip` — renders `AriaTooltip` + `OverlayArrow` with variants applied.
-- `src/domains/ui/tooltip/tooltip.types.ts` — `TooltipProps` extending `AriaTooltipProps` with `tone`, `size`, `placement`, `offset`, `showArrow`.
-- `src/domains/ui/tooltip/tooltip.variants.ts` — `tailwind-variants` recipe: base, `tone`, `size`, arrow variants; all state via RAC `data-entering` / `data-exiting` / `data-placement=*`.
-- `src/domains/ui/tooltip/readme.md` — usage + WAI-ARIA notes, tone matrix, examples.
+Fix: wrap the `<Link>` (and the collapse `<button>`) in `<Focusable>` inside every `TooltipTrigger` in `left-rail.tsx`. No API change to the `Tooltip` primitive itself.
 
-Edited
-- `src/domains/theme/tokens/semantics.css` — add tooltip role tokens (see Tokens).
-- `src/domains/shell/components/left-rail/left-rail.tsx` — wrap each `Link` with `TooltipTrigger` + `Tooltip`, cycle tones across nav items so the rail demonstrates variety.
+## Problem 2 — No interaction FX on rail items
 
-Nothing deleted. No exports moved. No barrel files.
+Current rail items only change `bg`/`text` on `:hover`. Need a real interaction signature that:
+- works in both collapsed (icon-only) and expanded (icon+label) modes,
+- uses the same per-item tone as the tooltip (cyan/magenta/coral/lime) so the whole item feels unified,
+- animates in with motion tokens and respects `prefers-reduced-motion`,
+- keeps `.tap-target` and active-state semantics intact,
+- uses only OKLCH semantic tokens (no `#hex`, no `bg-*-500`).
 
-## Tokens (semantics.css additions)
+### Per-item tone plumbing
+Publish the tooltip tone as a CSS variable on each rail row: `style={{ ["--rail-tone" as string]: "var(--tooltip-bg-<tone>)" }}`. Everything visual below reads `var(--rail-tone)` so a single source of truth drives icon color, glow, and underline.
 
-Add a role block; values are derived from existing brand/accent/utility tokens so they follow `data-brand` swaps automatically. All OKLCH via already-defined vars.
+### Interaction states (composed on the row element)
 
-```
---tooltip-bg-neutral:  color-mix(in oklch, var(--surface-overlay) 92%, var(--ink-950) 8%);
---tooltip-ink-neutral: var(--ink-strong);
---tooltip-bg-brand:    var(--brand);
---tooltip-ink-brand:   var(--brand-ink);
---tooltip-bg-info:     var(--info);
---tooltip-ink-info:    var(--ink-on-info);
---tooltip-bg-warning:  var(--warning);
---tooltip-ink-warning: var(--ink-on-warning);
---tooltip-bg-danger:   var(--danger);
---tooltip-ink-danger:  var(--ink-on-danger);
---tooltip-bg-accent-1: var(--accent-lime);
---tooltip-bg-accent-2: var(--accent-cyan);
---tooltip-bg-accent-3: var(--accent-magenta);
---tooltip-bg-accent-4: var(--accent-violet);
---tooltip-bg-accent-5: var(--accent-coral);
---tooltip-ring:        var(--focus-ring);
---tooltip-shadow:      var(--shadow-popover);
---tooltip-radius:      var(--r-md);
---tooltip-offset:      0.5rem;
-```
+1. **Icon color swap** — icon `color: var(--ink-muted)` at rest; on `hover`/`focus-visible`/`data-[hovered]`/`data-[focus-visible]`, `color: var(--rail-tone)` with `transition: color var(--motion-duration-fast) var(--motion-ease-standard)`.
+2. **Halo ring** — pseudo `::before` `absolute inset-0 rounded-f-md ring-1 ring-transparent` → on hover `ring-[color-mix(in_oklch,var(--rail-tone)_55%,transparent)]` + soft `box-shadow: 0 0 0 4px color-mix(in oklch, var(--rail-tone) 18%, transparent)`. Transitions `box-shadow, ring-color` at `--motion-duration-base` / `--motion-ease-emphasized`.
+3. **Left tone bar** — pseudo `::after` on the left edge: `w-[0.1875rem] h-[60%] rounded-full bg-[var(--rail-tone)] scale-y-0 origin-center`. On hover / active → `scale-y-100 opacity-100`. Transition `transform, opacity` at `--motion-duration-base` / `--motion-ease-emphasized`. This is the "unified" motion signature visible in both modes because it's edge-anchored, not label-dependent.
+4. **Icon micro-motion** — `transform: translateX(0) scale(1)` at rest → on hover `translateX(0.125rem) scale(1.06)` (collapsed) / `translateX(0.125rem) scale(1.03)` (expanded). Transition `transform` at `--motion-duration-fast` / `--motion-ease-emphasized`.
+5. **Label sweep (expanded only)** — label `letter-spacing: 0.2em` at rest → `letter-spacing: 0.24em` on hover, transition at `--motion-duration-base`. Uses existing typography — no new tokens.
+6. **Press** — `data-[pressed]:scale-[0.98]` on the row for tactile feedback.
+7. **Active state** — persistent tone bar (`::after` visible), icon in tone color, subtle `bg: color-mix(in oklch, var(--rail-tone) 12%, var(--surface) 88%)`.
+8. **Reduced motion** — all transforms/box-shadows collapse to instant color swap under `motion-reduce:*`.
 
-Accent ink resolves via `color-mix(in oklch, <bg> 100%, transparent) contrast` fallback → we set `--tooltip-ink-accent: var(--ink-inverse)` and per-accent overrides only when contrast requires it (verified per accent from existing ramps; documented in the tooltip readme).
+Every state selector uses Tailwind arbitrary + RAC data-attrs. Nothing hardcoded.
 
-## Variants (tailwind-variants)
+### Focus ring
+Existing `--focus-ring` stays; per-item tone is decorative. Keyboard `focus-visible` shows both the tone halo AND the `--focus-ring` outline (WAI-ARIA APG requires a distinct focus indicator regardless of decorative state).
 
-Base classes:
-- `rounded-f-md px-f3 py-f2 font-mono text-eyebrow uppercase tracking-[0.15em]`
-- `shadow-[var(--tooltip-shadow)] ring-1 ring-[color-mix(in_oklch,var(--tooltip-ring)_40%,transparent)]`
-- `will-change-[transform,opacity]`
-- Enter/exit via RAC data attrs:
-  - `data-[entering]:animate-in data-[entering]:fade-in-0 data-[entering]:zoom-in-95`
-  - `data-[exiting]:animate-out data-[exiting]:fade-out-0 data-[exiting]:zoom-out-95`
-  - Placement-directional slides using `data-[placement=top|bottom|left|right]:slide-in-from-*` — mapped to fluid rem offsets (no px).
-- `motion-reduce:transition-none motion-reduce:animate-none`
+## Files touched
 
-Variants:
-- `tone`: `neutral | brand | info | warning | danger | lime | cyan | magenta | violet | coral` — each sets `bg-[var(--tooltip-bg-*)]` and `text-[var(--tooltip-ink-*)]` and arrow `fill-[var(--tooltip-bg-*)]`.
-- `size`: `sm | md | lg` → `text-eyebrow|body|h3` + `px-f2/3/4 py-f1/2/3`.
-- Arrow rendered via `<OverlayArrow>` when `showArrow` true; SVG uses `currentColor` set to the same tone bg.
+Edited (only)
+- `src/domains/shell/components/left-rail/left-rail.tsx` — add `<Focusable>` wrapping inside each `TooltipTrigger`, add `--rail-tone` style var per item, replace flat hover classes with the composed interaction stack above.
 
-Default variants: `tone: "neutral"`, `size: "md"`, `showArrow: true`, `offset: 0.5rem` (converted to `rem→px` at RAC boundary via `parseFloat(rem)*16` in a tiny local helper — kept inside `tooltip.tsx`, no util domain leak).
-
-## API
-
-```
-<TooltipTrigger delay={200} closeDelay={80}>
-  <Link to="/…">…</Link>
-  <Tooltip tone="cyan" size="md" placement="right">
-    Home
-  </Tooltip>
-</TooltipTrigger>
-```
-
-Types are exhaustive: `TooltipTone`, `TooltipSize` exported for consumers (nav configs, notice registries). `TooltipProps` = `Omit<AriaTooltipProps,"className"> & { tone?; size?; showArrow?; className?: string }`.
-
-## LeftRail wiring
-
-- Extend `NavItem` with `tooltipTone: TooltipTone` and keep `label` as tooltip text.
-- Tone cycle across the four items: `cyan → magenta → lime → violet` (demonstrates variety; matches Broadcast Console brand accents without hardcoding brand).
-- `placement="right"` for expanded and collapsed states.
-- Tooltip shows in both collapsed AND expanded states (collapsed = discovery aid, expanded = affordance/confirmation) — consistent behavior, opt-out via prop if later needed.
-- Preserves existing `.tap-target`, active state, and rail width behavior. No breakpoint additions.
-
-## Accessibility
-- RAC `TooltipTrigger` owns `aria-describedby` linkage — no manual ARIA.
-- Tooltips are non-interactive (no focus stealing); pointer + keyboard focus both trigger per RAC defaults.
-- `motion-reduce` respected via Tailwind variant.
-- Contrast: every tone bg/ink pair verified against the OKLCH ramp anchors (documented in `tooltip/readme.md`).
-
-## Out of scope
-- No Notice/Toast primitive (separate future task; tokens sized to be reusable).
-- No changes to fluid utilities, palettes, or gradients.
-- No routing/store changes.
+No other files change. No new tokens, no new primitives, no fluid changes, no palette changes.
 
 ## Verify
-- `bun run tokens` (no-op — no foundry source added, only static semantic CSS).
-- Type check: `TooltipProps` exhaustive with RAC generics.
-- Visual: hover + keyboard-focus each of the 4 rail items → 4 distinct-tone tooltips with slide+fade animation from the correct side; collapsed and expanded rail both animate; `prefers-reduced-motion` disables animation.
-- `rg -n "sm:|md:|lg:|@media" src/domains/ui/tooltip` returns empty.
-- `rg -n "#|rgb\\(" src/domains/ui/tooltip` returns empty (OKLCH via tokens only).
+- Hover / keyboard-focus each rail item in collapsed mode → tooltip appears on right + icon lights up in item's tone + left tone bar sweeps in + halo appears.
+- Same interaction in expanded mode → tooltip still appears (collapse arrow item too) + label tracking widens + icon nudges right.
+- Tab through the rail with keyboard → focus-visible ring shows alongside tone halo.
+- `prefers-reduced-motion: reduce` → colors change instantly, no transforms.
+- `rg -n "#[0-9a-fA-F]{3,}|rgb\\(" src/domains/shell/components/left-rail` empty.
+- `bunx tsgo --noEmit` clean.
