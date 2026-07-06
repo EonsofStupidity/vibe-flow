@@ -18,7 +18,7 @@ export const tooltipVariants = tv({
       "tooltip-motion relative z-50 max-w-[18rem] select-none overflow-hidden rounded-f-md",
       "border border-[var(--tooltip-edge)] bg-[var(--tooltip-glass)] text-[var(--tooltip-ink)]",
       "font-mono uppercase tracking-[0.15em] backdrop-blur-xl backdrop-saturate-150",
-      "shadow-[var(--tooltip-shadow)] ring-1 ring-[var(--tooltip-ring)]",
+      "[box-shadow:var(--tooltip-shadow)] ring-1 ring-[var(--tooltip-ring)]",
       "[text-shadow:var(--tooltip-text-shadow)] will-change-[transform,opacity,filter] outline-none",
       "before:pointer-events-none before:absolute before:inset-0 before:bg-[image:var(--tooltip-sheen)] before:content-['']",
       "motion-reduce:transition-none",

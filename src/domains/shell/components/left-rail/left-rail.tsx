@@ -53,7 +53,7 @@ const ROW_BASE = [
   "hover:text-[var(--rail-tone)] focus-visible:text-[var(--rail-tone)]",
   "data-[hovered]:text-[var(--rail-tone)] data-[focus-visible]:text-[var(--rail-tone)]",
   "hover:bg-[var(--rail-glass)] focus-visible:bg-[var(--rail-glass)] data-[hovered]:bg-[var(--rail-glass)]",
-  "hover:shadow-[var(--rail-shadow)] focus-visible:shadow-[var(--rail-focus-shadow)] data-[hovered]:shadow-[var(--rail-shadow)]",
+  "hover:[box-shadow:var(--rail-shadow)] focus-visible:[box-shadow:var(--rail-focus-shadow)] data-[hovered]:[box-shadow:var(--rail-shadow)]",
   "hover:backdrop-blur-md focus-visible:backdrop-blur-md",
   // press
   "active:scale-[0.98] data-[pressed]:scale-[0.98]",
@@ -73,7 +73,7 @@ const ROW_BASE = [
 ].join(" ");
 
 const ROW_ACTIVE = [
-  "bg-[var(--rail-active-glass)] shadow-[var(--rail-active-shadow)]",
+  "bg-[var(--rail-active-glass)] [box-shadow:var(--rail-active-shadow)]",
   "text-[var(--rail-tone)]",
   "before:scale-y-100 before:opacity-100",
 ].join(" ");
