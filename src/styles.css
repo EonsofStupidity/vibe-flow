@@ -104,3 +104,13 @@
 @utility hairline-b {
   border-bottom: 1px solid var(--color-hairline);
 }
+
+/* Container-query opt-ins — pair with FluidFrame/FluidGrid or use directly. */
+@utility container-q {
+  container-type: inline-size;
+}
+
+@utility container-qy {
+  container-type: size;
+}
+

@@ -16,4 +16,12 @@ export const gradientPairings: readonly GradientPairing[] = [
   { a: "amber", b: "magenta", c: "cyan" },
   { a: "cyan", b: "violet", c: "magenta" },
   { a: "emerald", b: "cyan", c: "azure" },
+  // Expanded primaries
+  { a: "viridian", b: "cerulean" },
+  { a: "vermilion", b: "saffron" },
+  { a: "electric", b: "lavender" },
+  { a: "midnight", b: "cerulean" },
+  { a: "sage", b: "porcelain" },
+  { a: "oxblood", b: "terracotta" },
+  { a: "mint", b: "cerulean", c: "electric" },
 ];

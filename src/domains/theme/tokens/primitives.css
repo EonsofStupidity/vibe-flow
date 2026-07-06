@@ -69,6 +69,36 @@
   --mocha-950: oklch(0.1400 0.0160 40.00);
   --mocha-975: oklch(0.1100 0.0140 40.00);
 
+  /* ---- midnight (surface) ---- */
+  --midnight-25: oklch(0.8500 0.0400 260.00);
+  --midnight-50: oklch(0.7800 0.0400 260.00);
+  --midnight-100: oklch(0.7000 0.0400 260.00);
+  --midnight-200: oklch(0.6200 0.0400 260.00);
+  --midnight-300: oklch(0.5400 0.0400 260.00);
+  --midnight-400: oklch(0.4600 0.0400 260.00);
+  --midnight-500: oklch(0.3800 0.0400 260.00);
+  --midnight-600: oklch(0.3200 0.0400 260.00);
+  --midnight-700: oklch(0.2600 0.0400 260.00);
+  --midnight-800: oklch(0.2200 0.0400 260.00);
+  --midnight-900: oklch(0.1800 0.0400 260.00);
+  --midnight-950: oklch(0.1400 0.0400 260.00);
+  --midnight-975: oklch(0.1100 0.0400 260.00);
+
+  /* ---- porcelain (surface) ---- */
+  --porcelain-25: oklch(0.9900 0.0080 90.00);
+  --porcelain-50: oklch(0.9800 0.0080 90.00);
+  --porcelain-100: oklch(0.9400 0.0080 90.00);
+  --porcelain-200: oklch(0.8600 0.0080 90.00);
+  --porcelain-300: oklch(0.7200 0.0080 90.00);
+  --porcelain-400: oklch(0.5800 0.0080 90.00);
+  --porcelain-500: oklch(0.4400 0.0080 90.00);
+  --porcelain-600: oklch(0.3200 0.0080 90.00);
+  --porcelain-700: oklch(0.2400 0.0080 90.00);
+  --porcelain-800: oklch(0.2000 0.0080 90.00);
+  --porcelain-900: oklch(0.1600 0.0080 90.00);
+  --porcelain-950: oklch(0.1300 0.0080 90.00);
+  --porcelain-975: oklch(0.1100 0.0080 90.00);
+
   /* ---- amber (brand) ---- */
   --amber-25: oklch(0.9900 0.0136 75.00);
   --amber-50: oklch(0.9800 0.0255 75.00);
@@ -143,6 +173,131 @@
   --gradient-magenta-sheen: linear-gradient(105deg, oklch(0.4200 0.1650 340.00) 0%, oklch(0.7200 0.2200 340.00) 45%, oklch(0.9000 0.1210 340.00) 55%, oklch(0.7200 0.2200 340.00) 65%, oklch(0.4200 0.1650 340.00) 100%);
   --gradient-magenta-aurora: linear-gradient(135deg in oklch, oklch(0.2200 0.0770 340.00) 0%, oklch(0.5200 0.1980 340.00) 25%, oklch(0.7900 0.2090 340.00) 55%, oklch(0.9000 0.1210 340.00) 80%, oklch(0.9800 0.0330 340.00) 100%);
   --gradient-magenta-duotone: linear-gradient(135deg, oklch(0.5200 0.1980 340.00) 0%, oklch(0.8400 0.1760 340.00) 100%);
+
+  /* ---- viridian (brand) ---- */
+  --viridian-25: oklch(0.9900 0.0128 155.00);
+  --viridian-50: oklch(0.9800 0.0240 155.00);
+  --viridian-100: oklch(0.9500 0.0480 155.00);
+  --viridian-200: oklch(0.9000 0.0880 155.00);
+  --viridian-300: oklch(0.8400 0.1280 155.00);
+  --viridian-400: oklch(0.7900 0.1520 155.00);
+  --viridian-500: oklch(0.7200 0.1600 155.00);
+  --viridian-600: oklch(0.6200 0.1600 155.00);
+  --viridian-700: oklch(0.5200 0.1440 155.00);
+  --viridian-800: oklch(0.4200 0.1200 155.00);
+  --viridian-900: oklch(0.3200 0.0880 155.00);
+  --viridian-950: oklch(0.2200 0.0560 155.00);
+  --viridian-975: oklch(0.1400 0.0352 155.00);
+  --gradient-viridian-linear: linear-gradient(135deg, oklch(0.7900 0.1520 155.00) 0%, oklch(0.5200 0.1440 155.00) 100%);
+  --gradient-viridian-linear-soft: linear-gradient(135deg, oklch(0.9000 0.0880 155.00) 0%, oklch(0.7200 0.1600 155.00) 100%);
+  --gradient-viridian-linear-vivid: linear-gradient(135deg, oklch(0.8400 0.1280 155.00) 0%, oklch(0.6200 0.1600 155.00) 100%);
+  --gradient-viridian-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1600 155.00) 0%, oklch(0.3200 0.0880 155.00) 100%);
+  --gradient-viridian-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8400 0.1280 155.00) 0%, oklch(0.5200 0.1440 155.00) 60%, oklch(0.2200 0.0560 155.00) 100%);
+  --gradient-viridian-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1600 155.00), oklch(0.8400 0.1280 155.00), oklch(0.7200 0.1600 155.00));
+  --gradient-viridian-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.5200 0.1440 155.00), oklch(0.7900 0.1520 155.00), oklch(0.9000 0.0880 155.00), oklch(0.7900 0.1520 155.00), oklch(0.5200 0.1440 155.00));
+  --gradient-viridian-sheen: linear-gradient(105deg, oklch(0.4200 0.1200 155.00) 0%, oklch(0.7200 0.1600 155.00) 45%, oklch(0.9000 0.0880 155.00) 55%, oklch(0.7200 0.1600 155.00) 65%, oklch(0.4200 0.1200 155.00) 100%);
+  --gradient-viridian-aurora: linear-gradient(135deg in oklch, oklch(0.2200 0.0560 155.00) 0%, oklch(0.5200 0.1440 155.00) 25%, oklch(0.7900 0.1520 155.00) 55%, oklch(0.9000 0.0880 155.00) 80%, oklch(0.9800 0.0240 155.00) 100%);
+  --gradient-viridian-duotone: linear-gradient(135deg, oklch(0.5200 0.1440 155.00) 0%, oklch(0.8400 0.1280 155.00) 100%);
+
+  /* ---- cerulean (brand) ---- */
+  --cerulean-25: oklch(0.9900 0.0136 230.00);
+  --cerulean-50: oklch(0.9800 0.0255 230.00);
+  --cerulean-100: oklch(0.9500 0.0510 230.00);
+  --cerulean-200: oklch(0.9000 0.0935 230.00);
+  --cerulean-300: oklch(0.8400 0.1360 230.00);
+  --cerulean-400: oklch(0.7900 0.1615 230.00);
+  --cerulean-500: oklch(0.7200 0.1700 230.00);
+  --cerulean-600: oklch(0.6200 0.1700 230.00);
+  --cerulean-700: oklch(0.5200 0.1530 230.00);
+  --cerulean-800: oklch(0.4200 0.1275 230.00);
+  --cerulean-900: oklch(0.3200 0.0935 230.00);
+  --cerulean-950: oklch(0.2200 0.0595 230.00);
+  --cerulean-975: oklch(0.1400 0.0374 230.00);
+  --gradient-cerulean-linear: linear-gradient(135deg, oklch(0.7900 0.1615 230.00) 0%, oklch(0.5200 0.1530 230.00) 100%);
+  --gradient-cerulean-linear-soft: linear-gradient(135deg, oklch(0.9000 0.0935 230.00) 0%, oklch(0.7200 0.1700 230.00) 100%);
+  --gradient-cerulean-linear-vivid: linear-gradient(135deg, oklch(0.8400 0.1360 230.00) 0%, oklch(0.6200 0.1700 230.00) 100%);
+  --gradient-cerulean-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1700 230.00) 0%, oklch(0.3200 0.0935 230.00) 100%);
+  --gradient-cerulean-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8400 0.1360 230.00) 0%, oklch(0.5200 0.1530 230.00) 60%, oklch(0.2200 0.0595 230.00) 100%);
+  --gradient-cerulean-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1700 230.00), oklch(0.8400 0.1360 230.00), oklch(0.7200 0.1700 230.00));
+  --gradient-cerulean-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.5200 0.1530 230.00), oklch(0.7900 0.1615 230.00), oklch(0.9000 0.0935 230.00), oklch(0.7900 0.1615 230.00), oklch(0.5200 0.1530 230.00));
+  --gradient-cerulean-sheen: linear-gradient(105deg, oklch(0.4200 0.1275 230.00) 0%, oklch(0.7200 0.1700 230.00) 45%, oklch(0.9000 0.0935 230.00) 55%, oklch(0.7200 0.1700 230.00) 65%, oklch(0.4200 0.1275 230.00) 100%);
+  --gradient-cerulean-aurora: linear-gradient(135deg in oklch, oklch(0.2200 0.0595 230.00) 0%, oklch(0.5200 0.1530 230.00) 25%, oklch(0.7900 0.1615 230.00) 55%, oklch(0.9000 0.0935 230.00) 80%, oklch(0.9800 0.0255 230.00) 100%);
+  --gradient-cerulean-duotone: linear-gradient(135deg, oklch(0.5200 0.1530 230.00) 0%, oklch(0.8400 0.1360 230.00) 100%);
+
+  /* ---- vermilion (brand) ---- */
+  --vermilion-25: oklch(0.9900 0.0240 30.00);
+  --vermilion-50: oklch(0.9800 0.0440 30.00);
+  --vermilion-100: oklch(0.9500 0.0800 30.00);
+  --vermilion-200: oklch(0.9000 0.1360 30.00);
+  --vermilion-300: oklch(0.8400 0.1800 30.00);
+  --vermilion-400: oklch(0.7900 0.2000 30.00);
+  --vermilion-500: oklch(0.7200 0.1900 30.00);
+  --vermilion-600: oklch(0.6200 0.1640 30.00);
+  --vermilion-700: oklch(0.5200 0.1360 30.00);
+  --vermilion-800: oklch(0.4200 0.1100 30.00);
+  --vermilion-900: oklch(0.3200 0.0840 30.00);
+  --vermilion-950: oklch(0.2200 0.0560 30.00);
+  --vermilion-975: oklch(0.1400 0.0360 30.00);
+  --gradient-vermilion-linear: linear-gradient(135deg, oklch(0.7900 0.2000 30.00) 0%, oklch(0.5200 0.1360 30.00) 100%);
+  --gradient-vermilion-linear-soft: linear-gradient(135deg, oklch(0.9000 0.1360 30.00) 0%, oklch(0.7200 0.1900 30.00) 100%);
+  --gradient-vermilion-linear-vivid: linear-gradient(135deg, oklch(0.8400 0.1800 30.00) 0%, oklch(0.6200 0.1640 30.00) 100%);
+  --gradient-vermilion-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1900 30.00) 0%, oklch(0.3200 0.0840 30.00) 100%);
+  --gradient-vermilion-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8400 0.1800 30.00) 0%, oklch(0.5200 0.1360 30.00) 60%, oklch(0.2200 0.0560 30.00) 100%);
+  --gradient-vermilion-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1900 30.00), oklch(0.8400 0.1800 30.00), oklch(0.7200 0.1900 30.00));
+  --gradient-vermilion-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.5200 0.1360 30.00), oklch(0.7900 0.2000 30.00), oklch(0.9000 0.1360 30.00), oklch(0.7900 0.2000 30.00), oklch(0.5200 0.1360 30.00));
+  --gradient-vermilion-sheen: linear-gradient(105deg, oklch(0.4200 0.1100 30.00) 0%, oklch(0.7200 0.1900 30.00) 45%, oklch(0.9000 0.1360 30.00) 55%, oklch(0.7200 0.1900 30.00) 65%, oklch(0.4200 0.1100 30.00) 100%);
+  --gradient-vermilion-aurora: linear-gradient(135deg in oklch, oklch(0.2200 0.0560 30.00) 0%, oklch(0.5200 0.1360 30.00) 25%, oklch(0.7900 0.2000 30.00) 55%, oklch(0.9000 0.1360 30.00) 80%, oklch(0.9800 0.0440 30.00) 100%);
+  --gradient-vermilion-duotone: linear-gradient(135deg, oklch(0.5200 0.1360 30.00) 0%, oklch(0.8400 0.1800 30.00) 100%);
+
+  /* ---- saffron (brand) ---- */
+  --saffron-25: oklch(0.9900 0.0136 65.00);
+  --saffron-50: oklch(0.9800 0.0255 65.00);
+  --saffron-100: oklch(0.9500 0.0510 65.00);
+  --saffron-200: oklch(0.9000 0.0935 65.00);
+  --saffron-300: oklch(0.8400 0.1360 65.00);
+  --saffron-400: oklch(0.7900 0.1615 65.00);
+  --saffron-500: oklch(0.7200 0.1700 65.00);
+  --saffron-600: oklch(0.6200 0.1700 65.00);
+  --saffron-700: oklch(0.5200 0.1530 65.00);
+  --saffron-800: oklch(0.4200 0.1275 65.00);
+  --saffron-900: oklch(0.3200 0.0935 65.00);
+  --saffron-950: oklch(0.2200 0.0595 65.00);
+  --saffron-975: oklch(0.1400 0.0374 65.00);
+  --gradient-saffron-linear: linear-gradient(135deg, oklch(0.7900 0.1615 65.00) 0%, oklch(0.5200 0.1530 65.00) 100%);
+  --gradient-saffron-linear-soft: linear-gradient(135deg, oklch(0.9000 0.0935 65.00) 0%, oklch(0.7200 0.1700 65.00) 100%);
+  --gradient-saffron-linear-vivid: linear-gradient(135deg, oklch(0.8400 0.1360 65.00) 0%, oklch(0.6200 0.1700 65.00) 100%);
+  --gradient-saffron-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1700 65.00) 0%, oklch(0.3200 0.0935 65.00) 100%);
+  --gradient-saffron-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8400 0.1360 65.00) 0%, oklch(0.5200 0.1530 65.00) 60%, oklch(0.2200 0.0595 65.00) 100%);
+  --gradient-saffron-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1700 65.00), oklch(0.8400 0.1360 65.00), oklch(0.7200 0.1700 65.00));
+  --gradient-saffron-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.5200 0.1530 65.00), oklch(0.7900 0.1615 65.00), oklch(0.9000 0.0935 65.00), oklch(0.7900 0.1615 65.00), oklch(0.5200 0.1530 65.00));
+  --gradient-saffron-sheen: linear-gradient(105deg, oklch(0.4200 0.1275 65.00) 0%, oklch(0.7200 0.1700 65.00) 45%, oklch(0.9000 0.0935 65.00) 55%, oklch(0.7200 0.1700 65.00) 65%, oklch(0.4200 0.1275 65.00) 100%);
+  --gradient-saffron-aurora: linear-gradient(135deg in oklch, oklch(0.2200 0.0595 65.00) 0%, oklch(0.5200 0.1530 65.00) 25%, oklch(0.7900 0.1615 65.00) 55%, oklch(0.9000 0.0935 65.00) 80%, oklch(0.9800 0.0255 65.00) 100%);
+  --gradient-saffron-duotone: linear-gradient(135deg, oklch(0.5200 0.1530 65.00) 0%, oklch(0.8400 0.1360 65.00) 100%);
+
+  /* ---- electric (brand) ---- */
+  --electric-25: oklch(0.9900 0.0990 275.00);
+  --electric-50: oklch(0.9700 0.1320 275.00);
+  --electric-100: oklch(0.9400 0.1650 275.00);
+  --electric-200: oklch(0.9000 0.1936 275.00);
+  --electric-300: oklch(0.8600 0.2112 275.00);
+  --electric-400: oklch(0.8200 0.2200 275.00);
+  --electric-500: oklch(0.7800 0.2156 275.00);
+  --electric-600: oklch(0.7200 0.1936 275.00);
+  --electric-700: oklch(0.6000 0.1584 275.00);
+  --electric-800: oklch(0.4600 0.1210 275.00);
+  --electric-900: oklch(0.3400 0.0836 275.00);
+  --electric-950: oklch(0.2400 0.0528 275.00);
+  --electric-975: oklch(0.1500 0.0308 275.00);
+  --gradient-electric-linear: linear-gradient(135deg, oklch(0.8200 0.2200 275.00) 0%, oklch(0.6000 0.1584 275.00) 100%);
+  --gradient-electric-linear-soft: linear-gradient(135deg, oklch(0.9000 0.1936 275.00) 0%, oklch(0.7800 0.2156 275.00) 100%);
+  --gradient-electric-linear-vivid: linear-gradient(135deg, oklch(0.8600 0.2112 275.00) 0%, oklch(0.7200 0.1936 275.00) 100%);
+  --gradient-electric-radial: radial-gradient(circle at 30% 20%, oklch(0.7800 0.2156 275.00) 0%, oklch(0.3400 0.0836 275.00) 100%);
+  --gradient-electric-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8600 0.2112 275.00) 0%, oklch(0.6000 0.1584 275.00) 60%, oklch(0.2400 0.0528 275.00) 100%);
+  --gradient-electric-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7800 0.2156 275.00), oklch(0.8600 0.2112 275.00), oklch(0.7800 0.2156 275.00));
+  --gradient-electric-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.6000 0.1584 275.00), oklch(0.8200 0.2200 275.00), oklch(0.9000 0.1936 275.00), oklch(0.8200 0.2200 275.00), oklch(0.6000 0.1584 275.00));
+  --gradient-electric-sheen: linear-gradient(105deg, oklch(0.4600 0.1210 275.00) 0%, oklch(0.7800 0.2156 275.00) 45%, oklch(0.9000 0.1936 275.00) 55%, oklch(0.7800 0.2156 275.00) 65%, oklch(0.4600 0.1210 275.00) 100%);
+  --gradient-electric-aurora: linear-gradient(135deg in oklch, oklch(0.2400 0.0528 275.00) 0%, oklch(0.6000 0.1584 275.00) 25%, oklch(0.8200 0.2200 275.00) 55%, oklch(0.9000 0.1936 275.00) 80%, oklch(0.9700 0.1320 275.00) 100%);
+  --gradient-electric-duotone: linear-gradient(135deg, oklch(0.6000 0.1584 275.00) 0%, oklch(0.8600 0.2112 275.00) 100%);
 
   /* ---- amber-ember (brand) ---- */
   --amber-ember-25: oklch(0.9950 0.0144 45.00);
@@ -669,6 +824,181 @@
   --gradient-pink-aurora: linear-gradient(135deg in oklch, oklch(0.2200 0.0480 355.00) 0%, oklch(0.5200 0.1020 355.00) 25%, oklch(0.7900 0.1140 355.00) 55%, oklch(0.9000 0.0840 355.00) 80%, oklch(0.9800 0.0480 355.00) 100%);
   --gradient-pink-duotone: linear-gradient(135deg, oklch(0.5200 0.1020 355.00) 0%, oklch(0.8400 0.1020 355.00) 100%);
 
+  /* ---- botanical (accent) ---- */
+  --botanical-25: oklch(0.9900 0.0325 140.00);
+  --botanical-50: oklch(0.9800 0.0520 140.00);
+  --botanical-100: oklch(0.9500 0.0715 140.00);
+  --botanical-200: oklch(0.9000 0.0910 140.00);
+  --botanical-300: oklch(0.8400 0.1105 140.00);
+  --botanical-400: oklch(0.7900 0.1235 140.00);
+  --botanical-500: oklch(0.7200 0.1300 140.00);
+  --botanical-600: oklch(0.6200 0.1235 140.00);
+  --botanical-700: oklch(0.5200 0.1105 140.00);
+  --botanical-800: oklch(0.4200 0.0910 140.00);
+  --botanical-900: oklch(0.3200 0.0715 140.00);
+  --botanical-950: oklch(0.2200 0.0520 140.00);
+  --botanical-975: oklch(0.1400 0.0364 140.00);
+  --gradient-botanical-linear: linear-gradient(135deg, oklch(0.7900 0.1235 140.00) 0%, oklch(0.5200 0.1105 140.00) 100%);
+  --gradient-botanical-linear-soft: linear-gradient(135deg, oklch(0.9000 0.0910 140.00) 0%, oklch(0.7200 0.1300 140.00) 100%);
+  --gradient-botanical-linear-vivid: linear-gradient(135deg, oklch(0.8400 0.1105 140.00) 0%, oklch(0.6200 0.1235 140.00) 100%);
+  --gradient-botanical-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1300 140.00) 0%, oklch(0.3200 0.0715 140.00) 100%);
+  --gradient-botanical-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8400 0.1105 140.00) 0%, oklch(0.5200 0.1105 140.00) 60%, oklch(0.2200 0.0520 140.00) 100%);
+  --gradient-botanical-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1300 140.00), oklch(0.8400 0.1105 140.00), oklch(0.7200 0.1300 140.00));
+  --gradient-botanical-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.5200 0.1105 140.00), oklch(0.7900 0.1235 140.00), oklch(0.9000 0.0910 140.00), oklch(0.7900 0.1235 140.00), oklch(0.5200 0.1105 140.00));
+  --gradient-botanical-sheen: linear-gradient(105deg, oklch(0.4200 0.0910 140.00) 0%, oklch(0.7200 0.1300 140.00) 45%, oklch(0.9000 0.0910 140.00) 55%, oklch(0.7200 0.1300 140.00) 65%, oklch(0.4200 0.0910 140.00) 100%);
+  --gradient-botanical-aurora: linear-gradient(135deg in oklch, oklch(0.2200 0.0520 140.00) 0%, oklch(0.5200 0.1105 140.00) 25%, oklch(0.7900 0.1235 140.00) 55%, oklch(0.9000 0.0910 140.00) 80%, oklch(0.9800 0.0520 140.00) 100%);
+  --gradient-botanical-duotone: linear-gradient(135deg, oklch(0.5200 0.1105 140.00) 0%, oklch(0.8400 0.1105 140.00) 100%);
+
+  /* ---- oxblood (accent) ---- */
+  --oxblood-25: oklch(0.8500 0.0120 20.00);
+  --oxblood-50: oklch(0.7800 0.0225 20.00);
+  --oxblood-100: oklch(0.7000 0.0420 20.00);
+  --oxblood-200: oklch(0.6200 0.0720 20.00);
+  --oxblood-300: oklch(0.5400 0.1020 20.00);
+  --oxblood-400: oklch(0.4600 0.1275 20.00);
+  --oxblood-500: oklch(0.3800 0.1425 20.00);
+  --oxblood-600: oklch(0.3200 0.1500 20.00);
+  --oxblood-700: oklch(0.2600 0.1470 20.00);
+  --oxblood-800: oklch(0.2200 0.1275 20.00);
+  --oxblood-900: oklch(0.1800 0.0975 20.00);
+  --oxblood-950: oklch(0.1400 0.0630 20.00);
+  --oxblood-975: oklch(0.1100 0.0390 20.00);
+  --gradient-oxblood-linear: linear-gradient(135deg, oklch(0.4600 0.1275 20.00) 0%, oklch(0.2600 0.1470 20.00) 100%);
+  --gradient-oxblood-linear-soft: linear-gradient(135deg, oklch(0.6200 0.0720 20.00) 0%, oklch(0.3800 0.1425 20.00) 100%);
+  --gradient-oxblood-linear-vivid: linear-gradient(135deg, oklch(0.5400 0.1020 20.00) 0%, oklch(0.3200 0.1500 20.00) 100%);
+  --gradient-oxblood-radial: radial-gradient(circle at 30% 20%, oklch(0.3800 0.1425 20.00) 0%, oklch(0.1800 0.0975 20.00) 100%);
+  --gradient-oxblood-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.5400 0.1020 20.00) 0%, oklch(0.2600 0.1470 20.00) 60%, oklch(0.1400 0.0630 20.00) 100%);
+  --gradient-oxblood-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.3800 0.1425 20.00), oklch(0.5400 0.1020 20.00), oklch(0.3800 0.1425 20.00));
+  --gradient-oxblood-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.2600 0.1470 20.00), oklch(0.4600 0.1275 20.00), oklch(0.6200 0.0720 20.00), oklch(0.4600 0.1275 20.00), oklch(0.2600 0.1470 20.00));
+  --gradient-oxblood-sheen: linear-gradient(105deg, oklch(0.2200 0.1275 20.00) 0%, oklch(0.3800 0.1425 20.00) 45%, oklch(0.6200 0.0720 20.00) 55%, oklch(0.3800 0.1425 20.00) 65%, oklch(0.2200 0.1275 20.00) 100%);
+  --gradient-oxblood-aurora: linear-gradient(135deg in oklch, oklch(0.1400 0.0630 20.00) 0%, oklch(0.2600 0.1470 20.00) 25%, oklch(0.4600 0.1275 20.00) 55%, oklch(0.6200 0.0720 20.00) 80%, oklch(0.7800 0.0225 20.00) 100%);
+  --gradient-oxblood-duotone: linear-gradient(135deg, oklch(0.2600 0.1470 20.00) 0%, oklch(0.5400 0.1020 20.00) 100%);
+
+  /* ---- sage (accent) ---- */
+  --sage-25: oklch(0.9700 0.0150 150.00);
+  --sage-50: oklch(0.9400 0.0240 150.00);
+  --sage-100: oklch(0.8800 0.0330 150.00);
+  --sage-200: oklch(0.8000 0.0420 150.00);
+  --sage-300: oklch(0.7200 0.0510 150.00);
+  --sage-400: oklch(0.6200 0.0570 150.00);
+  --sage-500: oklch(0.5200 0.0600 150.00);
+  --sage-600: oklch(0.4400 0.0570 150.00);
+  --sage-700: oklch(0.3600 0.0510 150.00);
+  --sage-800: oklch(0.2800 0.0420 150.00);
+  --sage-900: oklch(0.2200 0.0330 150.00);
+  --sage-950: oklch(0.1600 0.0240 150.00);
+  --sage-975: oklch(0.1200 0.0168 150.00);
+  --gradient-sage-linear: linear-gradient(135deg, oklch(0.6200 0.0570 150.00) 0%, oklch(0.3600 0.0510 150.00) 100%);
+  --gradient-sage-linear-soft: linear-gradient(135deg, oklch(0.8000 0.0420 150.00) 0%, oklch(0.5200 0.0600 150.00) 100%);
+  --gradient-sage-linear-vivid: linear-gradient(135deg, oklch(0.7200 0.0510 150.00) 0%, oklch(0.4400 0.0570 150.00) 100%);
+  --gradient-sage-radial: radial-gradient(circle at 30% 20%, oklch(0.5200 0.0600 150.00) 0%, oklch(0.2200 0.0330 150.00) 100%);
+  --gradient-sage-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.7200 0.0510 150.00) 0%, oklch(0.3600 0.0510 150.00) 60%, oklch(0.1600 0.0240 150.00) 100%);
+  --gradient-sage-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.5200 0.0600 150.00), oklch(0.7200 0.0510 150.00), oklch(0.5200 0.0600 150.00));
+  --gradient-sage-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.3600 0.0510 150.00), oklch(0.6200 0.0570 150.00), oklch(0.8000 0.0420 150.00), oklch(0.6200 0.0570 150.00), oklch(0.3600 0.0510 150.00));
+  --gradient-sage-sheen: linear-gradient(105deg, oklch(0.2800 0.0420 150.00) 0%, oklch(0.5200 0.0600 150.00) 45%, oklch(0.8000 0.0420 150.00) 55%, oklch(0.5200 0.0600 150.00) 65%, oklch(0.2800 0.0420 150.00) 100%);
+  --gradient-sage-aurora: linear-gradient(135deg in oklch, oklch(0.1600 0.0240 150.00) 0%, oklch(0.3600 0.0510 150.00) 25%, oklch(0.6200 0.0570 150.00) 55%, oklch(0.8000 0.0420 150.00) 80%, oklch(0.9400 0.0240 150.00) 100%);
+  --gradient-sage-duotone: linear-gradient(135deg, oklch(0.3600 0.0510 150.00) 0%, oklch(0.7200 0.0510 150.00) 100%);
+
+  /* ---- terracotta (accent) ---- */
+  --terracotta-25: oklch(0.9900 0.0325 40.00);
+  --terracotta-50: oklch(0.9800 0.0520 40.00);
+  --terracotta-100: oklch(0.9500 0.0715 40.00);
+  --terracotta-200: oklch(0.9000 0.0910 40.00);
+  --terracotta-300: oklch(0.8400 0.1105 40.00);
+  --terracotta-400: oklch(0.7900 0.1235 40.00);
+  --terracotta-500: oklch(0.7200 0.1300 40.00);
+  --terracotta-600: oklch(0.6200 0.1235 40.00);
+  --terracotta-700: oklch(0.5200 0.1105 40.00);
+  --terracotta-800: oklch(0.4200 0.0910 40.00);
+  --terracotta-900: oklch(0.3200 0.0715 40.00);
+  --terracotta-950: oklch(0.2200 0.0520 40.00);
+  --terracotta-975: oklch(0.1400 0.0364 40.00);
+  --gradient-terracotta-linear: linear-gradient(135deg, oklch(0.7900 0.1235 40.00) 0%, oklch(0.5200 0.1105 40.00) 100%);
+  --gradient-terracotta-linear-soft: linear-gradient(135deg, oklch(0.9000 0.0910 40.00) 0%, oklch(0.7200 0.1300 40.00) 100%);
+  --gradient-terracotta-linear-vivid: linear-gradient(135deg, oklch(0.8400 0.1105 40.00) 0%, oklch(0.6200 0.1235 40.00) 100%);
+  --gradient-terracotta-radial: radial-gradient(circle at 30% 20%, oklch(0.7200 0.1300 40.00) 0%, oklch(0.3200 0.0715 40.00) 100%);
+  --gradient-terracotta-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8400 0.1105 40.00) 0%, oklch(0.5200 0.1105 40.00) 60%, oklch(0.2200 0.0520 40.00) 100%);
+  --gradient-terracotta-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7200 0.1300 40.00), oklch(0.8400 0.1105 40.00), oklch(0.7200 0.1300 40.00));
+  --gradient-terracotta-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.5200 0.1105 40.00), oklch(0.7900 0.1235 40.00), oklch(0.9000 0.0910 40.00), oklch(0.7900 0.1235 40.00), oklch(0.5200 0.1105 40.00));
+  --gradient-terracotta-sheen: linear-gradient(105deg, oklch(0.4200 0.0910 40.00) 0%, oklch(0.7200 0.1300 40.00) 45%, oklch(0.9000 0.0910 40.00) 55%, oklch(0.7200 0.1300 40.00) 65%, oklch(0.4200 0.0910 40.00) 100%);
+  --gradient-terracotta-aurora: linear-gradient(135deg in oklch, oklch(0.2200 0.0520 40.00) 0%, oklch(0.5200 0.1105 40.00) 25%, oklch(0.7900 0.1235 40.00) 55%, oklch(0.9000 0.0910 40.00) 80%, oklch(0.9800 0.0520 40.00) 100%);
+  --gradient-terracotta-duotone: linear-gradient(135deg, oklch(0.5200 0.1105 40.00) 0%, oklch(0.8400 0.1105 40.00) 100%);
+
+  /* ---- lavender (accent) ---- */
+  --lavender-25: oklch(0.9900 0.0250 295.00);
+  --lavender-50: oklch(0.9700 0.0400 295.00);
+  --lavender-100: oklch(0.9400 0.0550 295.00);
+  --lavender-200: oklch(0.9000 0.0700 295.00);
+  --lavender-300: oklch(0.8600 0.0850 295.00);
+  --lavender-400: oklch(0.8200 0.0950 295.00);
+  --lavender-500: oklch(0.7800 0.1000 295.00);
+  --lavender-600: oklch(0.7200 0.0950 295.00);
+  --lavender-700: oklch(0.6000 0.0850 295.00);
+  --lavender-800: oklch(0.4600 0.0700 295.00);
+  --lavender-900: oklch(0.3400 0.0550 295.00);
+  --lavender-950: oklch(0.2400 0.0400 295.00);
+  --lavender-975: oklch(0.1500 0.0280 295.00);
+  --gradient-lavender-linear: linear-gradient(135deg, oklch(0.8200 0.0950 295.00) 0%, oklch(0.6000 0.0850 295.00) 100%);
+  --gradient-lavender-linear-soft: linear-gradient(135deg, oklch(0.9000 0.0700 295.00) 0%, oklch(0.7800 0.1000 295.00) 100%);
+  --gradient-lavender-linear-vivid: linear-gradient(135deg, oklch(0.8600 0.0850 295.00) 0%, oklch(0.7200 0.0950 295.00) 100%);
+  --gradient-lavender-radial: radial-gradient(circle at 30% 20%, oklch(0.7800 0.1000 295.00) 0%, oklch(0.3400 0.0550 295.00) 100%);
+  --gradient-lavender-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8600 0.0850 295.00) 0%, oklch(0.6000 0.0850 295.00) 60%, oklch(0.2400 0.0400 295.00) 100%);
+  --gradient-lavender-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7800 0.1000 295.00), oklch(0.8600 0.0850 295.00), oklch(0.7800 0.1000 295.00));
+  --gradient-lavender-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.6000 0.0850 295.00), oklch(0.8200 0.0950 295.00), oklch(0.9000 0.0700 295.00), oklch(0.8200 0.0950 295.00), oklch(0.6000 0.0850 295.00));
+  --gradient-lavender-sheen: linear-gradient(105deg, oklch(0.4600 0.0700 295.00) 0%, oklch(0.7800 0.1000 295.00) 45%, oklch(0.9000 0.0700 295.00) 55%, oklch(0.7800 0.1000 295.00) 65%, oklch(0.4600 0.0700 295.00) 100%);
+  --gradient-lavender-aurora: linear-gradient(135deg in oklch, oklch(0.2400 0.0400 295.00) 0%, oklch(0.6000 0.0850 295.00) 25%, oklch(0.8200 0.0950 295.00) 55%, oklch(0.9000 0.0700 295.00) 80%, oklch(0.9700 0.0400 295.00) 100%);
+  --gradient-lavender-duotone: linear-gradient(135deg, oklch(0.6000 0.0850 295.00) 0%, oklch(0.8600 0.0850 295.00) 100%);
+
+  /* ---- mint (accent) ---- */
+  --mint-25: oklch(0.9900 0.0495 165.00);
+  --mint-50: oklch(0.9700 0.0660 165.00);
+  --mint-100: oklch(0.9400 0.0825 165.00);
+  --mint-200: oklch(0.9000 0.0968 165.00);
+  --mint-300: oklch(0.8600 0.1056 165.00);
+  --mint-400: oklch(0.8200 0.1100 165.00);
+  --mint-500: oklch(0.7800 0.1078 165.00);
+  --mint-600: oklch(0.7200 0.0968 165.00);
+  --mint-700: oklch(0.6000 0.0792 165.00);
+  --mint-800: oklch(0.4600 0.0605 165.00);
+  --mint-900: oklch(0.3400 0.0418 165.00);
+  --mint-950: oklch(0.2400 0.0264 165.00);
+  --mint-975: oklch(0.1500 0.0154 165.00);
+  --gradient-mint-linear: linear-gradient(135deg, oklch(0.8200 0.1100 165.00) 0%, oklch(0.6000 0.0792 165.00) 100%);
+  --gradient-mint-linear-soft: linear-gradient(135deg, oklch(0.9000 0.0968 165.00) 0%, oklch(0.7800 0.1078 165.00) 100%);
+  --gradient-mint-linear-vivid: linear-gradient(135deg, oklch(0.8600 0.1056 165.00) 0%, oklch(0.7200 0.0968 165.00) 100%);
+  --gradient-mint-radial: radial-gradient(circle at 30% 20%, oklch(0.7800 0.1078 165.00) 0%, oklch(0.3400 0.0418 165.00) 100%);
+  --gradient-mint-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.8600 0.1056 165.00) 0%, oklch(0.6000 0.0792 165.00) 60%, oklch(0.2400 0.0264 165.00) 100%);
+  --gradient-mint-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.7800 0.1078 165.00), oklch(0.8600 0.1056 165.00), oklch(0.7800 0.1078 165.00));
+  --gradient-mint-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.6000 0.0792 165.00), oklch(0.8200 0.1100 165.00), oklch(0.9000 0.0968 165.00), oklch(0.8200 0.1100 165.00), oklch(0.6000 0.0792 165.00));
+  --gradient-mint-sheen: linear-gradient(105deg, oklch(0.4600 0.0605 165.00) 0%, oklch(0.7800 0.1078 165.00) 45%, oklch(0.9000 0.0968 165.00) 55%, oklch(0.7800 0.1078 165.00) 65%, oklch(0.4600 0.0605 165.00) 100%);
+  --gradient-mint-aurora: linear-gradient(135deg in oklch, oklch(0.2400 0.0264 165.00) 0%, oklch(0.6000 0.0792 165.00) 25%, oklch(0.8200 0.1100 165.00) 55%, oklch(0.9000 0.0968 165.00) 80%, oklch(0.9700 0.0660 165.00) 100%);
+  --gradient-mint-duotone: linear-gradient(135deg, oklch(0.6000 0.0792 165.00) 0%, oklch(0.8600 0.1056 165.00) 100%);
+
+  /* ---- aubergine (accent) ---- */
+  --aubergine-25: oklch(0.8500 0.0080 320.00);
+  --aubergine-50: oklch(0.7800 0.0150 320.00);
+  --aubergine-100: oklch(0.7000 0.0280 320.00);
+  --aubergine-200: oklch(0.6200 0.0480 320.00);
+  --aubergine-300: oklch(0.5400 0.0680 320.00);
+  --aubergine-400: oklch(0.4600 0.0850 320.00);
+  --aubergine-500: oklch(0.3800 0.0950 320.00);
+  --aubergine-600: oklch(0.3200 0.1000 320.00);
+  --aubergine-700: oklch(0.2600 0.0980 320.00);
+  --aubergine-800: oklch(0.2200 0.0850 320.00);
+  --aubergine-900: oklch(0.1800 0.0650 320.00);
+  --aubergine-950: oklch(0.1400 0.0420 320.00);
+  --aubergine-975: oklch(0.1100 0.0260 320.00);
+  --gradient-aubergine-linear: linear-gradient(135deg, oklch(0.4600 0.0850 320.00) 0%, oklch(0.2600 0.0980 320.00) 100%);
+  --gradient-aubergine-linear-soft: linear-gradient(135deg, oklch(0.6200 0.0480 320.00) 0%, oklch(0.3800 0.0950 320.00) 100%);
+  --gradient-aubergine-linear-vivid: linear-gradient(135deg, oklch(0.5400 0.0680 320.00) 0%, oklch(0.3200 0.1000 320.00) 100%);
+  --gradient-aubergine-radial: radial-gradient(circle at 30% 20%, oklch(0.3800 0.0950 320.00) 0%, oklch(0.1800 0.0650 320.00) 100%);
+  --gradient-aubergine-radial-spot: radial-gradient(ellipse at 50% 0%, oklch(0.5400 0.0680 320.00) 0%, oklch(0.2600 0.0980 320.00) 60%, oklch(0.1400 0.0420 320.00) 100%);
+  --gradient-aubergine-conic: conic-gradient(from 120deg at 50% 50%, oklch(0.3800 0.0950 320.00), oklch(0.5400 0.0680 320.00), oklch(0.3800 0.0950 320.00));
+  --gradient-aubergine-conic-sweep: conic-gradient(from 0deg at 50% 50%, oklch(0.2600 0.0980 320.00), oklch(0.4600 0.0850 320.00), oklch(0.6200 0.0480 320.00), oklch(0.4600 0.0850 320.00), oklch(0.2600 0.0980 320.00));
+  --gradient-aubergine-sheen: linear-gradient(105deg, oklch(0.2200 0.0850 320.00) 0%, oklch(0.3800 0.0950 320.00) 45%, oklch(0.6200 0.0480 320.00) 55%, oklch(0.3800 0.0950 320.00) 65%, oklch(0.2200 0.0850 320.00) 100%);
+  --gradient-aubergine-aurora: linear-gradient(135deg in oklch, oklch(0.1400 0.0420 320.00) 0%, oklch(0.2600 0.0980 320.00) 25%, oklch(0.4600 0.0850 320.00) 55%, oklch(0.6200 0.0480 320.00) 80%, oklch(0.7800 0.0150 320.00) 100%);
+  --gradient-aubergine-duotone: linear-gradient(135deg, oklch(0.2600 0.0980 320.00) 0%, oklch(0.5400 0.0680 320.00) 100%);
+
   /* ---- warning (utility) ---- */
   --warning-25: oklch(0.9900 0.0120 65.00);
   --warning-50: oklch(0.9800 0.0225 65.00);
@@ -771,6 +1101,14 @@
   --gradient-amber-magenta-cyan-mesh-3: radial-gradient(at 15% 15%, oklch(0.7900 0.1615 75.00) 0%, transparent 55%), radial-gradient(at 85% 20%, oklch(0.7900 0.2090 340.00) 0%, transparent 55%), radial-gradient(at 50% 90%, oklch(0.7200 0.1500 210.00) 0%, transparent 60%), oklch(0.2200 0.0595 75.00);
   --gradient-cyan-violet-magenta-mesh-3: radial-gradient(at 15% 15%, oklch(0.7900 0.1425 210.00) 0%, transparent 55%), radial-gradient(at 85% 20%, oklch(0.7900 0.1900 290.00) 0%, transparent 55%), radial-gradient(at 50% 90%, oklch(0.7200 0.2200 340.00) 0%, transparent 60%), oklch(0.2200 0.0525 210.00);
   --gradient-emerald-cyan-azure-mesh-3: radial-gradient(at 15% 15%, oklch(0.7200 0.1360 150.00) 0%, transparent 55%), radial-gradient(at 85% 20%, oklch(0.7900 0.1425 210.00) 0%, transparent 55%), radial-gradient(at 50% 90%, oklch(0.7200 0.1800 250.00) 0%, transparent 60%), oklch(0.1400 0.0672 150.00);
+  --gradient-viridian-cerulean-mesh-2: radial-gradient(at 20% 20%, oklch(0.7900 0.1520 155.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.1700 230.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.5200 0.1440 155.00) 0%, transparent 65%), oklch(0.3200 0.0880 155.00);
+  --gradient-vermilion-saffron-mesh-2: radial-gradient(at 20% 20%, oklch(0.7900 0.2000 30.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.1700 65.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.5200 0.1360 30.00) 0%, transparent 65%), oklch(0.3200 0.0840 30.00);
+  --gradient-electric-lavender-mesh-2: radial-gradient(at 20% 20%, oklch(0.8200 0.2200 275.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7800 0.1000 295.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.6000 0.1584 275.00) 0%, transparent 65%), oklch(0.3400 0.0836 275.00);
+  --gradient-midnight-cerulean-mesh-2: radial-gradient(at 20% 20%, oklch(0.4600 0.0400 260.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.1700 230.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.2600 0.0400 260.00) 0%, transparent 65%), oklch(0.1800 0.0400 260.00);
+  --gradient-sage-porcelain-mesh-2: radial-gradient(at 20% 20%, oklch(0.6200 0.0570 150.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.4400 0.0080 90.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.3600 0.0510 150.00) 0%, transparent 65%), oklch(0.2200 0.0330 150.00);
+  --gradient-oxblood-terracotta-mesh-2: radial-gradient(at 20% 20%, oklch(0.4600 0.1275 20.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.1300 40.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.2600 0.1470 20.00) 0%, transparent 65%), oklch(0.1800 0.0975 20.00);
+  --gradient-mint-cerulean-mesh-2: radial-gradient(at 20% 20%, oklch(0.8200 0.1100 165.00) 0%, transparent 55%), radial-gradient(at 80% 30%, oklch(0.7200 0.1700 230.00) 0%, transparent 60%), radial-gradient(at 40% 90%, oklch(0.6000 0.0792 165.00) 0%, transparent 65%), oklch(0.3400 0.0418 165.00);
+  --gradient-mint-cerulean-electric-mesh-3: radial-gradient(at 15% 15%, oklch(0.8200 0.1100 165.00) 0%, transparent 55%), radial-gradient(at 85% 20%, oklch(0.7900 0.1615 230.00) 0%, transparent 55%), radial-gradient(at 50% 90%, oklch(0.7800 0.2156 275.00) 0%, transparent 60%), oklch(0.2400 0.0264 165.00);
 
   /* ---- Space / radius / ratio ramps ---- */
   --size-px: 0.0625rem;

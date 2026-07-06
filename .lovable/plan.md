@@ -1,108 +1,90 @@
-## Goal
+# Content Auto-Fit + Palette Expansion
 
-One canonical Fluid XY foundation, generated at build time from a single math core, consumed everywhere (tokens, components, inline styles). No breakpoints. No hand-tuned `clamp()` strings scattered across files. No duplication between the foundry, `fluid.css`, and the runtime helpers.
+Two independent tracks. Both build on the fluid XY foundation already shipped — no new math, no breakpoints, no shortcuts.
 
-## Current mess (why hours felt wasted)
+---
 
-- `src/domains/fluid/utils/fluid.util.ts` + `fluid-y.util.ts` compute clamps at runtime call sites — fine, but nothing wires them into the token pipeline.
-- `src/domains/theme/tokens/fluid.css` is **hand-authored** clamps for `--fs-*`, `--sp-*`, `--r-*`, `--slide-pad-y` — parallel scale, out of sync with the foundry.
-- The foundry emits **static rem** `--size-*`, `--radius-*`, `--rail-*`, `--type-*` (some clamps from `typeRamp`, but spacing/radius/rail are flat). Same categories, three different generators, three different sources of truth.
-- Result: to change the fluid curve or the min/max viewport window, you have to hunt through the foundry, `fluid.css`, and every runtime call.
+## Track 1 — Content auto-resize primitives
 
-## Fix — build the foundation once, drive everything through it
+The shell already publishes the inner content rect via `ShellSizeContext`, and `useFluidBox` exposes `{ width, height, xt, yt }` for any element. What is missing is a **canonical set of container primitives** so every future slide/panel/widget inherits fluid behavior without hand-rolling `ResizeObserver` or clamp strings.
 
-### 1. Single math core: `src/domains/fluid/utils/fluid-axis.util.ts` (new)
+### New domain: `src/domains/fluid/`
 
-Pure, tree-shakable. Both runtime and the foundry build script import this — no duplicated math anywhere.
+#### 1. `hooks/useContentSize.ts`
+Thin, typed re-export of `useShellSize()` for consumption outside the shell domain — keeps content components from importing shell internals. Returns `{ width, height, dpr, xt, yt }` (adds the 0..1 progress the raw context doesn't compute).
 
-```ts
-// axis: "x" uses vw, "y" uses svh; window bounds are configurable and default to project constants.
-export interface FluidAxisInput {
-  readonly min: number;   // value at minVp
-  readonly max: number;   // value at maxVp
-  readonly minVp?: number;
-  readonly maxVp?: number;
-  readonly axis?: "x" | "y";
-  readonly unit?: "rem" | "px";
-}
-export function fluidAxis(input: FluidAxisInput): string; // returns clamp(...)
-export function fluidRange(input: FluidAxisInput): FluidRange; // typed, non-stringified
+#### 2. `hooks/useFluidScale.ts`
+`useFluidScale({ minPx, maxPx, axis? }) → number` — returns the current interpolated numeric value (not a clamp string) using the SAME `FLUID_X/Y` windows. For SVG viewBox math, canvas draws, framer-motion values.
+
+#### 3. `components/fluid-frame/fluid-frame.tsx`
+```tsx
+<FluidFrame ratio="16/9" min="20rem" max="80rem">…</FluidFrame>
 ```
+- Self-observing container that clamps its own width via `--fluid-frame-w: clamp(min, 100cqi, max)` using container queries (`container-type: inline-size`).
+- Publishes `--frame-w` / `--frame-h` custom properties on itself so children can read local size without a hook.
+- Sets `aspect-ratio` from `ratio` prop.
+- Zero JS at steady state — pure CSS containment.
 
-`fluid()` and `fluidY()` become thin wrappers over `fluidAxis({ axis: "x" })` / `{ axis: "y" }` — same output, no behavior change for existing call sites.
+#### 4. `components/fluid-stack.tsx` and `fluid-grid.tsx`
+- `FluidStack`: vertical stack whose gap uses `--sp-*` tokens by "density" prop (`compact | comfortable | spacious`).
+- `FluidGrid`: container-driven auto-fit grid — `grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr))` where `--col-min` is a fluid token. This is what replaces every `sm:/md:/lg:grid-cols-*` in the codebase.
 
-### 2. Single window constants: `src/domains/fluid/config/fluid-window.const.ts` (new)
+#### 5. `utils/fluid-container.util.ts`
+Emits the CSS var payload for a container: `containerType`, `containerName`, and the `--frame-*` publishing rules. Used by `FluidFrame` and any custom container that needs the same contract.
 
-```ts
-export const FLUID_X = { minVp: 24, maxVp: 120 } as const; // 384px → 1920px
-export const FLUID_Y = { minSvh: 40, maxSvh: 100 } as const;
-```
+#### 6. `styles.css` additions (in `src/styles.css`)
+- `@utility container-q { container-type: inline-size; }`
+- `@utility container-qy { container-type: size; }`
+- Container-query variants aren't Tailwind-native in v4 without config; register `--breakpoint-*` alternatives as **container-query tokens only** (no viewport media queries).
 
-Imported by the runtime util AND by the foundry transforms so type/space/radius scales are computed from the same window.
+### Content components use one of three surfaces
+1. `<FluidFrame>` — bounded region with intrinsic aspect ratio.
+2. `<FluidGrid>` — auto-fit grid, no breakpoints.
+3. `<FluidStack>` — vertical rhythm from token gaps.
 
-### 3. Single scale source: `src/domains/theme/foundry/source/fluid/*.source.ts` (new)
+That's the contract. Any future slide primitive that doesn't compose these gets rejected in review.
 
-Typed scale declarations, one file per category — no CSS strings, just min/max pairs:
+### Small shell touch-up
+`app-shell.tsx` currently only publishes size via context — add `container-type: inline-size` and `container-name: shell-content` on the `<main>` so descendants can use `@container shell-content` queries directly.
 
-- `type.fluid.ts` — `eyebrow, body-sm, body, body-lg, h3, h2, h1, display, display-xl` with min/max rem
-- `space.fluid.ts` — `f0..f10` with min/max rem
-- `radius.fluid.ts` — `sm, md, lg, xl, blob` with min/max rem
-- `shell.fluid.ts` — `rail-collapsed (3.5→4.25rem)`, `rail-expanded (8.5→10.3125rem = 165px cap)`, `panel-width`, `topbar-height`, `bottombar-height`
-- `slide.fluid.ts` — `slide-pad-y` on the Y axis, `slide-pad-x` on the X axis
+---
 
-Every entry declares its axis (`"x"` default, `"y"` opt-in). This replaces the current `spaceRamp` / `radiusRamp` / hand-authored `fluid.css` values in one place.
+## Track 2 — Primary color expansion (OKLCH, foundry-driven)
 
-### 4. New foundry transform: `build/transforms/fluid.transform.ts` (new)
+Current registry has amber/cyan/magenta as brand primaries plus ~30 accents. Add a **second tier of true primaries** — hues currently missing from the ramp, all following the existing `PaletteSource` contract (OKLCH anchor + curve + chroma). No overrides, no hand-tuned hex.
 
-```ts
-// Reads all *.fluid.ts sources, calls fluidAxis(...) for each entry,
-// returns [{ name, value }, ...] ready to write to primitives.css.
-export function fluidTokens(): readonly FluidToken[];
-```
+### New palettes to add (14, evenly distributed around the OKLCH hue wheel)
 
-Emitted into `primitives.css` under a `/* Fluid scale (generated) */` block by `build-tokens.ts`, replacing the currently-inline Shell layout / space / radius sections. Names stay identical (`--rail-collapsed`, `--sp-3`, `--r-md`, `--fs-body`, etc.) so no downstream file breaks.
+| Name | Kind | Anchor OKLCH | Curve | Chroma | Gap filled |
+|---|---|---|---|---|---|
+| `viridian` | brand | `{ l: 0.62, c: 0.16, h: 155 }` | brand | linear-to-500 | true green primary |
+| `cerulean` | brand | `{ l: 0.66, c: 0.17, h: 230 }` | brand | linear-to-500 | between sky and azure |
+| `vermilion` | brand | `{ l: 0.65, c: 0.20, h: 30 }` | brand | peak-at-500 | red-orange primary |
+| `saffron` | brand | `{ l: 0.80, c: 0.17, h: 65 }` | brand | linear-to-500 | warm yellow between gold and amber |
+| `electric` | brand | `{ l: 0.70, c: 0.22, h: 275 }` | luminous | bloom | high-energy neon |
+| `botanical` | accent | `{ l: 0.55, c: 0.13, h: 140 }` | brand | soft | earthy green |
+| `oxblood` | accent | `{ l: 0.42, c: 0.15, h: 20 }` | low-key | peak-at-600 | dark red |
+| `midnight` | surface | `{ l: 0.20, c: 0.04, h: 260 }` | low-key | flat | deep blue surface |
+| `porcelain` | surface | `{ l: 0.96, c: 0.008, h: 90 }` | neutral | flat | warm light surface |
+| `sage` | accent | `{ l: 0.72, c: 0.06, h: 150 }` | muted | soft | desaturated green |
+| `terracotta` | accent | `{ l: 0.62, c: 0.13, h: 40 }` | brand | soft | earthy warm |
+| `lavender` | accent | `{ l: 0.75, c: 0.10, h: 295 }` | luminous | soft | soft purple |
+| `mint` | accent | `{ l: 0.82, c: 0.11, h: 165 }` | luminous | bloom | fresh light green |
+| `aubergine` | accent | `{ l: 0.35, c: 0.10, h: 320 }` | low-key | peak-at-600 | deep magenta-purple |
 
-### 5. Retire `src/domains/theme/tokens/fluid.css`
+Each is a single `*.palette.ts` file appended to `source/palettes/index.ts`. The existing `writeBrandsCss` pass (from the last round) already emits every registered palette globally as `--color-<name>-<step>`, `--surface-<name>`, `--gradient-<name>-*` regardless of active brand — so these become instantly available to every domain without brand switching.
 
-Delete it. Every clamp that lives there is now emitted by the foundry from the single source. `tokens.css` drops the import of `fluid.css`. `styles.css` `@theme inline` block continues to reference `--fs-*` / `--sp-*` / `--r-*` — unchanged from Tailwind's POV.
+### Optional new gradient pairings
+Add ~6 pairings to `source/semantic/gradients.semantic.ts`:
+- `viridian × cerulean`, `vermilion × saffron`, `electric × lavender`, `midnight × cerulean`, `sage × porcelain`, `oxblood × terracotta`.
 
-### 6. Runtime hook: `src/domains/fluid/hooks/useFluid.ts` (new, optional consumer surface)
-
-For rare cases where a component needs a clamp string at render time (SVG attributes, canvas, inline style props that can't take a CSS var):
-
-```ts
-export function useFluid(min: number, max: number, opts?: FluidAxisOptions): string;
-```
-
-Memoized, returns the same string `fluidAxis` would produce. Not used by default — token vars are always preferred.
-
-### 7. Runtime hook: `src/domains/fluid/hooks/useFluidBox.ts` (new)
-
-Reads `ResizeObserver` on a ref and returns `{ width, height, xt, yt }` where `xt`/`yt` are 0..1 progress across the fluid window — for components that want to *drive* their own interpolations (particle density, mesh stops) off the same window the tokens use. Container-driven, no `window` reads, SSR-safe (returns `null` until first observation).
-
-### 8. Types + readme
-
-- `src/domains/fluid/types/fluid.types.ts` extended with `FluidAxisInput`, `FluidToken`, `FluidBox`.
-- `src/domains/fluid/readme.md` rewritten as the canonical explainer: math core → window constants → scale sources → build transform → hooks. Names the exact file every kind of change goes in.
-- Update `mem://design/token-architecture.md` note that fluid scale is now foundry-generated from `src/domains/fluid/`.
-
-## What this fixes concretely
-
-- The Fluid XY foundation exists as one system: math core + window + typed scales + foundry emitter + hooks.
-- Every clamp on the site — type, spacing, radius, rail width, slide padding — comes from the same generator with the same window. Change `FLUID_X.maxVp` once and the entire site rescales.
-- Left rail becomes fluid clamp capped at 165px via `shell.fluid.ts` (`{ min: 8.5, max: 10.3125 }` rem) instead of a flat `8.4375rem`.
-- No breakpoints. Existing breakpoint offenders (`comparator-panel`, `top-bar`, `bottom-bar`) get container-driven equivalents in the same pass so the foundation stops being contradicted by component code.
-- `fluid.css` — the parallel hand-authored file — is gone.
-
-## Not touched
-
-- Palettes, brand bindings, gradients, effects, motion, ink colors — no changes.
-- Zustand shell store, routing, deck, slide-catalog primitives beyond the three breakpoint-removal edits already scoped.
-- No new deps. No shadcn. No JS at runtime for CSS values (hooks are opt-in).
+---
 
 ## Verify
+- `bun run tokens` regenerates `primitives.css` + `brands.css` — grep confirms every new palette emits a full 13-step ramp.
+- New `FluidFrame` / `FluidGrid` / `FluidStack` demo at `/deck/ep-000-template/…` — content resizes smoothly 320px → 1920px, no breakpoints, no jumps.
+- `rg -n "sm:|md:|lg:|@media" src/` stays empty.
+- Rail still capped at 165px, `useContentSize`/`useFluidBox` progress values match.
 
-- `bun run tokens` regenerates `primitives.css`; diff shows the previously hand-written `--sp-*`, `--fs-*`, `--r-*`, `--rail-*` blocks now come from the foundry with byte-identical `clamp()` output (matches the current `fluid.css` values within rounding).
-- `rg -n "clamp\(" src/ --glob '!*.gen.ts' --glob '!primitives.css' --glob '!fluid-axis.util.ts'` → empty.
-- `rg -n "sm:|md:|lg:|xl:|@media" src/ --glob '!*.gen.ts' --glob '!*.css'` → empty.
-- Rail width interpolates smoothly 320px → 1920px, hard-capped at 165px, no jumps.
+## Not touched
+- Existing palettes, brand bindings, ink surface bindings, motion tokens, Zustand/Jotai stores, routing, MCP, RAC primitives.

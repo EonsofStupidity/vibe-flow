@@ -42,7 +42,8 @@ function AppShellInner({ children }: AppShellProps) {
         {!fullBleed ? <LeftRail /> : null}
         <main
           ref={sizeRef}
-          className="relative min-w-0 flex-1 overflow-auto"
+          className="container-q relative min-w-0 flex-1 overflow-auto"
+          style={{ containerName: "shell-content" }}
         >
           {children}
         </main>
