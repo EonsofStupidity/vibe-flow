@@ -25,6 +25,7 @@ import {
   shadowLadder, shadowBrandLadder, blurLadder, ringLadder,
   glassPresets, noisePresets,
 } from "../source/effects/effects.source";
+import { buildEffectsMatrix } from "../source/effects/effects.matrix";
 import { LADDER_STEPS, type Ladder, type LadderStep } from "../foundry.types";
 import { buildLadder, oklchString } from "./transforms/oklch-ladder.transform";
 import { buildGradients, buildMeshes, type GradientToken } from "./transforms/gradient.transform";
