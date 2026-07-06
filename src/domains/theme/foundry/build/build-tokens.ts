@@ -13,7 +13,7 @@
  *
  * Run with: `bun run tokens`
  */
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { palettes } from "../source/palettes";
