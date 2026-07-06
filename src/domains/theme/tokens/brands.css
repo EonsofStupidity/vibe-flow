@@ -79,6 +79,21 @@
   --accent-magenta: var(--magenta-500);
   --accent-magenta-strong: var(--magenta-400);
   --accent-magenta-soft: var(--magenta-200);
+  --accent-viridian: var(--viridian-500);
+  --accent-viridian-strong: var(--viridian-400);
+  --accent-viridian-soft: var(--viridian-200);
+  --accent-cerulean: var(--cerulean-500);
+  --accent-cerulean-strong: var(--cerulean-400);
+  --accent-cerulean-soft: var(--cerulean-200);
+  --accent-vermilion: var(--vermilion-500);
+  --accent-vermilion-strong: var(--vermilion-400);
+  --accent-vermilion-soft: var(--vermilion-200);
+  --accent-saffron: var(--saffron-500);
+  --accent-saffron-strong: var(--saffron-400);
+  --accent-saffron-soft: var(--saffron-200);
+  --accent-electric: var(--electric-500);
+  --accent-electric-strong: var(--electric-400);
+  --accent-electric-soft: var(--electric-200);
   --accent-amber-ember: var(--amber-ember-500);
   --accent-amber-ember-strong: var(--amber-ember-400);
   --accent-amber-ember-soft: var(--amber-ember-200);
@@ -142,6 +157,27 @@
   --accent-pink: var(--pink-500);
   --accent-pink-strong: var(--pink-400);
   --accent-pink-soft: var(--pink-200);
+  --accent-botanical: var(--botanical-500);
+  --accent-botanical-strong: var(--botanical-400);
+  --accent-botanical-soft: var(--botanical-200);
+  --accent-oxblood: var(--oxblood-500);
+  --accent-oxblood-strong: var(--oxblood-400);
+  --accent-oxblood-soft: var(--oxblood-200);
+  --accent-sage: var(--sage-500);
+  --accent-sage-strong: var(--sage-400);
+  --accent-sage-soft: var(--sage-200);
+  --accent-terracotta: var(--terracotta-500);
+  --accent-terracotta-strong: var(--terracotta-400);
+  --accent-terracotta-soft: var(--terracotta-200);
+  --accent-lavender: var(--lavender-500);
+  --accent-lavender-strong: var(--lavender-400);
+  --accent-lavender-soft: var(--lavender-200);
+  --accent-mint: var(--mint-500);
+  --accent-mint-strong: var(--mint-400);
+  --accent-mint-soft: var(--mint-200);
+  --accent-aubergine: var(--aubergine-500);
+  --accent-aubergine-strong: var(--aubergine-400);
+  --accent-aubergine-soft: var(--aubergine-200);
 }
 
 /* Utility semantic aliases. */
