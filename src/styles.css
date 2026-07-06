@@ -119,6 +119,11 @@
   --tt-tx: 0;
   --tt-ty: 0;
   --tt-scale: 0.92;
+  --tooltip-ring: color-mix(in oklch, var(--tooltip-edge, var(--focus-ring)) 70%, transparent);
+  --tooltip-glow: color-mix(in oklch, var(--tooltip-tone, var(--brand)) 42%, transparent);
+  --tooltip-sheen: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--tooltip-tone, var(--brand)) 20%, transparent) 100%);
+  --tooltip-shadow: 0 0.875rem 2.75rem -1.125rem var(--tooltip-glow), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 var(--tooltip-highlight), inset 0 -0.0625rem 0 var(--tooltip-lowlight);
+  --tooltip-text-shadow: 0 0 0.875rem color-mix(in oklch, var(--tooltip-tone, var(--brand)) 44%, transparent);
   transform-origin: center;
 
   &[data-placement="top"] {
