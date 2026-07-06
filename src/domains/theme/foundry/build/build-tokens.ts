@@ -137,7 +137,7 @@ function writeFoundryReadme(): void {
 
   let readme = "";
   try {
-    readme = require("node:fs").readFileSync(readmePath, "utf8") as string;
+    readme = readFileSync(readmePath, "utf8");
   } catch {
     readme = "";
   }
