@@ -1,0 +1,265 @@
+/**
+ * GENERATED FILE — do not edit by hand.
+ * Source: src/domains/theme/foundry/source/**  →  bun run tokens
+ */
+
+/**
+ * Layer 2a — effects matrix (tone × category).
+ *
+ * Every cell is `--fx-<category>-<tone>`. Components read from here
+ * directly — never re-declare per-domain shadow / glass / edge vars.
+ * See src/domains/theme/foundry/source/effects/effects.matrix.ts for
+ * the recipes; add a category or tone there, then re-run `bun run tokens`.
+ */
+
+:root {
+  /* ---- surface ---- */
+  --fx-surface-neutral: var(--surface-overlay);
+  --fx-surface-brand: var(--brand);
+  --fx-surface-info: var(--info);
+  --fx-surface-warning: var(--warning);
+  --fx-surface-danger: var(--danger);
+  --fx-surface-lime: var(--accent-lime);
+  --fx-surface-cyan: var(--accent-cyan);
+  --fx-surface-magenta: var(--accent-magenta);
+  --fx-surface-violet: var(--accent-violet);
+  --fx-surface-coral: var(--accent-coral);
+}
+
+:root {
+  /* ---- ink ---- */
+  --fx-ink-neutral: var(--ink-strong);
+  --fx-ink-brand: var(--brand-ink);
+  --fx-ink-info: var(--ink-on-info);
+  --fx-ink-warning: var(--ink-on-warning);
+  --fx-ink-danger: var(--ink-on-danger);
+  --fx-ink-lime: var(--ink-strong);
+  --fx-ink-cyan: var(--ink-strong);
+  --fx-ink-magenta: var(--ink-strong);
+  --fx-ink-violet: var(--ink-strong);
+  --fx-ink-coral: var(--ink-strong);
+}
+
+:root {
+  /* ---- glass ---- */
+  --fx-glass-neutral: color-mix(in oklch, var(--surface-overlay) 68%, transparent);
+  --fx-glass-brand: color-mix(in oklch, var(--brand) 34%, transparent);
+  --fx-glass-info: color-mix(in oklch, var(--info) 34%, transparent);
+  --fx-glass-warning: color-mix(in oklch, var(--warning) 34%, transparent);
+  --fx-glass-danger: color-mix(in oklch, var(--danger) 34%, transparent);
+  --fx-glass-lime: color-mix(in oklch, var(--accent-lime) 34%, transparent);
+  --fx-glass-cyan: color-mix(in oklch, var(--accent-cyan) 34%, transparent);
+  --fx-glass-magenta: color-mix(in oklch, var(--accent-magenta) 34%, transparent);
+  --fx-glass-violet: color-mix(in oklch, var(--accent-violet) 34%, transparent);
+  --fx-glass-coral: color-mix(in oklch, var(--accent-coral) 34%, transparent);
+}
+
+:root {
+  /* ---- glass-strong ---- */
+  --fx-glass-strong-neutral: color-mix(in oklch, var(--surface-overlay) 82%, transparent);
+  --fx-glass-strong-brand: color-mix(in oklch, var(--brand) 52%, transparent);
+  --fx-glass-strong-info: color-mix(in oklch, var(--info) 52%, transparent);
+  --fx-glass-strong-warning: color-mix(in oklch, var(--warning) 52%, transparent);
+  --fx-glass-strong-danger: color-mix(in oklch, var(--danger) 52%, transparent);
+  --fx-glass-strong-lime: color-mix(in oklch, var(--accent-lime) 52%, transparent);
+  --fx-glass-strong-cyan: color-mix(in oklch, var(--accent-cyan) 52%, transparent);
+  --fx-glass-strong-magenta: color-mix(in oklch, var(--accent-magenta) 52%, transparent);
+  --fx-glass-strong-violet: color-mix(in oklch, var(--accent-violet) 52%, transparent);
+  --fx-glass-strong-coral: color-mix(in oklch, var(--accent-coral) 52%, transparent);
+}
+
+:root {
+  /* ---- wash ---- */
+  --fx-wash-neutral: color-mix(in oklch, var(--surface-overlay) 16%, transparent);
+  --fx-wash-brand: color-mix(in oklch, var(--brand) 16%, transparent);
+  --fx-wash-info: color-mix(in oklch, var(--info) 16%, transparent);
+  --fx-wash-warning: color-mix(in oklch, var(--warning) 16%, transparent);
+  --fx-wash-danger: color-mix(in oklch, var(--danger) 16%, transparent);
+  --fx-wash-lime: color-mix(in oklch, var(--accent-lime) 16%, transparent);
+  --fx-wash-cyan: color-mix(in oklch, var(--accent-cyan) 16%, transparent);
+  --fx-wash-magenta: color-mix(in oklch, var(--accent-magenta) 16%, transparent);
+  --fx-wash-violet: color-mix(in oklch, var(--accent-violet) 16%, transparent);
+  --fx-wash-coral: color-mix(in oklch, var(--accent-coral) 16%, transparent);
+}
+
+:root {
+  /* ---- edge ---- */
+  --fx-edge-neutral: color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-edge-brand: color-mix(in oklch, var(--brand) 58%, var(--ink-strong) 12%);
+  --fx-edge-info: color-mix(in oklch, var(--info) 58%, var(--ink-strong) 12%);
+  --fx-edge-warning: color-mix(in oklch, var(--warning) 58%, var(--ink-strong) 12%);
+  --fx-edge-danger: color-mix(in oklch, var(--danger) 58%, var(--ink-strong) 12%);
+  --fx-edge-lime: color-mix(in oklch, var(--accent-lime) 58%, var(--ink-strong) 12%);
+  --fx-edge-cyan: color-mix(in oklch, var(--accent-cyan) 58%, var(--ink-strong) 12%);
+  --fx-edge-magenta: color-mix(in oklch, var(--accent-magenta) 58%, var(--ink-strong) 12%);
+  --fx-edge-violet: color-mix(in oklch, var(--accent-violet) 58%, var(--ink-strong) 12%);
+  --fx-edge-coral: color-mix(in oklch, var(--accent-coral) 58%, var(--ink-strong) 12%);
+}
+
+:root {
+  /* ---- ring ---- */
+  --fx-ring-neutral: color-mix(in oklch, var(--surface-overlay) 70%, transparent);
+  --fx-ring-brand: color-mix(in oklch, var(--brand) 70%, transparent);
+  --fx-ring-info: color-mix(in oklch, var(--info) 70%, transparent);
+  --fx-ring-warning: color-mix(in oklch, var(--warning) 70%, transparent);
+  --fx-ring-danger: color-mix(in oklch, var(--danger) 70%, transparent);
+  --fx-ring-lime: color-mix(in oklch, var(--accent-lime) 70%, transparent);
+  --fx-ring-cyan: color-mix(in oklch, var(--accent-cyan) 70%, transparent);
+  --fx-ring-magenta: color-mix(in oklch, var(--accent-magenta) 70%, transparent);
+  --fx-ring-violet: color-mix(in oklch, var(--accent-violet) 70%, transparent);
+  --fx-ring-coral: color-mix(in oklch, var(--accent-coral) 70%, transparent);
+}
+
+:root {
+  /* ---- ring-strong ---- */
+  --fx-ring-strong-neutral: color-mix(in oklch, var(--surface-overlay) 92%, transparent);
+  --fx-ring-strong-brand: color-mix(in oklch, var(--brand) 92%, transparent);
+  --fx-ring-strong-info: color-mix(in oklch, var(--info) 92%, transparent);
+  --fx-ring-strong-warning: color-mix(in oklch, var(--warning) 92%, transparent);
+  --fx-ring-strong-danger: color-mix(in oklch, var(--danger) 92%, transparent);
+  --fx-ring-strong-lime: color-mix(in oklch, var(--accent-lime) 92%, transparent);
+  --fx-ring-strong-cyan: color-mix(in oklch, var(--accent-cyan) 92%, transparent);
+  --fx-ring-strong-magenta: color-mix(in oklch, var(--accent-magenta) 92%, transparent);
+  --fx-ring-strong-violet: color-mix(in oklch, var(--accent-violet) 92%, transparent);
+  --fx-ring-strong-coral: color-mix(in oklch, var(--accent-coral) 92%, transparent);
+}
+
+:root {
+  /* ---- glow ---- */
+  --fx-glow-neutral: color-mix(in oklch, var(--surface-overlay) 42%, transparent);
+  --fx-glow-brand: color-mix(in oklch, var(--brand) 42%, transparent);
+  --fx-glow-info: color-mix(in oklch, var(--info) 42%, transparent);
+  --fx-glow-warning: color-mix(in oklch, var(--warning) 42%, transparent);
+  --fx-glow-danger: color-mix(in oklch, var(--danger) 42%, transparent);
+  --fx-glow-lime: color-mix(in oklch, var(--accent-lime) 42%, transparent);
+  --fx-glow-cyan: color-mix(in oklch, var(--accent-cyan) 42%, transparent);
+  --fx-glow-magenta: color-mix(in oklch, var(--accent-magenta) 42%, transparent);
+  --fx-glow-violet: color-mix(in oklch, var(--accent-violet) 42%, transparent);
+  --fx-glow-coral: color-mix(in oklch, var(--accent-coral) 42%, transparent);
+}
+
+:root {
+  /* ---- glow-strong ---- */
+  --fx-glow-strong-neutral: color-mix(in oklch, var(--surface-overlay) 64%, transparent);
+  --fx-glow-strong-brand: color-mix(in oklch, var(--brand) 64%, transparent);
+  --fx-glow-strong-info: color-mix(in oklch, var(--info) 64%, transparent);
+  --fx-glow-strong-warning: color-mix(in oklch, var(--warning) 64%, transparent);
+  --fx-glow-strong-danger: color-mix(in oklch, var(--danger) 64%, transparent);
+  --fx-glow-strong-lime: color-mix(in oklch, var(--accent-lime) 64%, transparent);
+  --fx-glow-strong-cyan: color-mix(in oklch, var(--accent-cyan) 64%, transparent);
+  --fx-glow-strong-magenta: color-mix(in oklch, var(--accent-magenta) 64%, transparent);
+  --fx-glow-strong-violet: color-mix(in oklch, var(--accent-violet) 64%, transparent);
+  --fx-glow-strong-coral: color-mix(in oklch, var(--accent-coral) 64%, transparent);
+}
+
+:root {
+  /* ---- sheen ---- */
+  --fx-sheen-neutral: linear-gradient(115deg in oklch, color-mix(in oklch, var(--surface-overlay) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-brand: linear-gradient(115deg in oklch, color-mix(in oklch, var(--brand) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-info: linear-gradient(115deg in oklch, color-mix(in oklch, var(--info) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-warning: linear-gradient(115deg in oklch, color-mix(in oklch, var(--warning) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-danger: linear-gradient(115deg in oklch, color-mix(in oklch, var(--danger) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-lime: linear-gradient(115deg in oklch, color-mix(in oklch, var(--accent-lime) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-cyan: linear-gradient(115deg in oklch, color-mix(in oklch, var(--accent-cyan) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-magenta: linear-gradient(115deg in oklch, color-mix(in oklch, var(--accent-magenta) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-violet: linear-gradient(115deg in oklch, color-mix(in oklch, var(--accent-violet) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+  --fx-sheen-coral: linear-gradient(115deg in oklch, color-mix(in oklch, var(--accent-coral) 28%, transparent) 0%, transparent 48%, color-mix(in oklch, var(--ink-strong) 10%, transparent) 100%);
+}
+
+:root {
+  /* ---- sheen-diag ---- */
+  --fx-sheen-diag-neutral: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--surface-overlay) 20%, transparent) 100%);
+  --fx-sheen-diag-brand: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--brand) 20%, transparent) 100%);
+  --fx-sheen-diag-info: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--info) 20%, transparent) 100%);
+  --fx-sheen-diag-warning: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--warning) 20%, transparent) 100%);
+  --fx-sheen-diag-danger: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--danger) 20%, transparent) 100%);
+  --fx-sheen-diag-lime: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--accent-lime) 20%, transparent) 100%);
+  --fx-sheen-diag-cyan: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--accent-cyan) 20%, transparent) 100%);
+  --fx-sheen-diag-magenta: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--accent-magenta) 20%, transparent) 100%);
+  --fx-sheen-diag-violet: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--accent-violet) 20%, transparent) 100%);
+  --fx-sheen-diag-coral: linear-gradient(135deg in oklch, color-mix(in oklch, var(--ink-strong) 24%, transparent) 0%, transparent 44%, color-mix(in oklch, var(--accent-coral) 20%, transparent) 100%);
+}
+
+:root {
+  /* ---- text-shadow ---- */
+  --fx-text-shadow-neutral: 0 0 0.875rem color-mix(in oklch, var(--surface-overlay) 44%, transparent);
+  --fx-text-shadow-brand: 0 0 0.875rem color-mix(in oklch, var(--brand) 44%, transparent);
+  --fx-text-shadow-info: 0 0 0.875rem color-mix(in oklch, var(--info) 44%, transparent);
+  --fx-text-shadow-warning: 0 0 0.875rem color-mix(in oklch, var(--warning) 44%, transparent);
+  --fx-text-shadow-danger: 0 0 0.875rem color-mix(in oklch, var(--danger) 44%, transparent);
+  --fx-text-shadow-lime: 0 0 0.875rem color-mix(in oklch, var(--accent-lime) 44%, transparent);
+  --fx-text-shadow-cyan: 0 0 0.875rem color-mix(in oklch, var(--accent-cyan) 44%, transparent);
+  --fx-text-shadow-magenta: 0 0 0.875rem color-mix(in oklch, var(--accent-magenta) 44%, transparent);
+  --fx-text-shadow-violet: 0 0 0.875rem color-mix(in oklch, var(--accent-violet) 44%, transparent);
+  --fx-text-shadow-coral: 0 0 0.875rem color-mix(in oklch, var(--accent-coral) 44%, transparent);
+}
+
+:root {
+  /* ---- halo ---- */
+  --fx-halo-neutral: 0 0 0 0.0625rem color-mix(in oklch, var(--surface-overlay) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--surface-overlay) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-brand: 0 0 0 0.0625rem color-mix(in oklch, var(--brand) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--brand) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-info: 0 0 0 0.0625rem color-mix(in oklch, var(--info) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--info) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-warning: 0 0 0 0.0625rem color-mix(in oklch, var(--warning) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--warning) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-danger: 0 0 0 0.0625rem color-mix(in oklch, var(--danger) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--danger) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-lime: 0 0 0 0.0625rem color-mix(in oklch, var(--accent-lime) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--accent-lime) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-cyan: 0 0 0 0.0625rem color-mix(in oklch, var(--accent-cyan) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--accent-cyan) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-magenta: 0 0 0 0.0625rem color-mix(in oklch, var(--accent-magenta) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--accent-magenta) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-violet: 0 0 0 0.0625rem color-mix(in oklch, var(--accent-violet) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--accent-violet) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+  --fx-halo-coral: 0 0 0 0.0625rem color-mix(in oklch, var(--accent-coral) 42%, transparent), 0 0.625rem 1.625rem -1rem color-mix(in oklch, var(--accent-coral) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 14%, transparent);
+}
+
+:root {
+  /* ---- halo-focus ---- */
+  --fx-halo-focus-neutral: 0 0 0 0.125rem color-mix(in oklch, var(--surface-overlay) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--surface-overlay) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-brand: 0 0 0 0.125rem color-mix(in oklch, var(--brand) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--brand) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-info: 0 0 0 0.125rem color-mix(in oklch, var(--info) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--info) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-warning: 0 0 0 0.125rem color-mix(in oklch, var(--warning) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--warning) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-danger: 0 0 0 0.125rem color-mix(in oklch, var(--danger) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--danger) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-lime: 0 0 0 0.125rem color-mix(in oklch, var(--accent-lime) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--accent-lime) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-cyan: 0 0 0 0.125rem color-mix(in oklch, var(--accent-cyan) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--accent-cyan) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-magenta: 0 0 0 0.125rem color-mix(in oklch, var(--accent-magenta) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--accent-magenta) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-violet: 0 0 0 0.125rem color-mix(in oklch, var(--accent-violet) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--accent-violet) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+  --fx-halo-focus-coral: 0 0 0 0.125rem color-mix(in oklch, var(--accent-coral) 62%, transparent), 0 0.875rem 2rem -1rem color-mix(in oklch, var(--accent-coral) 78%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 18%, transparent);
+}
+
+:root {
+  /* ---- halo-active ---- */
+  --fx-halo-active-neutral: inset 0 0 0 0.0625rem color-mix(in oklch, var(--surface-overlay) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--surface-overlay) 60%, transparent);
+  --fx-halo-active-brand: inset 0 0 0 0.0625rem color-mix(in oklch, var(--brand) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--brand) 60%, transparent);
+  --fx-halo-active-info: inset 0 0 0 0.0625rem color-mix(in oklch, var(--info) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--info) 60%, transparent);
+  --fx-halo-active-warning: inset 0 0 0 0.0625rem color-mix(in oklch, var(--warning) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--warning) 60%, transparent);
+  --fx-halo-active-danger: inset 0 0 0 0.0625rem color-mix(in oklch, var(--danger) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--danger) 60%, transparent);
+  --fx-halo-active-lime: inset 0 0 0 0.0625rem color-mix(in oklch, var(--accent-lime) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--accent-lime) 60%, transparent);
+  --fx-halo-active-cyan: inset 0 0 0 0.0625rem color-mix(in oklch, var(--accent-cyan) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--accent-cyan) 60%, transparent);
+  --fx-halo-active-magenta: inset 0 0 0 0.0625rem color-mix(in oklch, var(--accent-magenta) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--accent-magenta) 60%, transparent);
+  --fx-halo-active-violet: inset 0 0 0 0.0625rem color-mix(in oklch, var(--accent-violet) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--accent-violet) 60%, transparent);
+  --fx-halo-active-coral: inset 0 0 0 0.0625rem color-mix(in oklch, var(--accent-coral) 34%, transparent), 0 0.5rem 1.25rem -1rem color-mix(in oklch, var(--accent-coral) 60%, transparent);
+}
+
+:root {
+  /* ---- shadow-pop ---- */
+  --fx-shadow-pop-neutral: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--surface-overlay) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-brand: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--brand) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-info: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--info) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-warning: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--warning) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-danger: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--danger) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-lime: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--accent-lime) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-cyan: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--accent-cyan) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-magenta: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--accent-magenta) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-violet: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--accent-violet) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+  --fx-shadow-pop-coral: 0 0.875rem 2.75rem -1.125rem color-mix(in oklch, var(--accent-coral) 42%, transparent), 0 0.125rem 0.625rem -0.25rem color-mix(in oklch, var(--surface-deep) 70%, transparent), inset 0 0.0625rem 0 color-mix(in oklch, var(--ink-strong) 24%, transparent), inset 0 -0.0625rem 0 color-mix(in oklch, var(--surface-deep) 42%, transparent);
+}
+
+:root {
+  /* ---- background-bloom ---- */
+  --fx-background-bloom-neutral: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--surface-overlay) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--surface-overlay) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-brand: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--brand) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--brand) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-info: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--info) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--info) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-warning: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--warning) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--warning) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-danger: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--danger) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--danger) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-lime: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--accent-lime) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--accent-lime) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-cyan: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--accent-cyan) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--accent-cyan) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-magenta: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--accent-magenta) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--accent-magenta) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-violet: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--accent-violet) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--accent-violet) 14%, transparent) 0%, transparent 55%);
+  --fx-background-bloom-coral: radial-gradient(60rem 40rem at 82% -10%, color-mix(in oklch, var(--accent-coral) 22%, transparent) 0%, transparent 60%), radial-gradient(48rem 32rem at -10% 110%, color-mix(in oklch, var(--accent-coral) 14%, transparent) 0%, transparent 55%);
+}
