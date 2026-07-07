@@ -1,43 +1,40 @@
-# Fix: slides won't open (ERR_TOO_MANY_REDIRECTS)
+# Fix: `/deck/…` still 404s after previous rename
 
-## Diagnosis
+## What happened
 
-Clicking a deck on the landing page never loads a slide. Repro via direct navigation confirms `net::ERR_TOO_MANY_REDIRECTS` on `/deck/ep-000-template/0`.
+The earlier fix converted `deck.$deckId.$slideIndex.tsx` → `deck.$deckId.$slideIndex.index.tsx` so it stopped being the parent of the canonical 3-segment route. That killed the redirect loop (verified: `routeTree.gen.ts` now has both as sibling children of root), but now every `/deck/:id/0/0` returns 404 while the twin `/present/:id/0/0` returns 200.
 
-Root cause is in the generated route tree. Because both files exist:
+Repro:
+- `curl /present/ep-000-template/0/0` → **200**
+- `curl /deck/ep-000-template/0/0` → **404** (root's `NotFoundComponent`)
+- `curl /deck/ep-001-catalog-showcase/0/0` → **404**
 
-- `src/routes/deck.$deckId.$slideIndex.tsx` (legacy redirect)
-- `src/routes/deck.$deckId.$slideIndex.$stepIndex.tsx` (canonical)
+The only shape difference between the working `present` route and the broken `deck` route is the presence of the sibling `deck.$deckId.$slideIndex.index.tsx` file. Having a `$slideIndex/` index route alongside a `$slideIndex/$stepIndex` route creates a match ambiguity that TanStack resolves in favor of the index leaf, whose `beforeLoad` then throws a redirect to the same 3-seg URL — which re-selects the index leaf — so the router bails out to root not-found.
 
-TanStack's flat-dot router treats the shorter filename as the **parent layout** of the longer one. From `routeTree.gen.ts`:
+## Fix — remove the legacy redirect route entirely
 
-```
-'/deck/$deckId/$slideIndex/$stepIndex': {
-  id: '/deck/$deckId/$slideIndex/$stepIndex'
-  path: '/$stepIndex'                       // ← child of the legacy route
-```
+The legacy 2-segment URL is only referenced from one place in the codebase (`src/routes/_shell.index.tsx`, the landing page `<Link>`). Nothing external depends on it (no publish, no bookmarks). Cleaner than juggling a redirect sibling.
 
-So every match of the 3-segment canonical URL first runs the legacy route's `beforeLoad`, which unconditionally throws `redirect({ to: '/deck/$deckId/$slideIndex/$stepIndex', params: { ...params, stepIndex: "0" } })`. The redirect target re-matches the same parent → same redirect → loop.
-
-Both `/deck/:id/0` (legacy shape, hit by the landing `<Link>` and the SlideNavigator) and `/deck/:id/0/0` (canonical shape) fall into this loop, which is why nothing opens from either episode.
-
-## Fix
-
-Convert the legacy file into an **index leaf** so it stops being the parent of the canonical route:
-
-1. Rename `src/routes/deck.$deckId.$slideIndex.tsx` → `src/routes/deck.$deckId.$slideIndex.index.tsx`.
-2. Change its `createFileRoute("/deck/$deckId/$slideIndex")` to `createFileRoute("/deck/$deckId/$slideIndex/")` (trailing slash marks it as index).
-3. Leave the redirect body unchanged — visiting the exact 2-segment URL still bounces to `.../0`, and the canonical 3-segment route is now a sibling leaf, not a child, so it renders without the parent's `beforeLoad` firing.
-
-No other files change. `SlideNavigator`, `_shell.index`, and both hosts keep working (their links are typed against the still-existing legacy path or the canonical path).
+1. **Delete** `src/routes/deck.$deckId.$slideIndex.index.tsx`.
+2. **Update** `src/routes/_shell.index.tsx` — change the deck-card link from
+   ```tsx
+   to="/deck/$deckId/$slideIndex"
+   params={{ deckId: deck.id, slideIndex: "0" }}
+   ```
+   to
+   ```tsx
+   to="/deck/$deckId/$slideIndex/$stepIndex"
+   params={{ deckId: deck.id, slideIndex: "0", stepIndex: "0" }}
+   ```
+3. No other consumers exist. `SlideNavigator` already navigates to the 3-segment canonical path. `DeckHost`, `PresenterHost`, and both route files are unchanged.
 
 ## Verification
 
-- `bun run build` produces a clean `routeTree.gen.ts` where the canonical route is no longer nested under the legacy one.
-- Playwright: `GET /deck/ep-000-template/0` → 302 → `/deck/ep-000-template/0/0` → renders DeckHost (no loop).
-- Manual click from landing on both episode cards opens slide 0 / step 0.
+- `bun run build` — clean type check; `routeTree.gen.ts` shows exactly three deck-family leaves: `deck.$deckId.$slideIndex.$stepIndex`, `present.$deckId.$slideIndex.$stepIndex`.
+- Playwright: hit `/` → click first deck card → lands on `/deck/ep-000-template/0/0` status 200 with the slide rendered.
+- `curl -o /dev/null -w %{http_code} /deck/ep-000-template/0/0` → 200 (both episodes).
 
-## Notes / non-goals
+## Non-goals
 
-- Not touching `present.*` routes (no legacy sibling, no loop).
-- Not touching the hydration-mismatch warning in `__root.tsx` (`data-tsd-source` line numbers) — separate, non-blocking issue.
+- Not addressing the pre-existing `data-tsd-source` line-number hydration mismatch in `__root.tsx` — unrelated, non-blocking.
+- Not changing any deck/slide/service code.

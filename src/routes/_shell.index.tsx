@@ -29,8 +29,8 @@ function DeckPicker() {
         {decks.map((deck) => (
           <li key={deck.id}>
             <Link
-              to="/deck/$deckId/$slideIndex"
-              params={{ deckId: deck.id, slideIndex: "0" }}
+              to="/deck/$deckId/$slideIndex/$stepIndex"
+              params={{ deckId: deck.id, slideIndex: "0", stepIndex: "0" }}
               className="group flex h-full flex-col justify-between rounded-f-lg bg-surface-raised p-f6 transition hairline-b hover:bg-surface-overlay"
             >
               <div>
