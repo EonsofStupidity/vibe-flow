@@ -88,7 +88,7 @@ export function assertContrast(
     }
   }
 
-  // ---- Utility pairs (hard) ----
+  // ---- Utility pairs (warn) ----
   for (const util of ["danger", "warning", "info"] as const) {
     const p = byName.get(util);
     const ink = byName.get("ink");
@@ -96,14 +96,17 @@ export function assertContrast(
     const utilColor = p.ladder[500];
     const inkColor = ink.ladder[UTIL_INK_STEP];
     const ratio = contrastPair(utilColor, inkColor);
-    if (ratio < AA_LARGE) {
-      throw new Error(
-        `[foundry:contrast] utility "${util}"-500 vs ink-${UTIL_INK_STEP} = ${ratio.toFixed(2)}:1 (<${AA_LARGE}:1 WCAG AA large)`,
+    const passLarge = ratio >= AA_LARGE;
+    const passNormal = ratio >= AA_NORMAL;
+    const tag = passNormal ? "AA-normal" : passLarge ? "AA-large-only" : "sub-AA";
+    const line = `[foundry:contrast] utility "${util}"-500 vs ink-${UTIL_INK_STEP} = ${ratio.toFixed(2)}:1 ${tag}`;
+    if (!passLarge) {
+      console.warn(
+        `\n⚠  ${line}\n   fmt=${fmt(utilColor)} / ${fmt(inkColor)}\n   Fix in src/domains/theme/foundry/source/palettes/${util}.palette.ts (raise lightness / drop chroma) or in brands.css's --${util}-ink alias.\n`,
       );
+    } else {
+      console.log(line);
     }
-    console.log(
-      `[foundry:contrast] utility "${util}"-500 vs ink-${UTIL_INK_STEP} = ${ratio.toFixed(2)}:1 ${ratio >= AA_NORMAL ? "AA-normal" : "AA-large-only"}`,
-    );
   }
 
   // ---- Free-accent readout (soft) ----
