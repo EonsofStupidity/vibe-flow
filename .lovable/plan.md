@@ -1,40 +1,37 @@
-# Fix: `/deck/…` still 404s after previous rename
+## Problem
 
-## What happened
+Clicking/pressing Next in `ep-001-catalog-showcase` crashes during TanStack hydration with:
 
-The earlier fix converted `deck.$deckId.$slideIndex.tsx` → `deck.$deckId.$slideIndex.index.tsx` so it stopped being the parent of the canonical 3-segment route. That killed the redirect loop (verified: `routeTree.gen.ts` now has both as sibling children of root), but now every `/deck/:id/0/0` returns 404 while the twin `/present/:id/0/0` returns 200.
+`Expected to find a dehydrated data on window.$_TSR.router`
 
-Repro:
-- `curl /present/ep-000-template/0/0` → **200**
-- `curl /deck/ep-000-template/0/0` → **404** (root's `NotFoundComponent`)
-- `curl /deck/ep-001-catalog-showcase/0/0` → **404**
+The current deck route `beforeLoad` returns the full `deck` object in route context. That object contains slide definitions with `render` functions/React component closures, which are not serializable through TanStack Start SSR dehydration. Initial page load can appear to work, but client navigation to the next slide trips the dehydration path and blanks the surface.
 
-The only shape difference between the working `present` route and the broken `deck` route is the presence of the sibling `deck.$deckId.$slideIndex.index.tsx` file. Having a `$slideIndex/` index route alongside a `$slideIndex/$stepIndex` route creates a match ambiguity that TanStack resolves in favor of the index leaf, whose `beforeLoad` then throws a redirect to the same 3-seg URL — which re-selects the index leaf — so the router bails out to root not-found.
+## Fix plan
 
-## Fix — remove the legacy redirect route entirely
+1. **Make deck routes return only serializable route context**
+   - Update `/deck/$deckId/$slideIndex/$stepIndex` so `beforeLoad` validates/clamps using `getDeck`, but returns only `{ deckId, index, step }`.
+   - Update `/present/$deckId/$slideIndex/$stepIndex` the same way.
+   - Resolve the actual `deck` inside the route component from `deckId` with `getDeck`.
+   - Keep `notFound()` for impossible missing deck cases.
 
-The legacy 2-segment URL is only referenced from one place in the codebase (`src/routes/_shell.index.tsx`, the landing page `<Link>`). Nothing external depends on it (no publish, no bookmarks). Cleaner than juggling a redirect sibling.
+2. **Keep TanStack route generation automatic**
+   - Do **not** manually edit `src/routeTree.gen.ts`.
+   - Leave route registration driven by the existing route files only.
+   - If generated route state is stale, rely on the Vite/TanStack plugin refresh, not hand-written route-tree changes.
 
-1. **Delete** `src/routes/deck.$deckId.$slideIndex.index.tsx`.
-2. **Update** `src/routes/_shell.index.tsx` — change the deck-card link from
-   ```tsx
-   to="/deck/$deckId/$slideIndex"
-   params={{ deckId: deck.id, slideIndex: "0" }}
-   ```
-   to
-   ```tsx
-   to="/deck/$deckId/$slideIndex/$stepIndex"
-   params={{ deckId: deck.id, slideIndex: "0", stepIndex: "0" }}
-   ```
-3. No other consumers exist. `SlideNavigator` already navigates to the 3-segment canonical path. `DeckHost`, `PresenterHost`, and both route files are unchanged.
+3. **Add route-local error/not-found boundaries only where needed**
+   - Since these routes throw `notFound()`/`redirect()` in `beforeLoad`, add small route-local `errorComponent` and `notFoundComponent` for deck/presenter surfaces so failures don’t fall through to a blank shell.
+   - Keep them minimal and within the deck route files.
 
-## Verification
+4. **Verify the exact crash path**
+   - Re-run the browser reproduction at `/deck/ep-001-catalog-showcase/0/0`.
+   - Press/click Next and confirm URL advances to `/deck/ep-001-catalog-showcase/1/0`.
+   - Confirm page body renders the StatsGrid slide and no hydration invariant/page errors fire.
+   - Also sanity-check direct load of both `ep-000-template` and `ep-001-catalog-showcase` canonical URLs.
 
-- `bun run build` — clean type check; `routeTree.gen.ts` shows exactly three deck-family leaves: `deck.$deckId.$slideIndex.$stepIndex`, `present.$deckId.$slideIndex.$stepIndex`.
-- Playwright: hit `/` → click first deck card → lands on `/deck/ep-000-template/0/0` status 200 with the slide rendered.
-- `curl -o /dev/null -w %{http_code} /deck/ep-000-template/0/0` → 200 (both episodes).
+## Files to touch
 
-## Non-goals
+- `src/routes/deck.$deckId.$slideIndex.$stepIndex.tsx`
+- `src/routes/present.$deckId.$slideIndex.$stepIndex.tsx`
 
-- Not addressing the pre-existing `data-tsd-source` line-number hydration mismatch in `__root.tsx` — unrelated, non-blocking.
-- Not changing any deck/slide/service code.
+No database, no backend, no unrelated slide-catalog/theme changes.

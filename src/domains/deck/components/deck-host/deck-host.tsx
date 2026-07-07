@@ -10,7 +10,6 @@
  */
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useMemo, useRef } from "react";
-import type { Deck } from "@/domains/deck/types/deck.types";
 import {
   advance,
   canAdvance,
@@ -21,6 +20,7 @@ import {
   prevIndex,
   retreat,
 } from "@/domains/deck/services/deck-nav.service";
+import { getDeck } from "@/domains/deck/services/deck-registry.service";
 
 import { useDeckSync } from "@/domains/deck/hooks/useDeckSync";
 import { useRuntimeStore } from "@/domains/deck/state/runtime.store";
@@ -33,12 +33,14 @@ import { SlideNavigator } from "@/domains/deck/components/slide-navigator/slide-
 import { AnnotationLayer } from "@/domains/annotation/components/annotation-layer/annotation-layer";
 
 interface DeckHostProps {
-  readonly deck: Deck;
+  readonly deckId: string;
   readonly slideIndex: number;
   readonly stepIndex: number;
 }
 
-export function DeckHost({ deck, slideIndex, stepIndex }: DeckHostProps) {
+export function DeckHost({ deckId, slideIndex, stepIndex }: DeckHostProps) {
+  const deck = getDeck(deckId);
+  if (!deck) throw new Error(`[deck-host] unknown deck id: ${deckId}`);
   const navigate = useNavigate();
   const surfaceRef = useRef<HTMLDivElement | null>(null);
   const total = deck.slides.length;
@@ -127,7 +129,7 @@ export function DeckHost({ deck, slideIndex, stepIndex }: DeckHostProps) {
 
       <SlideNavigator
         open={navigatorOpen}
-        deck={deck}
+        deckId={deck.id}
         currentIndex={index}
         onClose={() => setNavigatorOpen(false)}
       />

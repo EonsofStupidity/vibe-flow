@@ -7,6 +7,7 @@
  * URL stays canonical.
  */
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
+import "../episodes";
 import { DeckHost } from "@/domains/deck/components/deck-host/deck-host";
 import { getDeck } from "@/domains/deck/services/deck-registry.service";
 import { clampIndex, clampStep } from "@/domains/deck/services/deck-nav.service";
@@ -26,12 +27,37 @@ export const Route = createFileRoute("/deck/$deckId/$slideIndex/$stepIndex")({
         replace: true,
       });
     }
-    return { deck, index, step };
+    return { deckId: params.deckId, index, step };
   },
   component: RuntimePage,
+  errorComponent: DeckRouteError,
+  notFoundComponent: DeckRouteNotFound,
 });
 
 function RuntimePage() {
-  const { deck, index, step } = Route.useRouteContext();
-  return <DeckHost deck={deck} slideIndex={index} stepIndex={step} />;
+  const { deckId, index, step } = Route.useRouteContext();
+  if (!getDeck(deckId)) throw notFound();
+  return <DeckHost deckId={deckId} slideIndex={index} stepIndex={step} />;
+}
+
+function DeckRouteError() {
+  return (
+    <main className="flex h-dvh w-dvw items-center justify-center bg-surface p-f6 text-ink">
+      <div className="max-w-lg text-center">
+        <h1 className="font-display text-h2 text-ink-strong">Deck runtime failed.</h1>
+        <p className="mt-f3 text-body text-ink-muted">Reload the deck from the picker.</p>
+      </div>
+    </main>
+  );
+}
+
+function DeckRouteNotFound() {
+  return (
+    <main className="flex h-dvh w-dvw items-center justify-center bg-surface p-f6 text-ink">
+      <div className="max-w-lg text-center">
+        <h1 className="font-display text-h2 text-ink-strong">Deck not found.</h1>
+        <p className="mt-f3 text-body text-ink-muted">That slide is not in the registered rundown.</p>
+      </div>
+    </main>
+  );
 }

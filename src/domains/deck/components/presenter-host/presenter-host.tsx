@@ -10,7 +10,6 @@
  */
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Deck } from "@/domains/deck/types/deck.types";
 import {
   advance,
   canAdvance,
@@ -21,16 +20,19 @@ import {
   prevIndex,
   retreat,
 } from "@/domains/deck/services/deck-nav.service";
+import { getDeck } from "@/domains/deck/services/deck-registry.service";
 import { useDeckSync } from "@/domains/deck/hooks/useDeckSync";
 import { useKeyboardNav } from "@/domains/input/hooks/useKeyboardNav";
 
 interface PresenterHostProps {
-  readonly deck: Deck;
+  readonly deckId: string;
   readonly slideIndex: number;
   readonly stepIndex: number;
 }
 
-export function PresenterHost({ deck, slideIndex, stepIndex }: PresenterHostProps) {
+export function PresenterHost({ deckId, slideIndex, stepIndex }: PresenterHostProps) {
+  const deck = getDeck(deckId);
+  if (!deck) throw new Error(`[presenter-host] unknown deck id: ${deckId}`);
   const navigate = useNavigate();
   const total = deck.slides.length;
   const index = clampIndex(slideIndex, total);
