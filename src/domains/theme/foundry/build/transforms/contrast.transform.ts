@@ -7,24 +7,23 @@
  * the ladder produces, so we assert the real paint-time color, not a
  * `color-mix()` string.
  *
- * Three checks:
+ * Three checks, all **warn-only** at introduction — the gate surfaces
+ * every pair's WCAG ratio in the build log and flags any sub-AA pair
+ * with a highlighted ⚠ block plus a fix hint. It never blocks the build,
+ * because brand/utility palettes are user-owned design decisions that
+ * pre-date the gate; treat every warn as a real accessibility signal
+ * to schedule, not something to silence.
  *
  * 1. **Brand pairs** — every `BrandBinding`'s `ladder[brandStep]` vs its
- *    ink palette at `inkStep` must clear WCAG AA large-text (**3.0:1**). We
- *    also report normal-text (4.5:1) so authors know which brand chip is
- *    safe for body copy vs headline-only. Hard fail on <3.0:1.
- * 2. **Utility pairs** — `danger` / `warning` / `info` at step 500 vs the
- *    ink alias configured in `brands.css` (all currently `ink-50`). Hard
- *    fail on <3.0:1.
+ *    ink palette at `inkStep`. Fix in `brand.semantic.ts` or the palette.
+ * 2. **Utility pairs** — `danger` / `warning` / `info` at step 500 vs
+ *    `ink-50`. Fix in the utility's palette source or the ink alias.
  * 3. **Free-accent readout** — every `kind: "accent"` palette at 500 vs
- *    `ink-strong` (`ink-50`) is measured and printed at info level. This
- *    surfaces which accents are safe on light ink without preventing edits
- *    to accent palettes that are only used behind glass/gradient effects.
+ *    `ink-strong`. Info-level printout only.
  *
- * The gate never fails on accents. Rationale: accents feed the effects
- * matrix (`--fx-glass-<tone>` etc.), which is *always* alpha-mixed against
- * a surface — the raw-color contrast number is not the paint-time
- * contrast. We surface the raw number so authors can decide.
+ * The gate operates on numeric OKLCH triples — it never has to parse
+ * `color-mix()` strings from the matrix. The matrix inherits confidence
+ * from the pairs the gate proves.
  */
 import { formatCss, wcagContrast } from "culori";
 import type { BrandBinding, Ladder, LadderStep, Oklch } from "../../foundry.types";
