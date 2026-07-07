@@ -251,6 +251,119 @@
   100% { transform: scale(1.6); opacity: 0; }
 }
 
+/* ─── Slide enter transitions ──────────────────────────────────────────────── */
+/* Each .slide-enter-* class is driven by --slide-transition-duration/easing   */
+/* set inline by effectCssVars(). Motion-reduced via @media prefers-reduced.  */
+
+.slide-enter-fade {
+  animation: slide-anim-fade-in
+    var(--slide-transition-duration, var(--motion-duration-base))
+    var(--slide-transition-easing, var(--motion-ease-emphasized))
+    both;
+}
+
+.slide-enter-slide-left {
+  animation: slide-anim-slide-left-in
+    var(--slide-transition-duration, var(--motion-duration-base))
+    var(--slide-transition-easing, var(--motion-ease-emphasized))
+    both;
+}
+
+.slide-enter-slide-right {
+  animation: slide-anim-slide-right-in
+    var(--slide-transition-duration, var(--motion-duration-base))
+    var(--slide-transition-easing, var(--motion-ease-emphasized))
+    both;
+}
+
+.slide-enter-scale-up {
+  animation: slide-anim-scale-up-in
+    var(--slide-transition-duration, var(--motion-duration-base))
+    var(--slide-transition-easing, var(--motion-ease-emphasized))
+    both;
+}
+
+.slide-enter-scale-down {
+  animation: slide-anim-scale-down-in
+    var(--slide-transition-duration, var(--motion-duration-base))
+    var(--slide-transition-easing, var(--motion-ease-emphasized))
+    both;
+}
+
+.slide-enter-blur-in {
+  animation: slide-anim-blur-in
+    var(--slide-transition-duration, var(--motion-duration-base))
+    var(--slide-transition-easing, var(--motion-ease-emphasized))
+    both;
+}
+
+.slide-enter-wipe-left {
+  animation: slide-anim-wipe-left-in
+    var(--slide-transition-duration, var(--motion-duration-base))
+    var(--slide-transition-easing, var(--motion-ease-emphasized))
+    both;
+}
+
+.slide-enter-wipe-right {
+  animation: slide-anim-wipe-right-in
+    var(--slide-transition-duration, var(--motion-duration-base))
+    var(--slide-transition-easing, var(--motion-ease-emphasized))
+    both;
+}
+
+@keyframes slide-anim-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-anim-slide-left-in {
+  from { opacity: 0; transform: translateX(3rem); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-anim-slide-right-in {
+  from { opacity: 0; transform: translateX(-3rem); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-anim-scale-up-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-anim-scale-down-in {
+  from { opacity: 0; transform: scale(1.06); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-anim-blur-in {
+  from { opacity: 0; filter: blur(0.75rem); }
+  to   { opacity: 1; filter: blur(0); }
+}
+
+@keyframes slide-anim-wipe-left-in {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+@keyframes slide-anim-wipe-right-in {
+  from { clip-path: inset(0 0 0 100%); }
+  to   { clip-path: inset(0 0 0 0%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-enter-fade,
+  .slide-enter-slide-left,
+  .slide-enter-slide-right,
+  .slide-enter-scale-up,
+  .slide-enter-scale-down,
+  .slide-enter-blur-in,
+  .slide-enter-wipe-left,
+  .slide-enter-wipe-right {
+    animation: slide-anim-fade-in var(--motion-duration-fast) linear both;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tooltip-motion[data-entering],
   .tooltip-motion[data-exiting] {

@@ -6,6 +6,7 @@
  * does not mutate slides; it just calls render() with a context.
  */
 import type { ReactNode } from "react";
+import type { SlideEffect } from "./effect.types";
 
 export type SlideKind = "title" | "still" | "comparator" | "custom";
 
@@ -64,5 +65,7 @@ export interface SlideDefinition {
   readonly reveals?: readonly RevealStep[];
   /** Link to the slide's MDX script for the presenter/teleprompter surface. */
   readonly script?: SlideScriptLink;
+  /** Per-slide transition override. Takes precedence over the deck's `defaultEffect`. */
+  readonly effect?: SlideEffect;
 }
 

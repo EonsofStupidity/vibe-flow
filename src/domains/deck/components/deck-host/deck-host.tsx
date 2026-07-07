@@ -9,7 +9,7 @@
  * open presenter surface for the same deck.
  */
 import { useNavigate } from "@tanstack/react-router";
-import { useCallback, useMemo, useRef } from "react";
+import { type CSSProperties, useCallback, useMemo, useRef } from "react";
 import {
   advance,
   canAdvance,
@@ -31,6 +31,7 @@ import { ProgressRail } from "@/domains/deck/components/progress-rail/progress-r
 import { RuntimeToolbar } from "@/domains/deck/components/runtime-toolbar/runtime-toolbar";
 import { SlideNavigator } from "@/domains/deck/components/slide-navigator/slide-navigator";
 import { AnnotationLayer } from "@/domains/annotation/components/annotation-layer/annotation-layer";
+import { effectEnterClass, effectCssVars, resolveEffect } from "@/domains/deck/hooks/useSlideTransition";
 
 interface DeckHostProps {
   readonly deckId: string;
@@ -97,11 +98,19 @@ export function DeckHost({ deckId, slideIndex, stepIndex }: DeckHostProps) {
   const allowAnnotate = slide.allowAnnotate !== false;
   const slideKey = `${slide.id}:${step}`;
 
+  const effect = resolveEffect(slide, deck);
+  const enterClass = effectEnterClass(effect.name);
+  const transitionVars = effectCssVars(effect);
+
   return (
     <div ref={surfaceRef} className="relative h-dvh w-dvw overflow-hidden bg-surface text-ink">
       <ProgressRail index={index} total={total} hidden={effectiveChromeHidden} />
 
-      <div key={slide.id} className="absolute inset-0">
+      <div
+        key={slide.id}
+        className={`absolute inset-0 ${enterClass}`}
+        style={transitionVars as CSSProperties}
+      >
         {slide.render(ctx)}
       </div>
 
