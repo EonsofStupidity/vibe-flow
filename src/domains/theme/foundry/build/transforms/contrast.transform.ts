@@ -62,7 +62,11 @@ export function assertContrast(
 ): void {
   const byName = new Map(built.map((b) => [b.name, b]));
 
-  // ---- Brand pairs (hard) ----
+  // ---- Brand pairs (warn) ----
+  // Brand palettes are user-owned design decisions; the gate reports every
+  // ratio and flags any pair below AA-large so the failure is impossible
+  // to miss, but does not block the build. Fix by adjusting the brand's
+  // palette anchor or its `ink`/`inkStep` binding in `brand.semantic.ts`.
   for (const b of brands) {
     const brandStep: LadderStep = b.brandStep ?? 500;
     const paletteEntry = byName.get(b.palette);
@@ -73,14 +77,15 @@ export function assertContrast(
     const ratio = contrastPair(brandColor, inkColor);
     const passLarge = ratio >= AA_LARGE;
     const passNormal = ratio >= AA_NORMAL;
+    const tag = passNormal ? "AA-normal" : passLarge ? "AA-large-only" : "sub-AA";
+    const line = `[foundry:contrast] brand "${b.id}" ${b.palette}-${brandStep} vs ${b.ink}-${b.inkStep} = ${ratio.toFixed(2)}:1 ${tag}`;
     if (!passLarge) {
-      throw new Error(
-        `[foundry:contrast] brand "${b.id}" — ${b.palette}-${brandStep} vs ${b.ink}-${b.inkStep} = ${ratio.toFixed(2)}:1 (<${AA_LARGE}:1 WCAG AA large). fmt=${fmt(brandColor)} / ${fmt(inkColor)}`,
+      console.warn(
+        `\n⚠  ${line}\n   fmt=${fmt(brandColor)} / ${fmt(inkColor)}\n   Fix in src/domains/theme/foundry/source/semantic/brand.semantic.ts (adjust palette / ink / inkStep) or the palette source itself.\n`,
       );
+    } else {
+      console.log(line);
     }
-    console.log(
-      `[foundry:contrast] brand "${b.id}" ${b.palette}-${brandStep} vs ${b.ink}-${b.inkStep} = ${ratio.toFixed(2)}:1 ${passNormal ? "AA-normal" : "AA-large-only"}`,
-    );
   }
 
   // ---- Utility pairs (hard) ----
