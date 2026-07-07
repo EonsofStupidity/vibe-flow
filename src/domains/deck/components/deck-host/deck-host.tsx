@@ -20,8 +20,8 @@ import {
   nextIndex,
   prevIndex,
   retreat,
-  stepCount,
 } from "@/domains/deck/services/deck-nav.service";
+
 import { useDeckSync } from "@/domains/deck/hooks/useDeckSync";
 import { useRuntimeStore } from "@/domains/deck/state/runtime.store";
 import { useSwipeNav } from "@/domains/input/hooks/useSwipeNav";
