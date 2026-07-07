@@ -1,8 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Maximize2, ChevronRight } from "lucide-react";
 import type { BrandId } from "@/domains/theme/foundry/foundry.tokens";
-import { brands } from "@/domains/theme/foundry/foundry.tokens";
-import { useShellStore } from "../../state/shell.store";
+import { brands } from "@/domains/theme/foundry/foundry.tokens";import { useShellStore } from "../../state/shell.store";
 import { Button } from "@/domains/ui/button/button";
 import { cn } from "@/domains/ui/utils/cn.util";
 
@@ -54,12 +53,12 @@ export function TopBar() {
                     {crumb.label}
                   </span>
                 ) : (
-                  <Link
-                    to={crumb.to as "/"}
+                  <a
+                    href={crumb.to}
                     className="truncate font-mono text-eyebrow uppercase tracking-[0.2em] text-ink-muted hover:text-ink"
                   >
                     {crumb.label}
-                  </Link>
+                  </a>
                 )}
               </span>
             ))}
