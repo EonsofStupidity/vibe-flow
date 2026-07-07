@@ -8,4 +8,3 @@
  */
 import "./ep-000-template/episode";
 import "./ep-001-catalog-showcase/episode";
-import "./ep-002-what-is-ai-tooling/episode";
