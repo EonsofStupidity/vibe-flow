@@ -135,5 +135,3 @@ export function DeckHost({ deck, slideIndex, stepIndex }: DeckHostProps) {
   );
 }
 
-{/* stepCount imported for symmetry with future step ticks; safe to remove when consumed */}
-void stepCount;
