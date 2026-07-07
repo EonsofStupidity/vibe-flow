@@ -1,19 +1,18 @@
 /**
- * Runtime route — /deck/$deckId/$slideIndex renders one slide of one deck.
+ * Legacy audience route — redirects to the step-aware canonical URL.
+ *
+ * @remarks
+ * Kept alive so bookmarks and shared links stay valid. All rendering now
+ * happens at `/deck/$deckId/$slideIndex/$stepIndex`.
  */
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { DeckHost } from "@/domains/deck/components/deck-host/deck-host";
-import { getDeck } from "@/domains/deck/services/deck-registry.service";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/deck/$deckId/$slideIndex")({
-  component: RuntimePage,
+  beforeLoad: ({ params }) => {
+    throw redirect({
+      to: "/deck/$deckId/$slideIndex/$stepIndex",
+      params: { ...params, stepIndex: "0" },
+      replace: true,
+    });
+  },
 });
-
-function RuntimePage() {
-  const { deckId, slideIndex } = Route.useParams();
-  const deck = getDeck(deckId);
-  if (!deck) throw notFound();
-  const parsed = Number.parseInt(slideIndex, 10);
-  const index = Number.isFinite(parsed) ? parsed : 0;
-  return <DeckHost deck={deck} slideIndex={index} />;
-}

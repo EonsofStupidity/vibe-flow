@@ -46,8 +46,8 @@ export function SlideNavigator({ open, deck, currentIndex, onClose }: SlideNavig
               type="button"
               onClick={() => {
                 navigate({
-                  to: "/deck/$deckId/$slideIndex",
-                  params: { deckId: deck.id, slideIndex: String(i) },
+                  to: "/deck/$deckId/$slideIndex/$stepIndex",
+                  params: { deckId: deck.id, slideIndex: String(i), stepIndex: "0" },
                 });
                 onClose();
               }}
