@@ -47,13 +47,14 @@ function StatCard({
 
   if (canFlip) {
     return (
-      <ToggleButton
-        aria-label={typeof stat.label === "string" ? `${stat.label} — flip for detail` : "Flip for detail"}
-        className={slots.card()}
-        style={toneVars(activeTone)}
-      >
-        {front}
-      </ToggleButton>
+      <div style={toneVars(activeTone)} className="contents">
+        <ToggleButton
+          aria-label={typeof stat.label === "string" ? `${stat.label} — flip for detail` : "Flip for detail"}
+          className={slots.card()}
+        >
+          {front}
+        </ToggleButton>
+      </div>
     );
   }
   return (
