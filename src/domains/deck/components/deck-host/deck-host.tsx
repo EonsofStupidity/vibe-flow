@@ -62,7 +62,10 @@ export function DeckHost({ deck, slideIndex }: DeckHostProps) {
     onChrome: toggleChrome,
   });
 
-  const ctx = useMemo(() => ({ deckId: deck.id, index, total }), [deck.id, index, total]);
+  const ctx = useMemo(
+    () => ({ deckId: deck.id, index, total, stepIndex: 0 }),
+    [deck.id, index, total],
+  );
   const effectiveChromeHidden = chromeHidden || slide.chrome === "hidden";
   const allowAnnotate = slide.allowAnnotate !== false;
 
