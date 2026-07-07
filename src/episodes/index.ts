@@ -7,3 +7,4 @@
  * When you add a new episode, add exactly one import line here.
  */
 import "./ep-000-template/episode";
+import "./ep-001-catalog-showcase/episode";
