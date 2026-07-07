@@ -1,176 +1,143 @@
-# EOS Episode Template — ep-002 "Truly, What is AI?"
+# Step 2 — Step-aware routes + deck-sync service
 
-This episode doubles as the reference template for every future EOS lesson. We build only what chapter 1 needs first, then grow the catalog chapter-by-chapter — no speculative primitives.
-
----
-
-## 1. Content spine (locked, drives everything)
-
-Chapters (each = 1 title slide + N content slides + 1 recap quiz):
-
-1. **Evolution 2023 → 2026** — scrub timeline reveal
-2. **AI is autocomplete** — origin story from phone keyboard suggestions
-3. **The black box** — even the creators don't fully know
-4. **Frontier vs local LLM** — comparator with reveals
-5. **Fundamentals** — tensors, weights, KV-cache
-
-Chapter 1 is the template proof. Chapters 2–5 reuse the same shapes and only introduce a new primitive when the chapter genuinely needs one.
+Wire the URL `$stepIndex` segment into the runtime, add a presenter surface, and mirror both via BroadcastChannel. No content primitives yet — this step only proves the routing/nav/sync spine.
 
 ---
 
-## 2. Episode folder shape (`src/episodes/ep-002-fundamentals-of-ai/`)
+## 1. Routes
 
-```text
-ep-002-fundamentals-of-ai/
-  episode.ts                    ArkType-validated Episode manifest, registers both decks
-  episode.types.ts              ArkType schemas → inferred types
-  script/
-    ch01-evolution.mdx          per-slide MDX beats (frontmatter validated)
-    ch01-s01-hook.mdx
-    ...
-  slides/
-    ch01-s00-title.slide.tsx
-    ch01-s01-timeline.slide.tsx
-    ...
-  quiz/
-    ch01-recap.quiz.ts          ArkType-validated QuizDefinition
-  assets/                       episode-owned imagery (no shared dumping ground)
+### 1a. Redirect old route → step 0
+`src/routes/deck.$deckId.$slideIndex.tsx` becomes redirect-only:
+- On match, `throw redirect({ to: "/deck/$deckId/$slideIndex/$stepIndex", params: { deckId, slideIndex, stepIndex: "0" }, replace: true })` from `beforeLoad`.
+- Keeps existing deep links alive; audience always lives on the step-aware URL.
+
+### 1b. New audience route
+`src/routes/deck.$deckId.$slideIndex.$stepIndex.tsx`:
+- `beforeLoad` validates deck exists (`getDeck`) and clamps `slideIndex`/`stepIndex`; on mismatch, `throw redirect(...)` to the clamped canonical URL.
+- Renders `<DeckHost deck slideIndex stepIndex />`.
+
+### 1c. New presenter route
+`src/routes/present.$deckId.$slideIndex.$stepIndex.tsx`:
+- Same `beforeLoad` clamp logic.
+- Renders new `<PresenterHost deck slideIndex stepIndex />` — a distinct component under `src/domains/deck/components/presenter-host/`. Chapter 1 landing content deferred to step 5; this step ships a minimal shell (current slide scaled, upcoming-reveals list from `slide.reveals`, script placeholder, timer stub). No MDX yet.
+- Kept outside `_shell`, full-bleed, mirrors audience deep-link semantics.
+
+Route path uses `/present/...` per plan; no `?mode=` flag.
+
+---
+
+## 2. `DeckHost` updates
+
+- Accept `stepIndex: number` prop; drop the hardcoded `stepIndex: 0` in `ctx`.
+- `go(nextSlide, nextStep = 0)` navigates to `/deck/$deckId/$slideIndex/$stepIndex`.
+- New `goStep(stepIndex)` navigates within the current slide.
+- Prev/next handlers become step-aware via a new pure helper `advanceStep`/`retreatStep` in `deck-nav.service.ts`:
+  - Next: if `stepIndex < reveals.length - 1` → `goStep(stepIndex+1)`; else → next slide, step 0.
+  - Prev: mirror; when retreating into a slide with reveals, land on its last step.
+- `↑`/`↓` (added to `useKeyboardNav`) skip the whole slide regardless of steps.
+
+`deck-nav.service.ts` gains:
+```ts
+stepCount(slide): number      // reveals?.length ?? 1
+advance({ index, step, deck }): { index; step }
+retreat({ index, step, deck }): { index; step }
 ```
-
-One episode owns one folder. No cross-episode imports. Script MDX and slide TSX both key off a shared `slideId` string.
-
----
-
-## 3. Requirements & vars we lock now (the template contract)
-
-These become the official EOS episode requirements. Encoded in ArkType so drift is a build error.
-
-### 3.1 Episode manifest
-- `id` — kebab, matches folder
-- `property` — `"eos" | "news" | "vibes"` (drives `data-brand`)
-- `chapter[]` — ordered list of chapter records
-- `chapter.recap` — required `QuizDefinition` reference
-- `decks` — auto-derived: `audience` + `presenter` (share the same slide list, differ in chrome)
-
-### 3.2 Slide contract (extension of existing `SlideDefinition`)
-- `id` — episode-unique
-- `chapterId` — required for EOS slides
-- `kind` — existing `title | still | comparator | custom`
-- `reveals?: readonly RevealStep[]` — new. Ordered, addressable via URL step index
-- `script?: { file: string; beats: readonly string[] }` — links slide → MDX + beat ids
-- `allowAnnotate?`, `chrome?` — unchanged
-
-### 3.3 Reveal step
-- `id` — slide-unique beat id (matches MDX beat)
-- `label` — human name for presenter view
-- `tone?: ToneName` — drives halo/glow via effects matrix
-
-Reveal state lives entirely in the URL (`$stepIndex`). Minigame transient state (card flip mid-animation, drag position, quiz picks) lives in Jotai atomFamily keyed by `slideId`.
-
-### 3.4 Quiz definition
-- 2–3 questions per recap, `single | multi` select
-- `explanation` per question (rendered post-answer, not persisted)
-
-All four schemas defined in `src/domains/deck/types/*.ark.ts` using ArkType, with inferred TS types exported alongside. No parallel Zod copies.
+Pure, unit-testable. `DeckHost` calls them; no math in the component.
 
 ---
 
-## 4. Runtime routes
+## 3. Input hook extensions
 
-### Existing
-- `/deck/$deckId/$slideIndex` — keep as **audience** route, redirect to step 0 on mount if slide has reveals
-
-### New
-- `/deck/$deckId/$slideIndex/$stepIndex` — audience with explicit step
-- `/present/$deckId/$slideIndex/$stepIndex` — **presenter/teleprompter** surface. Renders:
-  - current slide (scaled down)
-  - upcoming reveals list
-  - script beats from linked MDX (long-form teleprompter column)
-  - timer + next-slide preview
-
-Both routes live outside `_shell` (full-bleed, as today). Presenter route is its own file, not a `?mode=` flag — keeps preloading and bundle boundaries clean.
-
-### BroadcastChannel sync
-- New `src/domains/deck/services/deck-sync.service.ts` — thin BroadcastChannel wrapper posting `{ deckId, slideIndex, stepIndex }` on nav. Both routes subscribe and mirror.
-- No leader election — presenter is authoritative when both surfaces open; audience follows.
+- `useKeyboardNav`: add `onSlidePrev`/`onSlideNext` for `↑`/`↓`; existing `←/→/PageUp/PageDown/Space` become the step-aware pair. No breaking rename — same option keys, meaning updated by what `DeckHost` passes in.
+- `useSwipeNav`: unchanged (horizontal swipes map to onPrev/onNext, which are now step-aware in `DeckHost`).
+- `EdgeNav`: `canPrev`/`canNext` computed from `advance/retreat` result vs current position so edge chevrons dim only at true deck ends.
 
 ---
 
-## 5. Keyboard / touch nav (extended)
+## 4. `deck-sync.service.ts` (new)
 
-Existing `useKeyboardNav` / `useSwipeNav` / edge-nav gain step-awareness:
-- `→` / swipe-left: if `stepIndex < reveals.length - 1` → next step, else next slide (step 0)
-- `←` / swipe-right: mirror
-- `↓` / `↑`: skip whole slide regardless of steps
-- All controls stay ≥ 4rem tap targets, edge-anchored, `data-no-swipe` on interactive surfaces
+`src/domains/deck/services/deck-sync.service.ts` — thin BroadcastChannel wrapper.
 
----
+Shape:
+```ts
+interface DeckSyncMessage {
+  deckId: string;
+  slideIndex: number;
+  stepIndex: number;
+  origin: "audience" | "presenter";
+  ts: number;
+}
+export function createDeckSyncChannel(deckId: string): {
+  post(msg: Omit<DeckSyncMessage, "ts" | "deckId">): void;
+  subscribe(fn: (msg: DeckSyncMessage) => void): () => void;
+  close(): void;
+};
+```
+- One channel per deck: `new BroadcastChannel(`deck:${deckId}`)`.
+- SSR-safe: guarded by `typeof window` / `typeof BroadcastChannel` checks; returns a no-op impl on server.
+- No leader election — receivers apply if `ts` newer than last-applied.
 
-## 6. First-batch primitives (only what chapter 1 needs today)
+New hook `src/domains/deck/hooks/useDeckSync.ts`:
+- Args: `{ deckId, slideIndex, stepIndex, origin }`.
+- Effect posts on every position change.
+- Effect subscribes and calls `navigate({ to, params, replace: true })` when an incoming message differs from current URL.
+- Ignores own messages by comparing `origin` + skipping when incoming matches current.
 
-Under `src/domains/slide-catalog/primitives/`, same split-file pattern (`.tsx`, `.types.ts`, `.variants.ts`, `readme.md`), tone-driven via `toneVars(tone)`, WAI-ARIA APG compliant.
-
-**Ship in this plan:**
-1. `reveal-timeline` — horizontal scrub timeline (chapter 1). RAC `Slider` wrapper required → also ship `src/domains/ui/slider/` as an owned RAC primitive.
-2. `tap-reveal-cards` — grid of face-down cards, tap flips. Uses existing `ToggleButton` + tone matrix. Needed chapter 2.
-3. `quiz-recap` — 2–3 question inline quiz with post-answer explanation. Requires new `src/domains/ui/radio-group/` RAC wrapper.
-
-**Deferred (added as their chapter arrives):**
-- `hotspot-quiz` — chapter 2/3
-- `sort-rank` — TBD chapter
-- Any variant we haven't proven we need
-
-Each new primitive lands with a readme that documents props, tone behaviour, and touchscreen tap-target math.
-
----
-
-## 7. MDX pipeline
-
-- Add `@mdx-js/rollup` + `@mdx-js/react` (Vite plugin).
-- MDX files under `script/` compile to lazy React components; presenter route dynamically imports the file listed on the slide's `script.file`.
-- Frontmatter validated at build time via a tiny `src/domains/deck/services/script-loader.service.ts` that runs the ArkType `ScriptFrontmatter` schema and throws a legible error naming the file + beat.
-- No MDX in audience bundle — code-split so audience deck stays lean.
+Wired into both `DeckHost` and `PresenterHost`.
 
 ---
 
-## 8. Auto-growing hover previews
+## 5. Slide-navigator + progress rail
 
-Requested "clean mouse over previews, optimized, no zod". Delivered via:
-- Existing `Tooltip` primitive already tone-driven and glass-morphic (previous track).
-- New `src/domains/deck/components/slide-preview/` — hover/long-press card that renders the target slide inside a `transform: scale(...)` container capped to a rem width, lazy-mounted with `RAC TooltipTrigger`, cached per slide id.
-- Used by presenter route's "upcoming reveals" list and by `SlideNavigator` (existing) so it grows automatically as the deck grows.
+- `SlideNavigator` "go" click already calls `go(i)` — update to include `stepIndex: 0`.
+- `ProgressRail` unchanged (slide-level only). Step ticks deferred to Step 4 when a real reveal-bearing slide exists.
 
 ---
 
-## 9. Validation & non-goals
+## 6. ArkType at the route edge
 
-- ArkType schemas cover: episode manifest, slide definition, reveal step, script frontmatter, quiz definition. Zero Zod.
-- No Cloud, no auth, no server functions. Pure local runtime. Episode assets ship in the bundle.
-- No responsive breakpoints — everything through existing `fluid()` tokens.
-- No shadcn / Radix / CVA. Owned RAC only.
-- No re-export barrels; `src/episodes/index.ts` stays the single side-effect enumerator.
+Existing schemas from Step 1 are not needed here (nothing authored is parsed yet). Route params stay string→number with clamp. ArkType comes back in Step 5 (MDX frontmatter) and Step 4 (quiz).
 
 ---
 
-## 10. Implementation order (single build session at a time)
+## 7. Non-goals for this step
 
-Each step lands independently, builds green, and is reviewable before the next.
-
-1. **Schemas & types** — ArkType schemas + `SlideDefinition` extension (reveals, script, chapterId). No behavior change yet.
-2. **Step-aware routes + deck-sync service** — new route file, redirect old route, BroadcastChannel wrapper, nav hooks step-aware.
-3. **Owned RAC primitives** — `slider`, `radio-group` under `src/domains/ui/` with readmes.
-4. **Content primitives** — `reveal-timeline`, `tap-reveal-cards`, `quiz-recap` in slide-catalog.
-5. **MDX pipeline + script-loader** — vite plugin, ArkType frontmatter gate, presenter route wires it up.
-6. **Slide-preview hover card** — hooked into presenter's reveal list and existing `SlideNavigator`.
-7. **ep-002 chapter 1** — title slide + timeline slide + recap quiz + MDX beats. Full end-to-end walk on touchscreen + projector.
-8. **Chapters 2–5** — one PR-sized chunk each, promoting a new primitive only when that chapter demonstrably needs it.
-
-After step 7 the template contract is proven; steps 8+ are content authoring against a stable framework.
+- No MDX, no script loading, no slide-preview hover card.
+- No new content primitives.
+- No changes to episode manifests — existing decks (ep-000, ep-001) keep working because `reveals` is optional; `stepCount` returns 1 and step-aware nav collapses to slide-only nav.
+- No presenter timer logic beyond a `useState` mm:ss counter; polished timer in later step.
 
 ---
 
-## Open confirmations before I switch to build mode
+## 8. File changes
 
-- Are you good adding `arktype`, `@mdx-js/rollup`, `@mdx-js/react` as deps? (No other new deps required.)
-- Presenter route path — `/present/$deckId/$slideIndex/$stepIndex` OK, or prefer `/teleprompter/...`?
-- Chapter 1 title — I'll use "Evolution 2023 → 2026" unless you have exact wording.
+**New**
+- `src/routes/deck.$deckId.$slideIndex.$stepIndex.tsx`
+- `src/routes/present.$deckId.$slideIndex.$stepIndex.tsx`
+- `src/domains/deck/components/presenter-host/presenter-host.tsx`
+- `src/domains/deck/components/presenter-host/readme.md`
+- `src/domains/deck/services/deck-sync.service.ts`
+- `src/domains/deck/hooks/useDeckSync.ts`
+
+**Edited**
+- `src/routes/deck.$deckId.$slideIndex.tsx` — redirect-only `beforeLoad`
+- `src/domains/deck/components/deck-host/deck-host.tsx` — accept `stepIndex`, step-aware nav, sync hook
+- `src/domains/deck/services/deck-nav.service.ts` — add `stepCount`/`advance`/`retreat`
+- `src/domains/input/hooks/useKeyboardNav.ts` — add `↑`/`↓` slide-skip handlers
+- `src/domains/deck/components/slide-navigator/slide-navigator.tsx` — include `stepIndex: "0"` in nav params
+- `.lovable/plan.md` — mark Step 2 complete once landed
+
+---
+
+## 9. Verification
+
+- `bun run build` green.
+- Manual: open `/deck/ep-001-catalog-showcase/0` → auto-redirect to `/deck/.../0/0`. Arrow keys still advance slides (no reveals → step-aware = slide-aware). Open `/present/.../0/0` in a second tab → advancing on either surface mirrors the other via BroadcastChannel.
+- Playwright smoke: script to open audience URL, press ArrowRight twice, assert URL is `/deck/ep-001-catalog-showcase/2/0`.
+
+---
+
+## Open confirmation
+
+- Presenter route path: `/present/$deckId/$slideIndex/$stepIndex` — OK, or prefer `/teleprompter/...`?
+- Should the old `/deck/$deckId/$slideIndex` URL 301-style redirect (as planned) or be removed entirely? (Recommend redirect — no cost, keeps any bookmarks alive.)

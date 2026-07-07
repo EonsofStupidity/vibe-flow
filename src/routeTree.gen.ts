@@ -16,6 +16,8 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as DeckDeckIdSlideIndexRouteImport } from './routes/deck.$deckId.$slideIndex'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as PresentDeckIdSlideIndexStepIndexRouteImport } from './routes/present.$deckId.$slideIndex.$stepIndex'
+import { Route as DeckDeckIdSlideIndexStepIndexRouteImport } from './routes/deck.$deckId.$slideIndex.$stepIndex'
 
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
@@ -54,6 +56,18 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
+const PresentDeckIdSlideIndexStepIndexRoute =
+  PresentDeckIdSlideIndexStepIndexRouteImport.update({
+    id: '/present/$deckId/$slideIndex/$stepIndex',
+    path: '/present/$deckId/$slideIndex/$stepIndex',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DeckDeckIdSlideIndexStepIndexRoute =
+  DeckDeckIdSlideIndexStepIndexRouteImport.update({
+    id: '/$stepIndex',
+    path: '/$stepIndex',
+    getParentRoute: () => DeckDeckIdSlideIndexRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof ShellIndexRoute
@@ -61,7 +75,9 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRoute
+  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRouteWithChildren
+  '/deck/$deckId/$slideIndex/$stepIndex': typeof DeckDeckIdSlideIndexStepIndexRoute
+  '/present/$deckId/$slideIndex/$stepIndex': typeof PresentDeckIdSlideIndexStepIndexRoute
 }
 export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
@@ -69,7 +85,9 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/': typeof ShellIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRoute
+  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRouteWithChildren
+  '/deck/$deckId/$slideIndex/$stepIndex': typeof DeckDeckIdSlideIndexStepIndexRoute
+  '/present/$deckId/$slideIndex/$stepIndex': typeof PresentDeckIdSlideIndexStepIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,7 +97,9 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_shell/': typeof ShellIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRoute
+  '/deck/$deckId/$slideIndex': typeof DeckDeckIdSlideIndexRouteWithChildren
+  '/deck/$deckId/$slideIndex/$stepIndex': typeof DeckDeckIdSlideIndexStepIndexRoute
+  '/present/$deckId/$slideIndex/$stepIndex': typeof PresentDeckIdSlideIndexStepIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,6 +110,8 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/.mcp/invoke-tool/$tool'
     | '/deck/$deckId/$slideIndex'
+    | '/deck/$deckId/$slideIndex/$stepIndex'
+    | '/present/$deckId/$slideIndex/$stepIndex'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/mcp'
@@ -98,6 +120,8 @@ export interface FileRouteTypes {
     | '/'
     | '/.mcp/invoke-tool/$tool'
     | '/deck/$deckId/$slideIndex'
+    | '/deck/$deckId/$slideIndex/$stepIndex'
+    | '/present/$deckId/$slideIndex/$stepIndex'
   id:
     | '__root__'
     | '/_shell'
@@ -107,6 +131,8 @@ export interface FileRouteTypes {
     | '/_shell/'
     | '/.mcp/invoke-tool/$tool'
     | '/deck/$deckId/$slideIndex'
+    | '/deck/$deckId/$slideIndex/$stepIndex'
+    | '/present/$deckId/$slideIndex/$stepIndex'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -115,7 +141,8 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
-  DeckDeckIdSlideIndexRoute: typeof DeckDeckIdSlideIndexRoute
+  DeckDeckIdSlideIndexRoute: typeof DeckDeckIdSlideIndexRouteWithChildren
+  PresentDeckIdSlideIndexStepIndexRoute: typeof PresentDeckIdSlideIndexStepIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -169,6 +196,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/present/$deckId/$slideIndex/$stepIndex': {
+      id: '/present/$deckId/$slideIndex/$stepIndex'
+      path: '/present/$deckId/$slideIndex/$stepIndex'
+      fullPath: '/present/$deckId/$slideIndex/$stepIndex'
+      preLoaderRoute: typeof PresentDeckIdSlideIndexStepIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deck/$deckId/$slideIndex/$stepIndex': {
+      id: '/deck/$deckId/$slideIndex/$stepIndex'
+      path: '/$stepIndex'
+      fullPath: '/deck/$deckId/$slideIndex/$stepIndex'
+      preLoaderRoute: typeof DeckDeckIdSlideIndexStepIndexRouteImport
+      parentRoute: typeof DeckDeckIdSlideIndexRoute
+    }
   }
 }
 
@@ -182,6 +223,17 @@ const ShellRouteChildren: ShellRouteChildren = {
 
 const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)
 
+interface DeckDeckIdSlideIndexRouteChildren {
+  DeckDeckIdSlideIndexStepIndexRoute: typeof DeckDeckIdSlideIndexStepIndexRoute
+}
+
+const DeckDeckIdSlideIndexRouteChildren: DeckDeckIdSlideIndexRouteChildren = {
+  DeckDeckIdSlideIndexStepIndexRoute: DeckDeckIdSlideIndexStepIndexRoute,
+}
+
+const DeckDeckIdSlideIndexRouteWithChildren =
+  DeckDeckIdSlideIndexRoute._addFileChildren(DeckDeckIdSlideIndexRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   ShellRoute: ShellRouteWithChildren,
   McpRoute: McpRoute,
@@ -189,7 +241,8 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
-  DeckDeckIdSlideIndexRoute: DeckDeckIdSlideIndexRoute,
+  DeckDeckIdSlideIndexRoute: DeckDeckIdSlideIndexRouteWithChildren,
+  PresentDeckIdSlideIndexStepIndexRoute: PresentDeckIdSlideIndexStepIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

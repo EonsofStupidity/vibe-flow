@@ -1,11 +1,18 @@
 /**
  * Keyboard shortcuts for the deck runtime.
+ *
+ * @remarks
+ * `onPrev`/`onNext` are step-aware (bound to ←/→/PageUp/PageDown/Space by
+ * the caller). `onSlidePrev`/`onSlideNext` skip the whole slide regardless
+ * of reveal steps and are bound to ↑/↓.
  */
 import { useEffect } from "react";
 
 interface Options {
   onPrev: () => void;
   onNext: () => void;
+  onSlidePrev: () => void;
+  onSlideNext: () => void;
   onNavigator: () => void;
   onAnnotate: () => void;
   onChrome: () => void;
@@ -24,6 +31,12 @@ export function useKeyboardNav(o: Options): void {
         case "PageDown":
         case " ":
           o.onNext();
+          break;
+        case "ArrowUp":
+          o.onSlidePrev();
+          break;
+        case "ArrowDown":
+          o.onSlideNext();
           break;
         case "g":
         case "G":
