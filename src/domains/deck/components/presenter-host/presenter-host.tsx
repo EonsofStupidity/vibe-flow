@@ -32,8 +32,8 @@ interface PresenterHostProps {
 
 export function PresenterHost({ deckId, slideIndex, stepIndex }: PresenterHostProps) {
   const deck = getDeck(deckId);
+  if (!deck) throw new Error(`[presenter-host] unknown deck id: ${deckId}`);
   const navigate = useNavigate();
-  if (!deck) return null;
   const total = deck.slides.length;
   const index = clampIndex(slideIndex, total);
   const slide = deck.slides[index];

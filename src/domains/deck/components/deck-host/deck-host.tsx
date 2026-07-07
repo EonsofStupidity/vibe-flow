@@ -40,9 +40,9 @@ interface DeckHostProps {
 
 export function DeckHost({ deckId, slideIndex, stepIndex }: DeckHostProps) {
   const deck = getDeck(deckId);
+  if (!deck) throw new Error(`[deck-host] unknown deck id: ${deckId}`);
   const navigate = useNavigate();
   const surfaceRef = useRef<HTMLDivElement | null>(null);
-  if (!deck) return null;
   const total = deck.slides.length;
   const index = clampIndex(slideIndex, total);
   const slide = deck.slides[index];
