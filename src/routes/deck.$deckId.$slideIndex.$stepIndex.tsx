@@ -26,12 +26,38 @@ export const Route = createFileRoute("/deck/$deckId/$slideIndex/$stepIndex")({
         replace: true,
       });
     }
-    return { deck, index, step };
+    return { deckId: params.deckId, index, step };
   },
   component: RuntimePage,
+  errorComponent: DeckRouteError,
+  notFoundComponent: DeckRouteNotFound,
 });
 
 function RuntimePage() {
-  const { deck, index, step } = Route.useRouteContext();
+  const { deckId, index, step } = Route.useRouteContext();
+  const deck = getDeck(deckId);
+  if (!deck) throw notFound();
   return <DeckHost deck={deck} slideIndex={index} stepIndex={step} />;
+}
+
+function DeckRouteError() {
+  return (
+    <main className="flex h-dvh w-dvw items-center justify-center bg-surface p-f6 text-ink">
+      <div className="max-w-lg text-center">
+        <h1 className="font-display text-h2 text-ink-strong">Deck runtime failed.</h1>
+        <p className="mt-f3 text-body text-ink-muted">Reload the deck from the picker.</p>
+      </div>
+    </main>
+  );
+}
+
+function DeckRouteNotFound() {
+  return (
+    <main className="flex h-dvh w-dvw items-center justify-center bg-surface p-f6 text-ink">
+      <div className="max-w-lg text-center">
+        <h1 className="font-display text-h2 text-ink-strong">Deck not found.</h1>
+        <p className="mt-f3 text-body text-ink-muted">That slide is not in the registered rundown.</p>
+      </div>
+    </main>
+  );
 }
