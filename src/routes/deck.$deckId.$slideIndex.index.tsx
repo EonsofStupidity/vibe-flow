@@ -7,7 +7,7 @@
  */
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/deck/$deckId/$slideIndex")({
+export const Route = createFileRoute("/deck/$deckId/$slideIndex/")({
   beforeLoad: ({ params }) => {
     throw redirect({
       to: "/deck/$deckId/$slideIndex/$stepIndex",
