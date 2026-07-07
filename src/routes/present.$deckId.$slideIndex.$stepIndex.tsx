@@ -30,9 +30,8 @@ export const Route = createFileRoute("/present/$deckId/$slideIndex/$stepIndex")(
 
 function PresentPage() {
   const { deckId, index, step } = Route.useRouteContext();
-  const deck = getDeck(deckId);
-  if (!deck) throw notFound();
-  return <PresenterHost deck={deck} slideIndex={index} stepIndex={step} />;
+  if (!getDeck(deckId)) throw notFound();
+  return <PresenterHost deckId={deckId} slideIndex={index} stepIndex={step} />;
 }
 
 function PresentRouteError() {

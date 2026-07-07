@@ -35,9 +35,8 @@ export const Route = createFileRoute("/deck/$deckId/$slideIndex/$stepIndex")({
 
 function RuntimePage() {
   const { deckId, index, step } = Route.useRouteContext();
-  const deck = getDeck(deckId);
-  if (!deck) throw notFound();
-  return <DeckHost deck={deck} slideIndex={index} stepIndex={step} />;
+  if (!getDeck(deckId)) throw notFound();
+  return <DeckHost deckId={deckId} slideIndex={index} stepIndex={step} />;
 }
 
 function DeckRouteError() {

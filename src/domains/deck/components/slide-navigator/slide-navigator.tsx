@@ -3,18 +3,20 @@
  */
 import { useNavigate } from "@tanstack/react-router";
 import { X } from "lucide-react";
-import type { Deck } from "@/domains/deck/types/deck.types";
+import { getDeck } from "@/domains/deck/services/deck-registry.service";
 
 interface SlideNavigatorProps {
   readonly open: boolean;
-  readonly deck: Deck;
+  readonly deckId: string;
   readonly currentIndex: number;
   readonly onClose: () => void;
 }
 
-export function SlideNavigator({ open, deck, currentIndex, onClose }: SlideNavigatorProps) {
+export function SlideNavigator({ open, deckId, currentIndex, onClose }: SlideNavigatorProps) {
   const navigate = useNavigate();
+  const deck = getDeck(deckId);
   if (!open) return null;
+  if (!deck) return null;
   return (
     <div
       data-no-swipe
