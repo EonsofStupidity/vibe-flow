@@ -118,6 +118,27 @@ export const PRIMITIVE_CATALOG: readonly PrimitiveCatalogEntry[] = [
     tags: ["text", "reveal", "data"],
     defaultTone: "lime",
   },
+  {
+    id: "agenda-list",
+    label: "Agenda List",
+    description: "Chapter opener with dot-marker items, active highlight",
+    tags: ["text", "layout", "reveal"],
+    defaultTone: "brand",
+  },
+  {
+    id: "key-value-grid",
+    label: "Key Value Grid",
+    description: "Two-column term/definition pairs, tone-driven",
+    tags: ["data", "text"],
+    defaultTone: "info",
+  },
+  {
+    id: "terminal-output",
+    label: "Terminal Output",
+    description: "Styled prompt/stdout/stderr terminal block",
+    tags: ["code", "text", "reveal"],
+    defaultTone: "neutral",
+  },
 ];
 
 export const ALL_TAGS = Array.from(

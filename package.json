@@ -4,15 +4,13 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "tokens": "bun run src/domains/theme/foundry/build/build-tokens.ts",
-    "predev": "bun run tokens",
-    "prebuild": "bun run tokens",
+    "tokens": "npx tsx src/domains/theme/foundry/build/build-tokens.ts",
+    "predev": "npm run tokens",
+    "prebuild": "npm run tokens",
     "dev": "vite dev",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "tauri:dev": "bun run tokens && tauri dev",
-    "tauri:build": "bun run tokens && tauri build",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

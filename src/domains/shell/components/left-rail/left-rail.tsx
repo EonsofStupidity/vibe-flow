@@ -11,7 +11,7 @@
  * `<button>` alone don't receive those props.
  */
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Radio, Flame, GraduationCap, ChevronLeft, ChevronRight } from "lucide-react";
+import { Hop as Home, Radio, Flame, GraduationCap, ChevronLeft, ChevronRight } from "lucide-react";
 import { Focusable } from "react-aria-components";
 import type { CSSProperties } from "react";
 import { Tooltip, TooltipTrigger } from "@/domains/ui/tooltip/tooltip";
@@ -27,10 +27,10 @@ interface NavItem {
 }
 
 const NAV: readonly NavItem[] = [
-  { to: "/", label: "Home",  Icon: Home,          tone: "cyan" },
-  { to: "/", label: "News",  Icon: Radio,         tone: "magenta" },
-  { to: "/", label: "Vibes", Icon: Flame,         tone: "coral" },
-  { to: "/", label: "EoS",   Icon: GraduationCap, tone: "lime" },
+  { to: "/",       label: "Home",  Icon: Home,          tone: "cyan" },
+  { to: "/news",   label: "News",  Icon: Radio,         tone: "magenta" },
+  { to: "/vibes",  label: "Vibes", Icon: Flame,         tone: "coral" },
+  { to: "/eos",    label: "EoS",   Icon: GraduationCap, tone: "lime" },
 ];
 
 /**
