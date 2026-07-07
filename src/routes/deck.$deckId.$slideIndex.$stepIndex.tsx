@@ -7,6 +7,7 @@
  * URL stays canonical.
  */
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
+import "../episodes";
 import { DeckHost } from "@/domains/deck/components/deck-host/deck-host";
 import { getDeck } from "@/domains/deck/services/deck-registry.service";
 import { clampIndex, clampStep } from "@/domains/deck/services/deck-nav.service";

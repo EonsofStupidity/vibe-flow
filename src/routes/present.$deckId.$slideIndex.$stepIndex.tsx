@@ -2,6 +2,7 @@
  * Presenter/teleprompter route — /present/$deckId/$slideIndex/$stepIndex.
  */
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
+import "../episodes";
 import { PresenterHost } from "@/domains/deck/components/presenter-host/presenter-host";
 import { getDeck } from "@/domains/deck/services/deck-registry.service";
 import { clampIndex, clampStep } from "@/domains/deck/services/deck-nav.service";
