@@ -245,6 +245,12 @@
   }
 }
 
+@keyframes hotspot-pulse {
+  0%   { transform: scale(1);   opacity: 1; }
+  60%  { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tooltip-motion[data-entering],
   .tooltip-motion[data-exiting] {

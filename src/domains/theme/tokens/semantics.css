@@ -49,6 +49,12 @@
   --motion-ease-standard:   var(--ease-standard);
   --motion-ease-emphasized: var(--ease-emphasized);
   --motion-ease-decelerate: var(--ease-decelerate);
+  /* Reduced-motion aliases — primitives that inline a [transition:...]  */
+  /* value can read these behind a prefers-reduced-motion media query so  */
+  /* animation collapses instantly instead of just skipping the keyframe.  */
+  --motion-duration-reduced:   0.01ms;
+  --motion-ease-reduced:       linear;
+  --motion-transition-reduced: none;
 
   /* ----------------------------- Shell heights ------------------------------ */
   --topbar-height:    3.5rem;
